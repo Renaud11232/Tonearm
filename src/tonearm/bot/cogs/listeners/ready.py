@@ -1,5 +1,6 @@
 import logging
 
+import nextcord
 from nextcord.ext import commands
 
 class ReadyListener(commands.Cog):
@@ -11,4 +12,14 @@ class ReadyListener(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.__logger.info(f"Tonearm is ready ! You can invite the bot with https://discordapp.com/oauth2/authorize?client_id={self.__bot.user.id}&scope=bot%20applications.commands&permissions=36700160")
+        scopes = [
+            "bot",
+            "applications.commands"
+        ]
+        permissions = nextcord.Permissions.none()
+        permissions.update(
+            connect=True,
+            speak=True,
+            use_voice_activation=True
+        )
+        self.__logger.info(f"Tonearm is ready ! You can invite the bot with {nextcord.utils.oauth_url(self.__bot.user.id, scopes=scopes, permissions=permissions)}")

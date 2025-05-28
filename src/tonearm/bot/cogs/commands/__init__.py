@@ -2,7 +2,7 @@ from .clean import Clean
 from .clear import Clear
 from .dj import Dj
 from .forward import Forward
-from .join import Join
+from .join import JoinCommand
 from .jump import Jump
 from .leave import Leave
 from .loop import Loop

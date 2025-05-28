@@ -7,6 +7,7 @@ class Clean(commands.Cog):
         super(Clean, self).__init__()
         self.__bot = bot
 
+    #TODO: Translate commands
     @nextcord.slash_command(
         description="Deletes all bot messages in the channel"
     )
@@ -17,4 +18,5 @@ class Clean(commands.Cog):
             if message.author == self.__bot.user:
                 messages += 1
                 await message.delete()
+        #TODO: Cleaner message
         await interaction.followup.send(f":wastebasket: All messages cleaned ({messages})")

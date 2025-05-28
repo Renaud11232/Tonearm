@@ -10,6 +10,7 @@ class Now(commands.Cog):
         await self.__now(interaction)
 
     @nextcord.slash_command(
+        name="now-playing",
         description="Shows the current playing track"
     )
     async def now_playing(self, interaction: nextcord.Interaction):

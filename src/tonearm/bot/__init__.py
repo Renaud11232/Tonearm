@@ -2,6 +2,7 @@ import logging
 import sys
 
 from tonearm.bot.cogs import *
+from tonearm.bot.managers import QueueManager
 
 from nextcord.ext import commands
 
@@ -11,8 +12,8 @@ class Tonearm:
     def __init__(self, token: str, log_level: str):
         self.__token = token
         self.__log_level = log_level
-        self.__init_logger("nextcord")
         self.__bot = commands.Bot()
+        self.__queue_manager = QueueManager(self.__bot)
         self.__init_commands()
 
     def __init_logger(self, name: str):
@@ -29,7 +30,7 @@ class Tonearm:
         self.__bot.add_cog(Clear())
         self.__bot.add_cog(Dj())
         self.__bot.add_cog(Forward())
-        self.__bot.add_cog(Join())
+        self.__bot.add_cog(JoinCommand(self.__queue_manager))
         self.__bot.add_cog(Jump())
         self.__bot.add_cog(Leave())
         self.__bot.add_cog(Loop())
