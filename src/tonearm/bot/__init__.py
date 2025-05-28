@@ -32,7 +32,7 @@ class Tonearm:
         self.__bot.add_cog(Forward())
         self.__bot.add_cog(JoinCommand(self.__queue_manager))
         self.__bot.add_cog(Jump())
-        self.__bot.add_cog(Leave())
+        self.__bot.add_cog(LeaveCommand(self.__queue_manager))
         self.__bot.add_cog(Loop())
         self.__bot.add_cog(Move())
         self.__bot.add_cog(Next())

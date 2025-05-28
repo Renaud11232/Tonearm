@@ -4,7 +4,7 @@ from .dj import Dj
 from .forward import Forward
 from .join import JoinCommand
 from .jump import Jump
-from .leave import Leave
+from .leave import LeaveCommand
 from .loop import Loop
 from .move import Move
 from .next import Next
