@@ -17,7 +17,7 @@ class JoinCommand(commands.Cog):
         await interaction.response.defer()
         queue = self.__queue_manager.get_queue(interaction.guild)
         try:
-            await queue.join(interaction.user)
+            await queue.join(interaction.user.voice)
             await interaction.followup.send(f":microphone: Ready to rock and roll !")
         except TonearmException as e:
             await interaction.followup.send(f":x: {str(e)}")

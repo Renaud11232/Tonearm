@@ -15,28 +15,29 @@ class QueueService:
         self.__voice_client = None
 
     @staticmethod
-    def __check_member_in_voice_channel(member: nextcord.Member):
-        if member.voice is None or member.voice.channel is None:
+    def __check_member_in_voice_channel(voice: nextcord.VoiceState):
+        if voice is None or voice.channel is None:
             raise TonearmException("You must join a voice channel first")
 
-    async def join(self, member: nextcord.Member):
+    async def join(self, voice: nextcord.VoiceState):
         with self.__lock:
-            await self.__join(member)
+            await self.__join(voice)
 
-    async def __join(self, member: nextcord.Member):
-        self.__check_member_in_voice_channel(member)
+    async def __join(self, voice: nextcord.VoiceState):
+        self.__check_member_in_voice_channel(voice)
         if self.__voice_channel is not None:
             raise TonearmException("Unable to join channel, I've already joined a voice channel")
-        self.__voice_client = await member.voice.channel.connect()
-        self.__voice_channel = member.voice.channel.id
+        self.__voice_client = await voice.channel.connect()
+        self.__voice_channel = voice.channel.id
 
-    async def leave(self, member: nextcord.Member):
+    async def leave(self, voice: nextcord.VoiceState):
         with self.__lock:
-            await self.__leave(member)
+            #TODO: Stop
+            await self.__leave(voice)
 
-    async def __leave(self, member: nextcord.Member):
-        self.__check_member_in_voice_channel(member)
-        if self.__voice_channel != member.voice.channel.id:
+    async def __leave(self, voice: nextcord.VoiceState):
+        self.__check_member_in_voice_channel(voice)
+        if self.__voice_channel != voice.channel.id:
             raise TonearmException("I'm not in your voice channel")
         await self.__voice_client.disconnect()
         self.__voice_channel = None
