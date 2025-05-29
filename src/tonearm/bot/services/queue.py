@@ -28,6 +28,7 @@ class QueueService:
         if self.__voice_channel is not None:
             raise TonearmException("Unable to join channel, I've already joined a voice channel")
         self.__voice_client = await voice.channel.connect()
+        await voice.channel.guild.change_voice_state(channel=voice.channel, self_deaf=True)
         self.__voice_channel = voice.channel.id
 
     async def leave(self, voice: nextcord.VoiceState):
