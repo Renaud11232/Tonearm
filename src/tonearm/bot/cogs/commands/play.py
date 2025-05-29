@@ -18,9 +18,7 @@ class PlayCommand(commands.Cog):
         player = self.__player_manager.get_player(interaction.guild)
         try:
             tracks = await player.play(interaction.user.voice, query)
-            if len(tracks) == 0:
-                await interaction.followup.send(f":question: **No** track added to the queue.")
-            elif len(tracks) == 1:
+            if len(tracks) == 1:
                 await interaction.followup.send(f":cd: Added **{tracks[0].title}** to the queue.")
             else:
                 await interaction.followup.send(f":cd: Added **{len(tracks)} tracks** to the queue.")

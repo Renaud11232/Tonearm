@@ -1,4 +1,4 @@
-from .clean import Clean
+from .clean import CleanCommand
 from .clear import Clear
 from .dj import Dj
 from .forward import Forward
@@ -7,7 +7,7 @@ from .jump import Jump
 from .leave import LeaveCommand
 from .loop import Loop
 from .move import Move
-from .next import Next
+from .next import NextCommand
 from .now import Now
 from .pause import Pause
 from .play import PlayCommand

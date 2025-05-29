@@ -29,7 +29,7 @@ class Tonearm:
 
     def __init_commands(self):
         self.__bot.add_cog(ReadyListener(self.__bot, self.__init_logger("tonearm.ready")))
-        self.__bot.add_cog(Clean(self.__bot))
+        self.__bot.add_cog(CleanCommand(self.__bot))
         self.__bot.add_cog(Clear())
         self.__bot.add_cog(Dj())
         self.__bot.add_cog(Forward())
@@ -38,7 +38,7 @@ class Tonearm:
         self.__bot.add_cog(LeaveCommand(self.__bot, self.__player_manager))
         self.__bot.add_cog(Loop())
         self.__bot.add_cog(Move())
-        self.__bot.add_cog(Next())
+        self.__bot.add_cog(NextCommand(self.__player_manager))
         self.__bot.add_cog(Now())
         self.__bot.add_cog(Pause())
         self.__bot.add_cog(PlayCommand(self.__player_manager))

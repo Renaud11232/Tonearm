@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Clean(commands.Cog):
+class CleanCommand(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         super().__init__()
