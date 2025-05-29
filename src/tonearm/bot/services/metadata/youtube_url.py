@@ -1,6 +1,7 @@
 import re
 from urllib.parse import urlparse, parse_qs
 from typing import List
+import html
 
 from tonearm.bot.data import TrackMetadata
 from tonearm.exceptions import TonearmException
@@ -38,7 +39,7 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
         return [
             TrackMetadata(
                 url=video,
-                title=response["items"][0]["snippet"]["title"]
+                title=html.unescape(response["items"][0]["snippet"]["title"])
             )
         ]
 
@@ -53,6 +54,6 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
         return [
             TrackMetadata(
                 url=f"https://www.youtube.com/watch?v={item["snippet"]["resourceId"]["videoId"]}",
-                title=item["snippet"]["title"]
+                title=html.unescape(item["snippet"]["title"])
             ) for item in response["items"]
         ]
