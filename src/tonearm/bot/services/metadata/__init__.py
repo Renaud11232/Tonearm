@@ -16,7 +16,12 @@ class MetadataService(MetadataServiceBase):
     def __init__(self, youtube_api_key: str | None):
         super().__init__()
         self.__metadata_services = [
-            MetadataServiceEntry(r"^(?:https://)?(?:youtu\.be|(?:(?:www\.)?(?:music\.)|m\.)?youtube\.com)(?:/.*)?$", YoutubeUrlMetadataService(youtube_api_key)),
+            MetadataServiceEntry(r"^(?:https://)youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(youtube_api_key)),
+            MetadataServiceEntry(r"^(?:https://)www\.youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(youtube_api_key)),
+            MetadataServiceEntry(r"^(?:https://)m\.youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(youtube_api_key)),
+            MetadataServiceEntry(r"^(?:https://)music\.youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(youtube_api_key)),
+            MetadataServiceEntry(r"^(?:https://)www\.music\.youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(youtube_api_key)),
+            MetadataServiceEntry(r"^(?:https://)youtu\.be(?:/.*)?$", YoutubeUrlMetadataService(youtube_api_key)),
             MetadataServiceEntry(r"^https?://.*$", DirectUrlMetadataService()),
             MetadataServiceEntry(r"^.*$", YoutubeSearchMetadataService(youtube_api_key))
         ]

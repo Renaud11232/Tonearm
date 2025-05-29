@@ -36,11 +36,29 @@ def main():
         env_var="YOUTUBE_API_KEY",
         help="YouTube API key used to fetch video metadata. If omitted, YouTube support will be disabled"
     )
+    parser.add_argument(
+        "--cobalt-api-url",
+        action=EnvDefault,
+        type=str,
+        required=True,
+        env_var="COBALT_API_URL",
+        help="URL of the cobalt.tools instance to use to download media"
+    )
+    parser.add_argument(
+        "--cobalt-api-key",
+        action=EnvDefault,
+        type=str,
+        required=False,
+        env_var="COBALT_API_KEY",
+        help="API key used to authenticate on the configured cobalt.tools instance"
+    )
     args = parser.parse_args()
     tonearm = Tonearm(
         token=args.discord_token,
         log_level=args.log_level,
-        youtube_api_key=args.youtube_api_key
+        youtube_api_key=args.youtube_api_key,
+        cobalt_api_url=args.cobalt_api_url,
+        cobalt_api_key=args.cobalt_api_key
     )
     tonearm.run()
 

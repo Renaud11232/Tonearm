@@ -16,7 +16,7 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
     async def _fetch(self, query: str) -> List[TrackMetadata]:
         parsed_url = urlparse(query)
         if "list" not in parse_qs(parsed_url.query) or len(parse_qs(parsed_url.query)["list"]) == 0:
-            return await self.__fetch_video(query)
+            return await self.__fetch_video(self.__get_video_id(query))
         else:
             return await self.__fetch_playlist(parse_qs(parsed_url.query)["list"][0])
 
@@ -31,14 +31,14 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
     async def __fetch_video(self, video: str) -> List[TrackMetadata]:
         response = self._youtube.videos().list(
             part="snippet",
-            id=self.__get_video_id(video),
+            id=video,
             maxResults=1
         ).execute()
         if "items" not in response and len(response["items"]) == 0:
             raise TonearmException("The requested track was not found on YouTube")
         return [
             TrackMetadata(
-                url=video,
+                url=f"https://www.youtube.com/watch?v={video}",
                 title=html.unescape(response["items"][0]["snippet"]["title"])
             )
         ]

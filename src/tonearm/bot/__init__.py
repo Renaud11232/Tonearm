@@ -6,16 +6,17 @@ from tonearm.bot.managers import PlayerManager
 
 from nextcord.ext import commands
 
+from tonearm.bot.services.media import MediaService
 from tonearm.bot.services.metadata import MetadataService
 
 
 class Tonearm:
 
-    def __init__(self, token: str, log_level: str, youtube_api_key: str | None):
+    def __init__(self, token: str, log_level: str, youtube_api_key: str | None, cobalt_api_url: str, cobalt_api_key: str | None):
         self.__token = token
         self.__log_level = log_level
         self.__bot = commands.Bot()
-        self.__player_manager = PlayerManager(self.__bot, MetadataService(youtube_api_key))
+        self.__player_manager = PlayerManager(self.__bot, MetadataService(youtube_api_key), MediaService(cobalt_api_url, cobalt_api_key))
         self.__init_commands()
 
     def __init_logger(self, name: str):
@@ -49,7 +50,7 @@ class Tonearm:
         self.__bot.add_cog(Seek())
         self.__bot.add_cog(Setting())
         self.__bot.add_cog(Shuffle())
-        self.__bot.add_cog(Stop())
+        self.__bot.add_cog(Stop(self.__player_manager))
         self.__bot.add_cog(VersionCommand())
         self.__bot.add_cog(Voteskip())
 
