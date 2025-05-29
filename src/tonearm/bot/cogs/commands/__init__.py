@@ -20,4 +20,5 @@ from .seek import Seek
 from .setting import Setting
 from .shuffle import Shuffle
 from .stop import Stop
+from .version import VersionCommand
 from .voteskip import Voteskip

@@ -48,6 +48,7 @@ class Tonearm:
         self.__bot.add_cog(Setting())
         self.__bot.add_cog(Shuffle())
         self.__bot.add_cog(Stop())
+        self.__bot.add_cog(VersionCommand())
         self.__bot.add_cog(Voteskip())
 
     def run(self):
