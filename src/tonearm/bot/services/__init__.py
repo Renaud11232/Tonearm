@@ -1,1 +1,1 @@
-from .queue import QueueService
+from .player import PlayerService

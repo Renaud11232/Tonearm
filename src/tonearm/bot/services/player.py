@@ -6,7 +6,7 @@ from nextcord.ext import commands
 from tonearm.exceptions import TonearmException
 
 
-class QueueService:
+class PlayerService:
 
     def __init__(self, bot: commands.Bot):
         self.__bot = bot

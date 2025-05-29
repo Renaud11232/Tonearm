@@ -1,1 +1,1 @@
-from .queue import QueueManager
+from .player import PlayerManager
