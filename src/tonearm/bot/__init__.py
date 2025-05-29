@@ -15,6 +15,8 @@ class Tonearm:
     def __init__(self, token: str, log_level: str, youtube_api_key: str | None, cobalt_api_url: str, cobalt_api_key: str | None):
         self.__token = token
         self.__log_level = log_level
+        self.__init_logger("nextcord")
+        self.__init_logger("tonearm")
         self.__bot = commands.Bot()
         self.__player_manager = PlayerManager(self.__bot, MetadataService(youtube_api_key), MediaService(cobalt_api_url, cobalt_api_key))
         self.__init_commands()
@@ -25,10 +27,9 @@ class Tonearm:
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
         logger.addHandler(handler)
-        return logger
 
     def __init_commands(self):
-        self.__bot.add_cog(ReadyListener(self.__bot, self.__init_logger("tonearm.ready")))
+        self.__bot.add_cog(ReadyListener(self.__bot))
         self.__bot.add_cog(CleanCommand(self.__bot))
         self.__bot.add_cog(Clear())
         self.__bot.add_cog(Dj())

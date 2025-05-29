@@ -5,10 +5,10 @@ from nextcord.ext import commands
 
 class ReadyListener(commands.Cog):
 
-    def __init__(self, bot: commands.Bot, logger: logging.Logger):
+    def __init__(self, bot: commands.Bot):
         super().__init__()
         self.__bot = bot
-        self.__logger = logger
+        self.__logger = logging.getLogger("tonearm.ready")
 
     @commands.Cog.listener()
     async def on_ready(self):
