@@ -22,4 +22,9 @@ class ReadyListener(commands.Cog):
             speak=True,
             use_voice_activation=True
         )
-        self.__logger.info(f"Tonearm is ready ! You can invite the bot with {nextcord.utils.oauth_url(self.__bot.user.id, scopes=scopes, permissions=permissions)}")
+        invite_url = nextcord.utils.oauth_url(
+            self.__bot.user.id,
+            scopes=scopes,
+            permissions=permissions
+        )
+        self.__logger.info(f"Tonearm is ready ! You can invite the bot with {invite_url}")
