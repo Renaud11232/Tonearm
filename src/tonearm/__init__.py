@@ -27,8 +27,21 @@ def main():
         choices=logging.getLevelNamesMapping().keys(),
         help="Log level. If omitted, the value of the `LOG_LEVEL` environment variable will be used. Defaults to `INFO`"
     )
+    parser.add_argument(
+        "--youtube-api-key",
+        action=EnvDefault,
+        type=str,
+        required=False,
+        default=None,
+        env_var="YOUTUBE_API_KEY",
+        help="YouTube API key used to fetch video metadata. If omitted, YouTube support will be disabled"
+    )
     args = parser.parse_args()
-    tonearm = Tonearm(args.discord_token, args.log_level)
+    tonearm = Tonearm(
+        token=args.discord_token,
+        log_level=args.log_level,
+        youtube_api_key=args.youtube_api_key
+    )
     tonearm.run()
 
 

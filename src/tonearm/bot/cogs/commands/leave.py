@@ -6,16 +6,17 @@ from tonearm.exceptions import TonearmException
 
 class LeaveCommand(commands.Cog):
 
-    def __init__(self, bot: commands.Bot, queue_manager: PlayerManager):
+    def __init__(self, bot: commands.Bot, player_manager: PlayerManager):
+        super().__init__()
         self.__bot = bot
-        self.__queue_manager = queue_manager
+        self.__player_manager = player_manager
 
     @nextcord.slash_command(
         description="Leaves the current voice channel"
     )
     async def leave(self, interaction: nextcord.Interaction):
         await interaction.response.defer()
-        player = self.__queue_manager.get_player(interaction.guild)
+        player = self.__player_manager.get_player(interaction.guild)
         try:
             await player.leave(interaction.user.voice)
             await interaction.followup.send(f":wave: Goodbye !")
@@ -33,4 +34,4 @@ class LeaveCommand(commands.Cog):
                 else:
                     alone = False
             if same_voice_channel and alone:
-                await self.__queue_manager.get_player(member.guild).leave(before)
+                await self.__player_manager.get_player(member.guild).leave(before)

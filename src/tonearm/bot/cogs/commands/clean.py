@@ -4,7 +4,7 @@ from nextcord.ext import commands
 class Clean(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
-        super(Clean, self).__init__()
+        super().__init__()
         self.__bot = bot
 
     #TODO: Translate commands

@@ -10,7 +10,7 @@ from .move import Move
 from .next import Next
 from .now import Now
 from .pause import Pause
-from .play import Play
+from .play import PlayCommand
 from .previous import Previous
 from .queue import Queue
 from .remove import Remove
