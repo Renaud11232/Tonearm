@@ -12,7 +12,7 @@ class CobaltMediaService(MediaServiceBase):
     async def fetch(self, url: str) -> str:
         response = self.__cobalt.process(
             url,
-            audio_format="opus",
+            audio_format="wav",
             download_mode="audio"
         )
         if response["status"] == "error":
