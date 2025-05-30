@@ -4,6 +4,7 @@ from typing import List
 import nextcord
 from nextcord.ext import commands
 
+from tonearm.bot.audiosource import ControllableFFmpegPCMAudio
 from tonearm.bot.services.metadata import MetadataService
 from tonearm.bot.services.media import MediaService
 from tonearm.bot.data import TrackMetadata
@@ -95,7 +96,7 @@ class PlayerService:
     async def __start_next_track(self):
         self.__current_track = self.__next_tracks.pop(0)
         stream_url = await self.__media_service.fetch(self.__current_track.url)
-        self.__audio_source = nextcord.FFmpegPCMAudio(stream_url)
+        self.__audio_source = ControllableFFmpegPCMAudio(stream_url)
         self.__voice_client.play(
             self.__audio_source,
             after=self.__on_audio_source_ended
