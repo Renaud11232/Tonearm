@@ -6,31 +6,24 @@ on:
       - published
 
 jobs:
-  version:
-    name: Extract version from git tag
-    runs-on: ubuntu-latest
-    steps:
-      - id: version
-        run: echo "version=$(echo $GITHUB_REF | sed 's/refs\/tags\///')" | tee -a $GITHUB_OUTPUT
-    outputs:
-      version: ${{ steps.version.outputs.version }}
   build:
     name: Build container images
     runs-on: ubuntu-latest
-    needs: version
     permissions:
       packages: write
     steps:
       - uses: actions/checkout@v4
+      - id: version
+        run: echo "version=$(echo $GITHUB_REF | sed 's/refs\/tags\///')" | tee -a $GITHUB_OUTPUT
       - uses: docker/metadata-action@v5
         id: metadata
         with:
           images: |
             ghcr.io/Renaud11232/tonearm
           tags: |
-            type=pep440,pattern={{version}},value=v${{ needs.version.outputs.version }}
-            type=pep440,pattern={{major}}.{{minor}},value=v${{ needs.version.outputs.version }}
-            type=pep440,pattern={{major}},value=v${{ needs.version.outputs.version }}
+            type=pep440,pattern={{version}},value=v${{ steps.version.outputs.version }}
+            type=pep440,pattern={{major}}.{{minor}},value=v${{ steps.version.outputs.version }}
+            type=pep440,pattern={{major}},value=v${{ steps.version.outputs.version }}
           labels: |
             org.opencontainers.image.title=tonearm
       - uses: docker/setup-qemu-action@v3
