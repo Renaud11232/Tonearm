@@ -1,3 +1,0 @@
-nextcord[voice]
-google-api-python-client
-requests

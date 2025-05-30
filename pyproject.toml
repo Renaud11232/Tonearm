@@ -1,25 +1,10 @@
 [build-system]
-requires = ["hatchling >= 1.27", "hatch-vcs >= 0.5.0"]
+requires = ["hatchling >= 1.27"]
 build-backend = "hatchling.build"
 
-[tool.hatch.version]
-source = "vcs"
-
-[tool.hatch.version.raw-options]
-version_scheme = "no-guess-dev"
-
-[tool.hatch.metadata.hooks.vcs.urls]
-homepage = "https://github.com/Renaud11232/Tonearm"
-source = "https://github.com/Renaud11232/Tonearm.git"
-download = "https://github.com/Renaud11232/Tonearm/archive/{commit_hash}.zip"
-issues = "https://github.com/Renaud11232/Tonearm/issues"
-
 [project]
-dynamic = [
-    "version",
-    "urls"
-]
 name = "Tonearm"
+version = "0.1.0dev1"
 dependencies = [
     "nextcord[voice] >= 3.1.0, < 4",
     "google-api-python-client >= 2.170.0, < 3",
@@ -45,6 +30,12 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent"
 ]
+
+[project.urls]
+homepage = "https://github.com/Renaud11232/Tonearm"
+source = "https://github.com/Renaud11232/Tonearm.git"
+download = "https://github.com/Renaud11232/Tonearm/archive/refs/heads/master.zip"
+issues = "https://github.com/Renaud11232/Tonearm/issues"
 
 [project.scripts]
 tonearm = "tonearm:main"
