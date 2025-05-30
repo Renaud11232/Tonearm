@@ -1,0 +1,59 @@
+services:
+  # Enable warp to avoid the IP ban some providers did (looking at you YouTube...)
+  #warp:
+  #  image: caomingjun/warp
+  #  restart: unless-stopped
+  #  device_cgroup_rules:
+  #    - 'c 10:200 rwm'
+  #  environment:
+  #    - WARP_SLEEP=2
+  #  cap_add:
+  #    - NET_ADMIN
+  #  sysctls:
+  #    - net.ipv6.conf.all.disable_ipv6=0
+  #    - net.ipv4.conf.all.src_valid_mark=1
+  #  volumes:
+  #    - ./warp:/var/lib/cloudflare-warp
+  yt-session-generator:
+    image: ghcr.io/imputnet/yt-session-generator:webserver
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test: wget -O /dev/null -q http://127.0.0.1:8080/token || exit 1
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
+  cobalt:
+    image: ghcr.io/imputnet/cobalt:11
+    init: true
+    read_only: true
+    restart: unless-stopped
+    environment:
+      API_URL: "http://cobalt:9000/"
+      # if you want to use cookies for fetching data from services,
+      # uncomment the next line and volumes section
+      # COOKIE_PATH: "/cookies.json"
+      # if the IP of your server is banned by some services, you can enable warp and uncomment this
+      # API_EXTERNAL_PROXY: "http://warp:1080"
+      YOUTUBE_SESSION_SERVER: "http://yt-session-generator:8080"
+    # volumes:
+    #   - ./cobalt/cookies.json:/cookies.json:ro
+    depends_on:
+      yt-session-generator:
+        condition: service_healthy
+      warp:
+        condition: service_started
+  tonearm:
+    image: ghcr.io/renaud11232/tonearm
+    restart: unless-stopped
+    environment:
+      DISCORD_TOKEN: "your discord token"
+      LOG_LEVEL: "INFO"
+      YOUTUBE_API_KEY: "your youtube api key"
+      COBALT_API_URL: "http://cobalt:9000"
+      # if you enabled authentication on cobalt
+      # COBALT_API_KEY: "your cobalt api key"
+    depends_on:
+      cobalt:
+        condition: service_started
