@@ -13,7 +13,8 @@ from tonearm.exceptions import TonearmException
 
 class PlayerService:
 
-    def __init__(self, bot: commands.Bot, metadata_service: MetadataService, media_service: MediaService):
+    def __init__(self, guild: nextcord.Guild, bot: commands.Bot, metadata_service: MetadataService, media_service: MediaService):
+        self.__guild = guild
         self.__bot = bot
         self.__metadata_service = metadata_service
         self.__media_service = media_service
@@ -21,57 +22,51 @@ class PlayerService:
         self.__previous_tracks = []
         self.__current_track = None
         self.__next_tracks = []
-        self.__voice_channel = None
-        self.__voice_client = None
         self.__audio_source = None
 
     @staticmethod
-    def __check_member_in_voice_channel(voice: nextcord.VoiceState):
-        if voice is None or voice.channel is None:
+    def __check_member_in_voice_channel(member: nextcord.Member):
+        if member.voice is None or member.voice.channel is None:
             raise TonearmException("You must join a voice channel first")
 
-    def __check_same_voice_channel(self, voice: nextcord.VoiceState):
-        if self.__voice_channel != voice.channel.id:
+    def __check_same_voice_channel(self, member: nextcord.Member):
+        if self.__guild.voice_client is None or member.voice.channel != self.__guild.voice_client.channel:
             raise TonearmException("I'm not in your voice channel")
 
     def __check_active_audio_source(self):
-        if self.__audio_source is None:
+        if self.__guild.voice_client is None or not self.__guild.voice_client.is_playing():
             raise TonearmException("I'm not currently playing any track")
 
     def __check_not_in_voice_channel(self):
-        if self.__voice_channel is not None:
+        if self.__guild.voice_client is not None and self.__guild.voice_client.is_connected():
             raise TonearmException("I've already joined a voice channel")
 
-    async def join(self, voice: nextcord.VoiceState):
+    async def join(self, member: nextcord.Member):
         with self.__lock:
-            self.__check_member_in_voice_channel(voice)
-            await self.__join(voice)
+            self.__check_member_in_voice_channel(member)
+            await self.__join(member.voice.channel)
 
-    async def __join(self, voice: nextcord.VoiceState):
+    async def __join(self, channel: nextcord.VoiceChannel):
         self.__check_not_in_voice_channel()
-        self.__voice_client = await voice.channel.connect()
-        await voice.channel.guild.change_voice_state(
-            channel=voice.channel,
+        await channel.connect()
+        await channel.guild.change_voice_state(
+            channel=channel,
             self_deaf=True
         )
-        self.__voice_channel = voice.channel.id
 
-    async def leave(self, voice: nextcord.VoiceState):
+    async def leave(self, member: nextcord.Member):
         with self.__lock:
-            self.__check_member_in_voice_channel(voice)
-            self.__check_same_voice_channel(voice)
-            if self.__audio_source is not None:
-                await self.__stop()
-            await self.__voice_client.disconnect()
-            self.__voice_channel = None
-            self.__voice_client = None
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            await self.__stop()
+            await self.__guild.voice_client.disconnect()
 
-    async def play(self, voice: nextcord.VoiceState, query: str) -> List[TrackMetadata]:
+    async def play(self, member: nextcord.Member, query: str) -> List[TrackMetadata]:
         with self.__lock:
-            self.__check_member_in_voice_channel(voice)
-            if self.__voice_channel is None:
-                await self.__join(voice)
-            self.__check_same_voice_channel(voice)
+            self.__check_member_in_voice_channel(member)
+            if self.__guild.voice_client is None or not self.__guild.voice_client.is_connected():
+                await self.__join(member.voice.channel)
+            self.__check_same_voice_channel(member)
             tracks = await self.__metadata_service.fetch(query)
             if len(tracks) == 0:
                 raise TonearmException("No playable track were found")
@@ -80,15 +75,15 @@ class PlayerService:
                 await self.__start_next_track()
             return tracks
 
-    async def stop(self, voice: nextcord.VoiceState):
+    async def stop(self, member: nextcord.Member):
         with self.__lock:
-            self.__check_member_in_voice_channel(voice)
-            self.__check_same_voice_channel(voice)
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
             self.__check_active_audio_source()
             await self.__stop()
 
     async def __stop(self):
-        self.__voice_client.stop()
+        self.__guild.voice_client.stop()
         self.__end_current_track()
         self.__previous_tracks.clear()
         self.__next_tracks.clear()
@@ -97,7 +92,7 @@ class PlayerService:
         self.__current_track = self.__next_tracks.pop(0)
         stream_url = await self.__media_service.fetch(self.__current_track.url)
         self.__audio_source = ControllableFFmpegPCMAudio(stream_url)
-        self.__voice_client.play(
+        self.__guild.voice_client.play(
             self.__audio_source,
             after=self.__on_audio_source_ended
         )
@@ -112,9 +107,9 @@ class PlayerService:
         self.__previous_tracks.append(self.__current_track)
         self.__current_track = None
 
-    async def next(self, voice: nextcord.VoiceState):
+    async def next(self, member: nextcord.Member):
         with self.__lock:
-            self.__check_member_in_voice_channel(voice)
-            self.__check_same_voice_channel(voice)
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
             self.__check_active_audio_source()
-            self.__voice_client.stop()
+            self.__guild.voice_client.stop()

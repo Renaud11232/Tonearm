@@ -17,7 +17,7 @@ class StopCommand(commands.Cog):
         await interaction.response.defer()
         player = self.__player_manager.get_player(interaction.guild)
         try:
-            await player.stop(interaction.user.voice)
+            await player.stop(interaction.user)
             await interaction.followup.send(f":vertical_traffic_light: Stopped playback")
         except TonearmException as e:
             await interaction.followup.send(f":x: {str(e)}")

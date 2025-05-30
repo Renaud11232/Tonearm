@@ -18,5 +18,5 @@ class PlayerManager:
     def get_player(self, guild: nextcord.Guild) -> PlayerService:
         with self.__lock:
             if not guild.id in self.__players:
-                self.__players[guild.id] = PlayerService(self.__bot, self.__metadata_service, self.__media_service)
+                self.__players[guild.id] = PlayerService(guild, self.__bot, self.__metadata_service, self.__media_service)
             return self.__players[guild.id]

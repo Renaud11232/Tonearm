@@ -26,7 +26,7 @@ class NextCommand(commands.Cog):
         await interaction.response.defer()
         player = self.__player_manager.get_player(interaction.guild)
         try:
-            await player.next(interaction.user.voice)
+            await player.next(interaction.user)
             await interaction.followup.send(f":fast_forward: Skipping to the next track, I didn't like this one either")
         except TonearmException as e:
             await interaction.followup.send(f":x: {str(e)}")

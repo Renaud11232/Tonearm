@@ -18,20 +18,7 @@ class LeaveCommand(commands.Cog):
         await interaction.response.defer()
         player = self.__player_manager.get_player(interaction.guild)
         try:
-            await player.leave(interaction.user.voice)
+            await player.leave(interaction.user)
             await interaction.followup.send(f":wave: Goodbye !")
         except TonearmException as e:
             await interaction.followup.send(f":x: {str(e)}")
-
-    @commands.Cog.listener()
-    async def on_voice_state_update(self, member: nextcord.Member, before: nextcord.VoiceState, after: nextcord.VoiceState):
-        if before.channel is not None and before.channel != after.channel:
-            same_voice_channel = False
-            alone = True
-            for member in before.channel.members:
-                if member.id == self.__bot.user.id:
-                    same_voice_channel = True
-                else:
-                    alone = False
-            if same_voice_channel and alone:
-                await self.__player_manager.get_player(member.guild).leave(before)

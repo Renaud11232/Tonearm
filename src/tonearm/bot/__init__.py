@@ -30,6 +30,7 @@ class Tonearm:
 
     def __init_commands(self):
         self.__bot.add_cog(ReadyListener(self.__bot))
+        self.__bot.add_cog(VoiceStateChangeListener(self.__bot, self.__player_manager))
         self.__bot.add_cog(CleanCommand(self.__bot))
         self.__bot.add_cog(Clear())
         self.__bot.add_cog(Dj())

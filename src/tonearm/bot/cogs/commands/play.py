@@ -17,7 +17,7 @@ class PlayCommand(commands.Cog):
         await interaction.response.defer()
         player = self.__player_manager.get_player(interaction.guild)
         try:
-            tracks = await player.play(interaction.user.voice, query)
+            tracks = await player.play(interaction.user, query)
             if len(tracks) == 1:
                 await interaction.followup.send(f":cd: Added **{tracks[0].title}** to the queue.")
             else:
