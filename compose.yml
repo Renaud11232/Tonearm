@@ -42,10 +42,10 @@ services:
     depends_on:
       yt-session-generator:
         condition: service_healthy
-      warp:
-        condition: service_started
+      # warp:
+      #   condition: service_started
   tonearm:
-    image: ghcr.io/renaud11232/tonearm
+    image: renaud11232/tonearm
     restart: unless-stopped
     environment:
       DISCORD_TOKEN: "your discord token"

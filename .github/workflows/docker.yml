@@ -1,0 +1,49 @@
+name: Docker
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  version:
+    name: Extract version from git tag
+    runs-on: ubuntu-latest
+    steps:
+      - id: version
+        run: echo "version=$(echo $GITHUB_REF | sed 's/refs\/tags\///')" | tee -a $GITHUB_OUTPUT
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+  build:
+    name: Build container images
+    runs-on: ubuntu-latest
+    needs: version
+    permissions:
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/metadata-action@v5
+        id: metadata
+        with:
+          images: |
+            ghcr.io/Renaud11232/tonearm
+          tags: |
+            type=semver,pattern={{version}},value=v${{ needs.version.outputs.version }}
+            type=semver,pattern={{major}}.{{minor}},value=v${{ needs.version.outputs.version }}
+            type=semver,pattern={{major}},value=v${{ needs.version.outputs.version }}
+          labels: |
+            org.opencontainers.image.title=tonearm
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
