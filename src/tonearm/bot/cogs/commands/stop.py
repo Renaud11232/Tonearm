@@ -4,7 +4,7 @@ from nextcord.ext import commands
 from tonearm.bot.managers import PlayerManager
 from tonearm.exceptions import TonearmException
 
-class Stop(commands.Cog):
+class StopCommand(commands.Cog):
 
     def __init__(self, player_manager: PlayerManager):
         super().__init__()

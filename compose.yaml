@@ -31,28 +31,27 @@ services:
     restart: unless-stopped
     environment:
       API_URL: "http://cobalt:9000/"
-      # if you want to use cookies for fetching data from services,
-      # uncomment the next line and volumes section
-      # COOKIE_PATH: "/cookies.json"
-      # if the IP of your server is banned by some services, you can enable warp and uncomment this
-      # API_EXTERNAL_PROXY: "http://warp:1080"
+      #COOKIE_PATH: "/cookies.json"
+      #API_EXTERNAL_PROXY: "http://warp:1080"
+      #API_KEY_URL: "file:///keys.json"
+      #API_AUTH_REQUIRED: 1
       YOUTUBE_SESSION_SERVER: "http://yt-session-generator:8080"
-    # volumes:
-    #   - ./cobalt/cookies.json:/cookies.json:ro
+    #volumes:
+    #  - ./cobalt/cookies.json:/cookies.json:ro
+    #  - ./cobalt/keys.json:/keys.json:ro
     depends_on:
       yt-session-generator:
         condition: service_healthy
-      # warp:
-      #   condition: service_started
+      #warp:
+      #  condition: service_started
   tonearm:
-    image: renaud11232/tonearm
+    image: ghcr.io/renaud11232/tonearm
     restart: unless-stopped
     environment:
       DISCORD_TOKEN: "your discord token"
       LOG_LEVEL: "INFO"
       YOUTUBE_API_KEY: "your youtube api key"
       COBALT_API_URL: "http://cobalt:9000"
-      # if you enabled authentication on cobalt
       # COBALT_API_KEY: "your cobalt api key"
     depends_on:
       cobalt:

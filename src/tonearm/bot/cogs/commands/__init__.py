@@ -19,6 +19,6 @@ from .rewind import Rewind
 from .seek import Seek
 from .setting import Setting
 from .shuffle import Shuffle
-from .stop import Stop
+from .stop import StopCommand
 from .version import VersionCommand
 from .voteskip import Voteskip
