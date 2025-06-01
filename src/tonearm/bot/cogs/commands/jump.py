@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Jump(commands.Cog):
+class JumpCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Jumps to a specific track in the queue"

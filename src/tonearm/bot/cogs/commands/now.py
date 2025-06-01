@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Now(commands.Cog):
+class NowCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Shows the current playing track"

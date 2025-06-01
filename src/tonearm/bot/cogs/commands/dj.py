@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Dj(commands.Cog):
+class DjCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Adds or removes a role to the DJ roles"

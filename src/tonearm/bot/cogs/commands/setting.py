@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Setting(commands.Cog):
+class SettingCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Gets or sets setting values"

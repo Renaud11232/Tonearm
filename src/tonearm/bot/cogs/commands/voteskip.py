@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Voteskip(commands.Cog):
+class VoteskipCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Votes to skip the current track"

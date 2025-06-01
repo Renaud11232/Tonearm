@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Pause(commands.Cog):
+class PauseCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Pauses the currently playing track"

@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Loop(commands.Cog):
+class LoopCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Sets the loop mode of the current playback queue"

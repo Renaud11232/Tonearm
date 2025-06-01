@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Shuffle(commands.Cog):
+class ShuffleCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Shuffles tracks in the queue"

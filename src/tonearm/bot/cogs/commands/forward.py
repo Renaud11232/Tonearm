@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Forward(commands.Cog):
+class ForwardCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Forwards a specific amount of time into the track"

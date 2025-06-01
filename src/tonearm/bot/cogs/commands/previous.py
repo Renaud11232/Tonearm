@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Previous(commands.Cog):
+class PreviousCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Play the previous track from the queue"

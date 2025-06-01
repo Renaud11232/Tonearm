@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Resume(commands.Cog):
+class ResumeCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Resumes the currently paused track"

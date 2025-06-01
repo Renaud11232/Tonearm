@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Seek(commands.Cog):
+class SeekCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Seeks to a specific time in the track"

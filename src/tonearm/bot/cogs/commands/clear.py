@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Clear(commands.Cog):
+class ClearCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Clears all songs in the queue"

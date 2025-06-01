@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Rewind(commands.Cog):
+class RewindCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Rewinds a specific amount of time into the track"

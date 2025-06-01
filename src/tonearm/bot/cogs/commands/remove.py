@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Remove(commands.Cog):
+class RemoveCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="Removes a track from the queue"

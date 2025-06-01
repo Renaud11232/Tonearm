@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-class Queue(commands.Cog):
+class QueueCommand(commands.Cog):
 
     @nextcord.slash_command(
         description="show the current queue"
