@@ -55,6 +55,7 @@ class Tonearm:
         self.__bot.add_cog(Seek())
         self.__bot.add_cog(Setting())
         self.__bot.add_cog(Shuffle())
+        self.__bot.add_cog(ShutdownCommand(self.__bot))
         self.__bot.add_cog(StopCommand(self.__player_manager))
         self.__bot.add_cog(VersionCommand())
         self.__bot.add_cog(Voteskip())
