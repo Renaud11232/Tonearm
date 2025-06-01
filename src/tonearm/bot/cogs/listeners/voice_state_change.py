@@ -11,20 +11,14 @@ class VoiceStateChangeListener(commands.Cog):
         self.__bot = bot
         self.__player_manager = player_manager
 
-    # @commands.Cog.listener()
-    # async def on_voice_state_update(self, member: nextcord.Member, before: nextcord.VoiceState, after: nextcord.VoiceState):
-    #     guild = member.guild
-    #     if guild.voice_client is None or guild.voice_client.channel or before.channel is None:
-    #         print(guild.voice_client)
-    #         print(guild.voice_client.channel)
-    #         print(before.channel)
-    #         return
-    #     player = self.__player_manager.get_player(guild)
-    #     if after.channel is None or before.channel != after.channel:
-    #         if member == self.__bot.user:
-    #             await player.stop()
-    #         else:
-    #             voice_channel = self.__bot.get_channel(guild.voice_client.channel.id)
-    #             humans = [m for m in voice_channel.members if not m.bot]
-    #             if len(humans) == 0:
-    #                 await player.leave()
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member: nextcord.Member, before: nextcord.VoiceState, after: nextcord.VoiceState):
+        player = self.__player_manager.get_player(member.guild)
+        if before.channel is not None:
+            if member.id == self.__bot.user.id:
+                if after.channel is not None and before.channel != after.channel:
+                    await player.on_bot_moved()
+                elif after.channel is None:
+                    await player.on_bot_disconnected()
+            elif before.channel != after.channel:
+                await player.on_user_moved(before.channel)
