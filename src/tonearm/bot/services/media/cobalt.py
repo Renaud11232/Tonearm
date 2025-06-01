@@ -1,4 +1,4 @@
-from tonearm.cobalt import CobaltClient
+from tonearm.cobalt import CobaltClient, CobaltException
 from tonearm.exceptions import TonearmException
 from .base import MediaServiceBase
 
@@ -10,11 +10,11 @@ class CobaltMediaService(MediaServiceBase):
         self.__cobalt = CobaltClient(cobalt_api_url, cobalt_api_key)
 
     async def fetch(self, url: str) -> str:
-        response = self.__cobalt.process(
-            url,
-            audio_format="wav",
-            download_mode="audio"
-        )
-        if response["status"] == "error":
-            raise TonearmException(f"Unable to fetch media, API returned `{response["error"]["code"]}`")
-        return response["url"]
+        try:
+            return self.__cobalt.process(
+                url,
+                audio_format="wav",
+                download_mode="audio"
+            )["url"]
+        except CobaltException as e:
+            raise TonearmException(f"Unable to fetch media, Cobalt API returned `{str(e)}`")

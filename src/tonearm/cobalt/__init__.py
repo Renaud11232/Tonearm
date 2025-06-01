@@ -2,6 +2,8 @@ from typing import Any
 
 import requests
 
+from .error import CobaltException
+
 
 class CobaltClient:
 
@@ -58,8 +60,11 @@ class CobaltClient:
             data["youtubeBetterAudio"] = youtube_better_audio
         if youtube_hls is not None:
             data["youtubeHLS"] = youtube_hls
-        return requests.post(
+        response =  requests.post(
             self.__base_url,
             json=data,
             headers=headers
         ).json()
+        if response["status"] == "error":
+            raise CobaltException(response["error"]["code"])
+        return response

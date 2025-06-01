@@ -1,0 +1,2 @@
+class CobaltException(Exception):
+    pass
