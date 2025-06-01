@@ -4,6 +4,7 @@ import sys
 from tonearm.bot.cogs import *
 from tonearm.bot.managers import PlayerManager
 
+import nextcord
 from nextcord.ext import commands
 
 from tonearm.bot.services.media import MediaService
@@ -17,7 +18,9 @@ class Tonearm:
         self.__log_level = log_level
         self.__init_logger("nextcord")
         self.__init_logger("tonearm")
-        self.__bot = commands.Bot()
+        intents = nextcord.Intents.default()
+        intents.voice_states = True
+        self.__bot = commands.Bot(intents=intents)
         self.__player_manager = PlayerManager(self.__bot, MetadataService(youtube_api_key), MediaService(cobalt_api_url, cobalt_api_key))
         self.__init_commands()
 
