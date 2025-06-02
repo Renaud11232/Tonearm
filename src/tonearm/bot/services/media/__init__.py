@@ -24,4 +24,5 @@ class MediaService(MediaServiceBase):
         for entry in self.__media_services:
             if re.search(entry.pattern, url):
                 return await entry.service.fetch(url)
+        self._logger.debug(f"No media service matched {url}")
         raise TonearmException(f"Unable to fetch media from URL {url}, unsupported service")

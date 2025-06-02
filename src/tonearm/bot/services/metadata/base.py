@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
+import logging
 
 import googleapiclient.discovery
 
@@ -8,6 +9,9 @@ from tonearm.exceptions import TonearmException
 
 
 class MetadataServiceBase(ABC):
+
+    def __init__(self):
+        self._logger = logging.getLogger("tonearm.metadata")
 
     @abstractmethod
     async def fetch(self, query: str) -> List[TrackMetadata]:
@@ -28,6 +32,7 @@ class YoutubeMetadataService(MetadataServiceBase, ABC):
 
     async def fetch(self, query: str) -> List[TrackMetadata]:
         if self._youtube is None:
+            self._logger.warning("Unable to use YouTube API, no API key have been set")
             raise TonearmException("No YouTube API key provided")
         return await self._fetch(query)
 

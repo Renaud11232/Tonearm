@@ -12,8 +12,8 @@ from tonearm.bot.services import MetadataService, MediaService
 
 class Tonearm:
 
-    def __init__(self, token: str, log_level: str, youtube_api_key: str | None, cobalt_api_url: str, cobalt_api_key: str | None):
-        self.__token = token
+    def __init__(self, discord_token: str, log_level: str, youtube_api_key: str | None, cobalt_api_url: str, cobalt_api_key: str | None):
+        self.__discord_token = discord_token
         self.__log_level = log_level
         self.__init_logger("nextcord")
         self.__init_logger("tonearm")
@@ -43,9 +43,10 @@ class Tonearm:
 
     def __init_cogs(self):
         self.__bot.add_cog(ReadyListener(self.__service_manager))
-        self.__bot.add_cog(VoiceStateChangeListener(self.__bot, self.__service_manager))
+        self.__bot.add_cog(VoiceStateChangeListener(self.__service_manager))
         self.__bot.add_cog(CleanCommand(self.__service_manager))
         self.__bot.add_cog(ClearCommand())
+        self.__bot.add_cog(DebugCommand(self.__service_manager))
         self.__bot.add_cog(DjCommand())
         self.__bot.add_cog(ForwardCommand())
         self.__bot.add_cog(JoinCommand(self.__service_manager))
@@ -71,4 +72,4 @@ class Tonearm:
         self.__bot.add_cog(VoteskipCommand())
 
     def run(self):
-        self.__bot.run(self.__token)
+        self.__bot.run(self.__discord_token)

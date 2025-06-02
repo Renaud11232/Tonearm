@@ -14,6 +14,7 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
         super().__init__(api_key)
 
     async def _fetch(self, query: str) -> List[TrackMetadata]:
+        self._logger.debug(f"Fetching metadata via YouTube API : {query}")
         if self.__is_playlist(query):
             return await self.__fetch_playlist(query)
         else:
@@ -38,6 +39,7 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
 
     async def __fetch_video(self, url: str) -> List[TrackMetadata]:
         id = self.__get_video_id(url)
+        self._logger.debug(f"Fetching metadata via YouTube Videos API for video id : {id}")
         response = self._youtube.videos().list(
             part="snippet",
             id=id,
@@ -54,6 +56,7 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
 
     async def __fetch_playlist(self, url: str) -> List[TrackMetadata]:
         id = self.__get_playlist_id(url)
+        self._logger.debug(f"Fetching metadata via YouTube Playlist Items API for playlist id : {id}")
         response = self._youtube.playlistItems().list(
             part="snippet",
             playlistId=id,

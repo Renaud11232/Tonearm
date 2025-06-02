@@ -54,7 +54,7 @@ def main():
     )
     args = parser.parse_args()
     tonearm = Tonearm(
-        token=args.discord_token,
+        discord_token=args.discord_token,
         log_level=args.log_level,
         youtube_api_key=args.youtube_api_key,
         cobalt_api_url=args.cobalt_api_url,

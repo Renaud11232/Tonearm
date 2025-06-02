@@ -12,6 +12,7 @@ class YoutubeSearchMetadataService(YoutubeMetadataService):
         super().__init__(api_key)
 
     async def _fetch(self, query: str) -> List[TrackMetadata]:
+        self._logger.debug(f"Fetching metadata via YouTube Search API : {query}")
         response = self._youtube.search().list(
             part="snippet",
             q=query,

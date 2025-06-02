@@ -7,9 +7,8 @@ from tonearm.bot.managers import ServiceManager
 
 class VoiceStateChangeListener(commands.Cog):
 
-    def __init__(self, bot: commands.Bot, service_manager: ServiceManager):
+    def __init__(self, service_manager: ServiceManager):
         super().__init__()
-        self.__bot = bot
         self.__service_manager = service_manager
         self.__logger = logging.getLogger("tonearm.listeners")
 

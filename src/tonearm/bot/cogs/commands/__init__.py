@@ -1,5 +1,6 @@
 from .clean import CleanCommand
 from .clear import ClearCommand
+from .debug import DebugCommand
 from .dj import DjCommand
 from .forward import ForwardCommand
 from .join import JoinCommand

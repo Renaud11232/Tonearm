@@ -16,9 +16,10 @@ class ChatService:
     async def clean(self):
         async with self.__lock:
             messages = []
+            self.__logger.debug(f"Browsing messages in channel {self.__channel.id}")
             async for message in self.__channel.history():
                 if message.author == self.__bot.user:
-                    self.__logger.debug(f"Deleting message {message.id} from channel {message.channel.id}")
+                    self.__logger.debug(f"Deleting message {message.id} from channel {self.__channel.id}")
                     messages.append(message)
                     await message.delete()
             return messages
