@@ -1,31 +1,19 @@
 import logging
 
-import nextcord
 from nextcord.ext import commands
+
+from tonearm.bot.managers import ServiceManager
+
 
 class ReadyListener(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, service_manager: ServiceManager):
         super().__init__()
-        self.__bot = bot
+        self.__service_manager = service_manager
         self.__logger = logging.getLogger("tonearm.listeners")
 
     @commands.Cog.listener()
     async def on_ready(self):
-        #TODO: Update bot presence
-        scopes = [
-            "bot",
-            "applications.commands"
-        ]
-        permissions = nextcord.Permissions.none()
-        permissions.update(
-            connect=True,
-            speak=True,
-            use_voice_activation=True
-        )
-        invite_url = nextcord.utils.oauth_url(
-            self.__bot.user.id,
-            scopes=scopes,
-            permissions=permissions
-        )
-        self.__logger.info(f"Tonearm is ready ! You can invite the bot with {invite_url}")
+        self.__logger.debug("Handling ready event")
+        await self.__service_manager.get_bot().on_ready()
+        self.__logger.debug("Successfully handled ready event")

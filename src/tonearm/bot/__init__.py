@@ -19,7 +19,14 @@ class Tonearm:
         self.__init_logger("tonearm")
         intents = nextcord.Intents.default()
         intents.voice_states = True
-        self.__bot = commands.Bot(intents=intents)
+        activity = nextcord.Activity(
+            type=nextcord.ActivityType.listening,
+            name="/play"
+        )
+        self.__bot = commands.Bot(
+            intents=intents,
+            activity=activity
+        )
         self.__service_manager = ServiceManager(
             PlayerManager(self.__bot, MetadataService(youtube_api_key), MediaService(cobalt_api_url, cobalt_api_key)),
             BotManager(self.__bot),
@@ -35,7 +42,7 @@ class Tonearm:
         logger.addHandler(handler)
 
     def __init_cogs(self):
-        self.__bot.add_cog(ReadyListener(self.__bot))
+        self.__bot.add_cog(ReadyListener(self.__service_manager))
         self.__bot.add_cog(VoiceStateChangeListener(self.__bot, self.__service_manager))
         self.__bot.add_cog(CleanCommand(self.__service_manager))
         self.__bot.add_cog(ClearCommand())

@@ -21,7 +21,7 @@ class PlayerService:
         self.__bot = bot
         self.__metadata_service = metadata_service
         self.__media_service = media_service
-        self.__logger = logging.getLogger("tonearm.services")
+        self.__logger = logging.getLogger("tonearm.player")
         self.__lock = asyncio.Lock()
         self.__previous_tracks = []
         self.__current_track = None
@@ -153,21 +153,31 @@ class PlayerService:
         if self.__voice_client is not None:
             await self.__voice_client.disconnect()
 
+    async def on_voice_state_update(self, member: nextcord.Member, before: nextcord.VoiceState, after: nextcord.VoiceState):
+        if before.channel != after.channel:
+            if before.channel is not None:
+                if member.id != self.__bot.user.id:
+                    await self.__on_user_moved(before.channel)
+                elif after.channel is None:
+                    await self.__on_bot_disconnected()
+                else:
+                    await self.__on_bot_moved()
+
     def __is_alone(self, channel: nextcord.VoiceChannel) -> bool:
         others = [m for m in channel.members if m.id != self.__bot.user.id]
         return len(others) == 0
 
-    async def on_bot_disconnected(self):
+    async def __on_bot_disconnected(self):
         await self.__safe_stop()
         self.__last_leave = time.time()
 
-    async def on_bot_moved(self):
+    async def __on_bot_moved(self):
         async with self.__lock:
             while not self.__is_connected():
                 await asyncio.sleep(0.1)
             await self.__safe_leave()
 
-    async def on_user_moved(self, from_channel: nextcord.VoiceChannel):
+    async def __on_user_moved(self, from_channel: nextcord.VoiceChannel):
         async with self.__lock:
             if self.__is_connected() and self.__voice_client.channel == from_channel and self.__is_alone(from_channel):
                 await self.__safe_leave()

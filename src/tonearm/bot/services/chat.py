@@ -11,7 +11,7 @@ class ChatService:
         self.__channel = channel
         self.__bot = bot
         self.__lock = asyncio.Lock()
-        self.__logger = logging.getLogger("tonearm.services")
+        self.__logger = logging.getLogger("tonearm.chat")
 
     async def clean(self):
         async with self.__lock:

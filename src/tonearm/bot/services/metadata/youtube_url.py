@@ -14,11 +14,19 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
         super().__init__(api_key)
 
     async def _fetch(self, query: str) -> List[TrackMetadata]:
-        parsed_url = urlparse(query)
-        if "list" not in parse_qs(parsed_url.query) or len(parse_qs(parsed_url.query)["list"]) == 0:
-            return await self.__fetch_video(self.__get_video_id(query))
+        if self.__is_playlist(query):
+            return await self.__fetch_playlist(query)
         else:
-            return await self.__fetch_playlist(parse_qs(parsed_url.query)["list"][0])
+            return await self.__fetch_video(query)
+
+    @staticmethod
+    def __is_playlist(url: str) -> bool:
+        parsed_qs = parse_qs(urlparse(url).query)
+        return "list" in parsed_qs and len(parsed_qs["list"]) > 0
+
+    @staticmethod
+    def __get_playlist_id(url: str):
+        return parse_qs(urlparse(url).query)["list"][0]
 
     @staticmethod
     def __get_video_id(url: str):
@@ -28,28 +36,30 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
             raise TonearmException("Unable to extract the video ID from the URL")
         return results.group(1)
 
-    async def __fetch_video(self, video: str) -> List[TrackMetadata]:
+    async def __fetch_video(self, url: str) -> List[TrackMetadata]:
+        id = self.__get_video_id(url)
         response = self._youtube.videos().list(
             part="snippet",
-            id=video,
+            id=id,
             maxResults=1
         ).execute()
-        if "items" not in response and len(response["items"]) == 0:
+        if "items" not in response or len(response["items"]) == 0:
             raise TonearmException("The requested track was not found on YouTube")
         return [
             TrackMetadata(
-                url=f"https://www.youtube.com/watch?v={video}",
+                url=url,
                 title=html.unescape(response["items"][0]["snippet"]["title"])
             )
         ]
 
-    async def __fetch_playlist(self, playlist: str) -> List[TrackMetadata]:
+    async def __fetch_playlist(self, url: str) -> List[TrackMetadata]:
+        id = self.__get_playlist_id(url)
         response = self._youtube.playlistItems().list(
             part="snippet",
-            playlistId=playlist,
+            playlistId=id,
             maxResults=50
         ).execute()
-        if "items" not in response and len(response["items"]) == 0:
+        if "items" not in response or len(response["items"]) == 0:
             raise TonearmException("The requested playlist was not found on YouTube")
         return [
             TrackMetadata(

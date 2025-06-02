@@ -12,7 +12,12 @@ class MediaService(MediaServiceBase):
     def __init__(self, cobalt_api_url: str, cobalt_api_key: str | None):
         super().__init__()
         self.__media_services = [
-            MediaServiceEntry(r"^(?:https://)www\.youtube\.com(?:/.*)?$", CobaltMediaService(cobalt_api_url, cobalt_api_key))
+            MediaServiceEntry(r"^(?:https://)youtube\.com(?:/.*)?$", CobaltMediaService(cobalt_api_url, cobalt_api_key)),
+            MediaServiceEntry(r"^(?:https://)www\.youtube\.com(?:/.*)?$", CobaltMediaService(cobalt_api_url, cobalt_api_key)),
+            MediaServiceEntry(r"^(?:https://)m\.youtube\.com(?:/.*)?$", CobaltMediaService(cobalt_api_url, cobalt_api_key)),
+            MediaServiceEntry(r"^(?:https://)music\.youtube\.com(?:/.*)?$", CobaltMediaService(cobalt_api_url, cobalt_api_key)),
+            MediaServiceEntry(r"^(?:https://)www\.music\.youtube\.com(?:/.*)?$", CobaltMediaService(cobalt_api_url, cobalt_api_key)),
+            MediaServiceEntry(r"^(?:https://)youtu\.be(?:/.*)?$", CobaltMediaService(cobalt_api_url, cobalt_api_key)),
         ]
 
     async def fetch(self, url: str) -> str:
