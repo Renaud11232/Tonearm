@@ -212,7 +212,7 @@ class PlayerService:
         if before.channel != after.channel:
             if before.channel is not None:
                 if member.id != self.__bot.user.id:
-                    self.__logger.debug(f"Detected that a used moved from (or left) a voice channel in guild {self.__guild.id}")
+                    self.__logger.debug(f"Detected that a user moved from (or left) a voice channel in guild {self.__guild.id}")
                     await self.__on_user_moved(before.channel)
                 elif after.channel is None:
                     self.__logger.warning(f"Detected that the bot was kicked from its voice channel in guild {self.__guild.id}, this might cause issues")
