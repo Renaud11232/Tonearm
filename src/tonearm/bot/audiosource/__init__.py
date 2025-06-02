@@ -36,7 +36,7 @@ class SeekableFFmpegPCMAudio(nextcord.FFmpegPCMAudio):
     @elapsed.setter
     def elapsed(self, elapsed: int):
         with self.__lock:
-            self.__next_chunk = int(elapsed / 20)
+            self.__next_chunk = elapsed // 20
 
 class ControllableFFmpegPCMAudio(nextcord.PCMVolumeTransformer):
 

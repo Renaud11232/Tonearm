@@ -2,13 +2,12 @@ import logging
 import sys
 
 from tonearm.bot.cogs import *
-from tonearm.bot.managers import PlayerManager
 
 import nextcord
 from nextcord.ext import commands
 
-from tonearm.bot.services.media import MediaService
-from tonearm.bot.services.metadata import MetadataService
+from tonearm.bot.managers import ServiceManager, PlayerManager, BotManager, ChatManager
+from tonearm.bot.services import MetadataService, MediaService
 
 
 class Tonearm:
@@ -21,8 +20,12 @@ class Tonearm:
         intents = nextcord.Intents.default()
         intents.voice_states = True
         self.__bot = commands.Bot(intents=intents)
-        self.__player_manager = PlayerManager(self.__bot, MetadataService(youtube_api_key), MediaService(cobalt_api_url, cobalt_api_key))
-        self.__init_commands()
+        self.__service_manager = ServiceManager(
+            PlayerManager(self.__bot, MetadataService(youtube_api_key), MediaService(cobalt_api_url, cobalt_api_key)),
+            BotManager(self.__bot),
+            ChatManager(self.__bot)
+        )
+        self.__init_cogs()
 
     def __init_logger(self, name: str):
         logger = logging.getLogger(name)
@@ -31,22 +34,22 @@ class Tonearm:
         handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
         logger.addHandler(handler)
 
-    def __init_commands(self):
+    def __init_cogs(self):
         self.__bot.add_cog(ReadyListener(self.__bot))
-        self.__bot.add_cog(VoiceStateChangeListener(self.__bot, self.__player_manager))
-        self.__bot.add_cog(CleanCommand(self.__bot))
+        self.__bot.add_cog(VoiceStateChangeListener(self.__bot, self.__service_manager))
+        self.__bot.add_cog(CleanCommand(self.__service_manager))
         self.__bot.add_cog(ClearCommand())
         self.__bot.add_cog(DjCommand())
         self.__bot.add_cog(ForwardCommand())
-        self.__bot.add_cog(JoinCommand(self.__player_manager))
+        self.__bot.add_cog(JoinCommand(self.__service_manager))
         self.__bot.add_cog(JumpCommand())
-        self.__bot.add_cog(LeaveCommand(self.__bot, self.__player_manager))
+        self.__bot.add_cog(LeaveCommand(self.__service_manager))
         self.__bot.add_cog(LoopCommand())
         self.__bot.add_cog(MoveCommand())
-        self.__bot.add_cog(NextCommand(self.__player_manager))
+        self.__bot.add_cog(NextCommand(self.__service_manager))
         self.__bot.add_cog(NowCommand())
         self.__bot.add_cog(PauseCommand())
-        self.__bot.add_cog(PlayCommand(self.__player_manager))
+        self.__bot.add_cog(PlayCommand(self.__service_manager))
         self.__bot.add_cog(PreviousCommand())
         self.__bot.add_cog(QueueCommand())
         self.__bot.add_cog(RemoveCommand())
@@ -55,8 +58,8 @@ class Tonearm:
         self.__bot.add_cog(SeekCommand())
         self.__bot.add_cog(SettingCommand())
         self.__bot.add_cog(ShuffleCommand())
-        self.__bot.add_cog(ShutdownCommand(self.__bot))
-        self.__bot.add_cog(StopCommand(self.__player_manager))
+        self.__bot.add_cog(ShutdownCommand(self.__service_manager))
+        self.__bot.add_cog(StopCommand(self.__service_manager))
         self.__bot.add_cog(VersionCommand())
         self.__bot.add_cog(VoteskipCommand())
 

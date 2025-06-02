@@ -21,7 +21,7 @@ class PlayerService:
         self.__bot = bot
         self.__metadata_service = metadata_service
         self.__media_service = media_service
-        self.__logger = logging.getLogger("tonearm.player")
+        self.__logger = logging.getLogger("tonearm.services")
         self.__lock = asyncio.Lock()
         self.__previous_tracks = []
         self.__current_track = None

@@ -8,10 +8,11 @@ class ReadyListener(commands.Cog):
     def __init__(self, bot: commands.Bot):
         super().__init__()
         self.__bot = bot
-        self.__logger = logging.getLogger("tonearm.ready")
+        self.__logger = logging.getLogger("tonearm.listeners")
 
     @commands.Cog.listener()
     async def on_ready(self):
+        #TODO: Update bot presence
         scopes = [
             "bot",
             "applications.commands"
