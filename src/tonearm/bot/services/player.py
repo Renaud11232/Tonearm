@@ -90,11 +90,6 @@ class PlayerService:
             raise TonearmException(f"I can't join right now, please try again in {math.floor(self.__last_leave + 60 - time.time())} seconds")
         self.__logger.debug(f"The bot wasn't kicked recently, connecting to channel {channel.id} of guild {self.__guild.id}")
         await channel.connect()
-        self.__logger.debug(f"Changing voice state to appear deafened in channel {channel.id} of guild {self.__guild.id}")
-        await channel.guild.change_voice_state(
-            channel=channel,
-            self_deaf=True
-        )
         self.__graceful_leave = False
 
     async def play(self, member: nextcord.Member, query: str) -> List[TrackMetadata]:
