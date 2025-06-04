@@ -132,14 +132,18 @@ class PlayerService:
         if self.__current_track is not None:
             self.__stopped = False
             self.__logger.debug(f"Fetching media stream url from media_service in guild {self.__guild.id}")
-            stream_url = await self.__media_service.fetch(self.__current_track.url)
-            self.__logger.debug(f"Creating audio source from url {repr(stream_url)} in guild {self.__guild.id}")
-            self.__audio_source = ControllableFFmpegPCMAudio(stream_url)
-            self.__logger.debug(f"Starting track playback in guild {self.__guild.id}")
-            self.__voice_client.play(
-                self.__audio_source,
-                after=self.__on_audio_source_ended
-            )
+            try:
+                stream_url = await self.__media_service.fetch(self.__current_track.url)
+                self.__logger.debug(f"Creating audio source from url {repr(stream_url)} in guild {self.__guild.id}")
+                self.__audio_source = ControllableFFmpegPCMAudio(stream_url)
+                self.__logger.debug(f"Starting track playback in guild {self.__guild.id}")
+                self.__voice_client.play(
+                    self.__audio_source,
+                    after=self.__on_audio_source_ended
+                )
+            except TonearmException as e:
+                self.__current_track = None
+                raise e
         else:
             self.__logger.debug(f"No track currently selected in guild {self.__guild.id}, did not start playing")
 
