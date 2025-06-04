@@ -30,10 +30,13 @@ class SeekableFFmpegPCMAudio(nextcord.FFmpegPCMAudio):
         while self.__chunks[-1] != b"":
             self.__read_chunk()
 
+    def __is_finished_reading(self):
+        len_chunks = len(self.__chunks)
+        return len_chunks > 0 and self.__chunks[-1] == b""
+
     def read(self) -> bytes:
         with self.__condition:
-            chunks_len = len(self.__chunks)
-            while (chunks_len == 0 or self.__chunks[-1] != b"") and self.__next_chunk >= chunks_len:
+            while not self.__is_finished_reading() and self.__next_chunk >= len(self.__chunks):
                 self.__condition.wait()
             chunk = self.__chunks[self.__next_chunk]
             self.__next_chunk += 1
@@ -49,12 +52,11 @@ class SeekableFFmpegPCMAudio(nextcord.FFmpegPCMAudio):
             raise ValueError("Elapsed time cannot be negative")
         with self.__condition:
             next_chunk = elapsed // 20
-            chunks_len = len(self.__chunks)
-            if next_chunk >= chunks_len:
-                if chunks_len == 0 or self.__chunks[-1] != b"":
-                    raise ValueError("Elapsed time exceeds the loaded portion of the track, wait for it to be loaded")
-                else:
+            if next_chunk >= len(self.__chunks):
+                if self.__is_finished_reading():
                     raise ValueError("Elapsed time exceeds the total length of the track")
+                else:
+                    raise ValueError("Elapsed time exceeds the loaded portion of the track, wait for it to be loaded")
             self.__next_chunk = next_chunk
             self.__condition.notify()
 
