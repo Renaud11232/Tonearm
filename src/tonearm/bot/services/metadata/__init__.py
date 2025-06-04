@@ -3,7 +3,7 @@ from collections import namedtuple
 from typing import List
 
 from tonearm.bot.data import TrackMetadata
-from tonearm.exceptions import TonearmException
+from tonearm.bot.exceptions import TonearmException
 from .base import MetadataServiceBase
 from .direct_url import DirectUrlMetadataService
 from .youtube_search import YoutubeSearchMetadataService

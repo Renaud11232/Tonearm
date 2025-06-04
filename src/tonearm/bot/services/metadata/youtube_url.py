@@ -4,7 +4,7 @@ from typing import List
 import html
 
 from tonearm.bot.data import TrackMetadata
-from tonearm.exceptions import TonearmException
+from tonearm.bot.exceptions import TonearmException
 from .base import YoutubeMetadataService
 
 

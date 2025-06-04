@@ -5,7 +5,7 @@ import logging
 import googleapiclient.discovery
 
 from tonearm.bot.data import TrackMetadata
-from tonearm.exceptions import TonearmException
+from tonearm.bot.exceptions import TonearmException
 
 
 class MetadataServiceBase(ABC):

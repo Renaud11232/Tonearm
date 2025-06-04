@@ -11,7 +11,7 @@ from tonearm.bot.audiosource import ControllableFFmpegPCMAudio
 from tonearm.bot.services.metadata import MetadataService
 from tonearm.bot.services.media import MediaService
 from tonearm.bot.data import TrackMetadata
-from tonearm.exceptions import TonearmException
+from tonearm.bot.exceptions import TonearmException
 
 
 class PlayerService:

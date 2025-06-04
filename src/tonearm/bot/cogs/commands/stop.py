@@ -4,7 +4,7 @@ import nextcord
 from nextcord.ext import commands
 
 from tonearm.bot.managers import ServiceManager
-from tonearm.exceptions import TonearmException
+from tonearm.bot.exceptions import TonearmException
 
 class StopCommand(commands.Cog):
 
