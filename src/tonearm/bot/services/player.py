@@ -142,6 +142,7 @@ class PlayerService:
                     after=self.__on_audio_source_ended
                 )
             except TonearmException as e:
+                self.__logger.warning(f"Failed to start playing track {repr(self.__current_track)} in guild {self.__guild.id} : {repr(e)}")
                 self.__current_track = None
                 raise e
         else:
@@ -154,8 +155,13 @@ class PlayerService:
             self.__logger.warning(f"Audio source ended with error in guild {self.__guild.id} : {repr(error)}")
         self.__logger.debug(f"Ending current track and audio source in guild {self.__guild.id}")
         self.__audio_source = None
-        self.__safe_switch_to_next_track()
-        await self.__safe_start_playing()
+        while len(self.__next_tracks) > 0:
+            try:
+                self.__safe_switch_to_next_track()
+                await self.__safe_start_playing()
+                break
+            except TonearmException:
+                continue
 
     async def next(self, member: nextcord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to skip the current track in guild {self.__guild.id}")
