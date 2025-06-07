@@ -18,19 +18,20 @@ services:
     image: ghcr.io/imputnet/yt-session-generator:webserver
     init: true
     restart: unless-stopped
+    command: sh -c "./startup-webserver.sh 2>&1 | tee /tmp/server.log"
     healthcheck:
-      test: wget -O /dev/null -q http://127.0.0.1:8080/token || exit 1
-      start_period: 20s
-      interval: 30s
-      retries: 5
-      timeout: 5s
+      test: grep -Fq '[server] [INFO] Starting web-server at 0.0.0.0:8080' /tmp/server.log
+      start_period: 10s
+      interval: 2s
+      retries: 15
+      timeout: 3s
   cobalt:
     image: ghcr.io/imputnet/cobalt:11
     init: true
     read_only: true
     restart: unless-stopped
     environment:
-      API_URL: "http://cobalt:9000/"
+      API_URL: "http://cobalt:9000"
       #COOKIE_PATH: "/cookies.json"
       #API_EXTERNAL_PROXY: "http://warp:1080"
       #API_KEY_URL: "file:///keys.json"
