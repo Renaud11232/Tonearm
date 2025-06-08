@@ -190,9 +190,10 @@ class PlayerService:
     async def __safe_stop(self):
         self.__logger.debug(f"Got request to stop playing any track in guild {self.__guild.id}")
         self.__stopped = True
-        self.__logger.debug(f"Clearing queues and stopping current track in guild {self.__guild.id}")
-        self.__next_tracks.clear()
+        self.__safe_clear()
+        self.__logger.debug(f"Stopping current track in guild {self.__guild.id}")
         self.__safe_stop_current_track()
+        self.__logger.debug(f"Clearing previous tracks in guild {self.__guild.id}")
         self.__previous_tracks.clear()
 
     async def leave(self, member: nextcord.Member):
@@ -263,3 +264,13 @@ class PlayerService:
                 f"self.__is_connected() -> {repr(self.__is_connected())}\n"
                 f"self.__is_playing() -> {repr(self.__is_playing())}"
             )
+
+    async def clear(self, member: nextcord.Member):
+        self.__logger.debug(f"Member {member.id} asked the bot to clear the queue in guild {self.__guild.id}")
+        async with self.__lock:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+
+    def __safe_clear(self):
+        self.__logger.debug(f"Clearing queue in guild {self.__guild.id}")
+        self.__next_tracks.clear()

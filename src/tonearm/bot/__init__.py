@@ -45,7 +45,7 @@ class Tonearm:
         self.__bot.add_cog(ReadyListener(self.__service_manager))
         self.__bot.add_cog(VoiceStateChangeListener(self.__service_manager))
         self.__bot.add_cog(CleanCommand(self.__service_manager))
-        self.__bot.add_cog(ClearCommand())
+        self.__bot.add_cog(ClearCommand(self.__service_manager))
         self.__bot.add_cog(DebugCommand(self.__service_manager))
         self.__bot.add_cog(DjCommand())
         self.__bot.add_cog(ForwardCommand())
