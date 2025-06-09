@@ -69,6 +69,7 @@ class Tonearm:
         self.__bot.add_cog(ShutdownCommand(self.__service_manager))
         self.__bot.add_cog(StopCommand(self.__service_manager))
         self.__bot.add_cog(VersionCommand())
+        self.__bot.add_cog(VolumeCommand())
         self.__bot.add_cog(VoteskipCommand())
 
     def run(self):
