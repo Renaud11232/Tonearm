@@ -30,7 +30,7 @@ class NextCommand(commands.Cog):
         player = self.__service_manager.get_player(interaction.guild)
         try:
             await player.next(interaction.user)
-            await interaction.followup.send(f":fast_forward: Skipping to the next track, I didn't like this one either")
+            await interaction.followup.send(f":track_next: Skipping the current track, I didn't like this one either")
             self.__logger.debug(f"Successfully handled next command (interaction:{interaction.id})")
         except TonearmException as e:
             await interaction.followup.send(f":x: {str(e)}")

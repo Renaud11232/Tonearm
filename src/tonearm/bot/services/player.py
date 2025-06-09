@@ -155,13 +155,13 @@ class PlayerService:
             self.__logger.warning(f"Audio source ended with error in guild {self.__guild.id} : {repr(error)}")
         self.__logger.debug(f"Ending current track and audio source in guild {self.__guild.id}")
         self.__audio_source = None
+        self.__safe_switch_to_next_track()
         while len(self.__next_tracks) > 0:
             try:
-                self.__safe_switch_to_next_track()
                 await self.__safe_start_playing()
                 break
             except TonearmException:
-                continue
+                self.__safe_switch_to_next_track()
 
     async def next(self, member: nextcord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to skip the current track in guild {self.__guild.id}")
@@ -270,7 +270,39 @@ class PlayerService:
         async with self.__lock:
             self.__check_member_in_voice_channel(member)
             self.__check_same_voice_channel(member)
+            self.__safe_clear()
 
     def __safe_clear(self):
         self.__logger.debug(f"Clearing queue in guild {self.__guild.id}")
         self.__next_tracks.clear()
+
+    async def seek(self, member: nextcord.Member, duration):
+        self.__logger.debug(f"Member {member.id} asked the bot to seek to {duration}ms in guild {self.__guild.id}")
+        async with self.__lock:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            self.__check_active_audio_source()
+            self.__safe_seek(duration)
+
+    def __safe_seek(self, duration: int):
+        if self.__is_playing():
+            self.__logger.debug(f"Bot is currently playing, trying to seek to {duration}ms in guild {self.__guild.id}")
+            self.__audio_source.elapsed = duration
+        else:
+            self.__logger.debug(f"Bot is not currently playing, not seeking in guild {self.__guild.id}")
+
+    async def forward(self, member: nextcord.Member, duration):
+        self.__logger.debug(f"Member {member.id} asked the bot to seek forward {duration}ms in guild {self.__guild.id}")
+        async with self.__lock:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            self.__check_active_audio_source()
+            self.__safe_seek(self.__audio_source.elapsed + duration)
+
+    async def rewind(self, member: nextcord.Member, duration):
+        self.__logger.debug(f"Member {member.id} asked the bot to rewind {duration}ms in guild {self.__guild.id}")
+        async with self.__lock:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            self.__check_active_audio_source()
+            self.__safe_seek(self.__audio_source.elapsed - duration)

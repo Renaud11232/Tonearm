@@ -13,7 +13,8 @@ class CleanCommand(commands.Cog):
         self.__logger = logging.getLogger("tonearm.commands")
 
     #TODO: Translate commands and messages
-    #TODO: Implements checks
+    #TODO: Implements checks and permissions
+    #TODO: Option documentation
     @nextcord.slash_command(
         description="Deletes bot messages in the channel (up to 100 at once)"
     )
