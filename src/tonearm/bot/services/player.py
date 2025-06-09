@@ -156,7 +156,7 @@ class PlayerService:
         self.__logger.debug(f"Ending current track and audio source in guild {self.__guild.id}")
         self.__audio_source = None
         self.__safe_switch_to_next_track()
-        while len(self.__next_tracks) > 0:
+        while self.__current_track is not None:
             try:
                 await self.__safe_start_playing()
                 break
