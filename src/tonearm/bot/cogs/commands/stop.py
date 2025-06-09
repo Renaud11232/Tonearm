@@ -22,7 +22,7 @@ class StopCommand(commands.Cog):
         player = self.__service_manager.get_player(interaction.guild)
         try:
             await player.stop(interaction.user)
-            await interaction.followup.send(f":vertical_traffic_light: Stopped playback")
+            await interaction.followup.send(f":stop_button: Music stopped. The crowd goes silent.")
             self.__logger.debug(f"Successfully handled stop command (interaction:{interaction.id})")
         except TonearmException as e:
             await interaction.followup.send(f":x: {str(e)}")

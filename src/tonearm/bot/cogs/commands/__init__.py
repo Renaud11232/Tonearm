@@ -24,4 +24,4 @@ from .shutdown import ShutdownCommand
 from .stop import StopCommand
 from .version import VersionCommand
 from .volume import VolumeCommand
-from .voteskip import VoteskipCommand
+from .votenext import VotenextCommand

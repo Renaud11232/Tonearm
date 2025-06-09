@@ -7,5 +7,6 @@ class PauseCommand(commands.Cog):
         description="Pauses the currently playing track"
     )
     async def pause(self, interaction: nextcord.Interaction):
-        #TODO
+        #TODO :pause_button: Playback paused. Take your time !
+        #TODO Already paused. No need to rush.
         await interaction.send(":wrench: This feature is not implemented yet !")

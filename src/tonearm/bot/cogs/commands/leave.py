@@ -21,7 +21,7 @@ class LeaveCommand(commands.Cog):
         player = self.__service_manager.get_player(interaction.guild)
         try:
             await player.leave(interaction.user)
-            await interaction.followup.send(f":wave: Goodbye !")
+            await interaction.followup.send(f":microphone: Mic dropped. I'm gone.")
             self.__logger.debug(f"Successfully handled leave command (interaction:{interaction.id})")
         except TonearmException as e:
             await interaction.followup.send(f":x: {str(e)}")

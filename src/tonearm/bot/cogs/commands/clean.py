@@ -22,5 +22,5 @@ class CleanCommand(commands.Cog):
         self.__logger.debug(f"Handling clean command (interaction:{interaction.id})")
         await interaction.response.defer(ephemeral=True)
         messages = await self.__service_manager.get_chat(interaction.channel).clean()
-        await interaction.followup.send(f":wastebasket: Finished cleaning messages ({len(messages)})")
+        await interaction.followup.send(f":ghost: All my messages are gone. It's like I was never here !")
         self.__logger.debug(f"Successfully handled clean command (interaction:{interaction.id}), deleting {len(messages)} messages")

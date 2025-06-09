@@ -70,7 +70,7 @@ class Tonearm:
         self.__bot.add_cog(StopCommand(self.__service_manager))
         self.__bot.add_cog(VersionCommand())
         self.__bot.add_cog(VolumeCommand())
-        self.__bot.add_cog(VoteskipCommand())
+        self.__bot.add_cog(VotenextCommand())
 
     def run(self):
         self.__bot.run(self.__discord_token)

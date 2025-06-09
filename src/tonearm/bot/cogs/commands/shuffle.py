@@ -7,5 +7,5 @@ class ShuffleCommand(commands.Cog):
         description="Shuffles tracks in the queue"
     )
     async def shuffle(self, interaction: nextcord.Interaction):
-        #TODO
+        #TODO :twisted_rightwards_arrows: Shuffled the queue. I hope you like surprises !
         await interaction.send(":wrench: This feature is not implemented yet !")

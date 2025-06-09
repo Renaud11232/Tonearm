@@ -19,5 +19,5 @@ class ShutdownCommand(commands.Cog):
     @application_checks.is_owner()
     async def shutdown(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling shutdown command (interaction:{interaction.id})")
-        await interaction.send(":sleeping: Time for a quick nap...")
+        await interaction.send(":saluting_face: Initiating shutdown sequence... it’s been an honor.")
         await self.__service_manager.get_bot().shutdown()

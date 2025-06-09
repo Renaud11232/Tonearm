@@ -21,7 +21,7 @@ class ClearCommand(commands.Cog):
         player = self.__service_manager.get_player(interaction.guild)
         try:
             await player.clear(interaction.user)
-            await interaction.followup.send(f":broom: No more tracks to come")
+            await interaction.followup.send(f":broom: Wiped the queue. Sometimes starting fresh hits different.")
             self.__logger.debug(f"Successfully handled clear command (interaction:{interaction.id})")
         except TonearmException as e:
             await interaction.followup.send(f":x: {str(e)}")

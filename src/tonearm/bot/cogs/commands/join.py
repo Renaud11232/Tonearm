@@ -22,7 +22,7 @@ class JoinCommand(commands.Cog):
         player = self.__service_manager.get_player(interaction.guild)
         try:
             await player.join(interaction.user)
-            await interaction.followup.send(f":notes: Let's get this party started !")
+            await interaction.followup.send(f":party_popper: Let's get this party started !")
             self.__logger.debug(f"Successfully handled join command (interaction:{interaction.id})")
         except TonearmException as e:
             await interaction.followup.send(f":x: {str(e)}")

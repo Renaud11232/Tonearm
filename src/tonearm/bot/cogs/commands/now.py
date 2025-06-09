@@ -18,5 +18,5 @@ class NowCommand(commands.Cog):
 
     @staticmethod
     async def __now(interaction: nextcord.Interaction):
-        #TODO
+        #TODO :musical_note: Now playing : {track_title} by {artist}. Enjoy !
         await interaction.send(":wrench: This feature is not implemented yet !")

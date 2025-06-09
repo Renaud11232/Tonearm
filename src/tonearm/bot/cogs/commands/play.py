@@ -22,9 +22,9 @@ class PlayCommand(commands.Cog):
         try:
             tracks = await player.play(interaction.user, query)
             if len(tracks) == 1:
-                await interaction.followup.send(f":cd: Added **{tracks[0].title}** to the queue.")
+                await interaction.followup.send(f":cd: **{tracks[0].title}** added ! This one’s gonna slap.")
             else:
-                await interaction.followup.send(f":cd: Added **{len(tracks)} tracks** to the queue.")
+                await interaction.followup.send(f":cd: Added {len(tracks)} tracks to the queue! Now that’s what I call a playlist.")
             self.__logger.debug(f"Successfully handled play command (interaction:{interaction.id}), adding {len(tracks)} tracks to the queue")
         except TonearmException as e:
             await interaction.followup.send(f":x: {str(e)}")

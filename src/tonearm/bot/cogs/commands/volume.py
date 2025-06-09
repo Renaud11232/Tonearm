@@ -7,5 +7,5 @@ class VolumeCommand(commands.Cog):
         description="Changes the volume of the playing tracks"
     )
     async def volume(self, interaction: nextcord.Interaction, volume: int):
-        #TODO
+        #TODO :sound: Volume’s now X%. Don’t blame me if it’s too loud !
         await interaction.send(":wrench: This feature is not implemented yet !")
