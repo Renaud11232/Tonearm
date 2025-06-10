@@ -3,7 +3,6 @@ from nextcord.ext import commands
 import logging
 
 from tonearm.bot.managers import ServiceManager
-from tonearm.bot.exceptions import TonearmException
 
 class NextCommand(commands.Cog):
 
@@ -27,11 +26,6 @@ class NextCommand(commands.Cog):
     async def __next(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling next command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player = self.__service_manager.get_player(interaction.guild)
-        try:
-            await player.next(interaction.user)
-            await interaction.followup.send(f":track_next: Skipping the current track, I didn't like this one either")
-            self.__logger.debug(f"Successfully handled next command (interaction:{interaction.id})")
-        except TonearmException as e:
-            await interaction.followup.send(f":x: {str(e)}")
-            self.__logger.debug(f"Failed to handle next command (interaction:{interaction.id}) due to exception : {repr(e)}")
+        await self.__service_manager.get_player(interaction.guild).next(interaction.user)
+        await interaction.followup.send(f":track_next: Skipping the current track, I didn't like this one either")
+        self.__logger.debug(f"Successfully handled next command (interaction:{interaction.id})")

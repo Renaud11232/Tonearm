@@ -3,3 +3,4 @@ from .metadata import MetadataService
 from .media import MediaService
 from .bot import BotService
 from .chat import ChatService
+from .embed_builder import EmbedBuilderService

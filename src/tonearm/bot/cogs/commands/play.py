@@ -3,7 +3,6 @@ from nextcord.ext import commands
 import logging
 
 from tonearm.bot.managers import ServiceManager
-from tonearm.bot.exceptions import TonearmException
 
 class PlayCommand(commands.Cog):
 
@@ -18,14 +17,9 @@ class PlayCommand(commands.Cog):
     async def play(self, interaction: nextcord.Interaction, query: str):
         self.__logger.debug(f"Handling play command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player = self.__service_manager.get_player(interaction.guild)
-        try:
-            tracks = await player.play(interaction.user, query)
-            if len(tracks) == 1:
-                await interaction.followup.send(f":cd: **{tracks[0].title}** added ! This one’s gonna slap.")
-            else:
-                await interaction.followup.send(f":cd: Added {len(tracks)} tracks to the queue! Now that’s what I call a playlist.")
-            self.__logger.debug(f"Successfully handled play command (interaction:{interaction.id}), adding {len(tracks)} tracks to the queue")
-        except TonearmException as e:
-            await interaction.followup.send(f":x: {str(e)}")
-            self.__logger.debug(f"Failed to handle play command (interaction:{interaction.id}) due to exception : {repr(e)}")
+        tracks = await self.__service_manager.get_player(interaction.guild).play(interaction.user, query)
+        if len(tracks) == 1:
+            await interaction.followup.send(f":cd: **{tracks[0].title}** added ! This one’s gonna slap.")
+        else:
+            await interaction.followup.send(f":cd: Added {len(tracks)} tracks to the queue! Now that’s what I call a playlist.")
+        self.__logger.debug(f"Successfully handled play command (interaction:{interaction.id}), adding {len(tracks)} tracks to the queue")

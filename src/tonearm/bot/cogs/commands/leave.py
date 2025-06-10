@@ -3,7 +3,6 @@ from nextcord.ext import commands
 import logging
 
 from tonearm.bot.managers import ServiceManager
-from tonearm.bot.exceptions import TonearmException
 
 class LeaveCommand(commands.Cog):
 
@@ -18,11 +17,6 @@ class LeaveCommand(commands.Cog):
     async def leave(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling leave command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player = self.__service_manager.get_player(interaction.guild)
-        try:
-            await player.leave(interaction.user)
-            await interaction.followup.send(f":microphone: Mic dropped. I'm gone.")
-            self.__logger.debug(f"Successfully handled leave command (interaction:{interaction.id})")
-        except TonearmException as e:
-            await interaction.followup.send(f":x: {str(e)}")
-            self.__logger.debug(f"Failed to handle leave command (interaction:{interaction.id}) due to exception : {repr(e)}")
+        await self.__service_manager.get_player(interaction.guild).leave(interaction.user)
+        await interaction.followup.send(f":microphone: Mic dropped. I'm gone.")
+        self.__logger.debug(f"Successfully handled leave command (interaction:{interaction.id})")

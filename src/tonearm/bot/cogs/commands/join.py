@@ -3,7 +3,6 @@ from nextcord.ext import commands
 import logging
 
 from tonearm.bot.managers import ServiceManager
-from tonearm.bot.exceptions import TonearmException
 
 
 class JoinCommand(commands.Cog):
@@ -19,11 +18,6 @@ class JoinCommand(commands.Cog):
     async def join(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling join command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player = self.__service_manager.get_player(interaction.guild)
-        try:
-            await player.join(interaction.user)
-            await interaction.followup.send(f":party_popper: Let's get this party started !")
-            self.__logger.debug(f"Successfully handled join command (interaction:{interaction.id})")
-        except TonearmException as e:
-            await interaction.followup.send(f":x: {str(e)}")
-            self.__logger.debug(f"Failed to handle join command (interaction:{interaction.id}) due to exception : {repr(e)}")
+        await self.__service_manager.get_player(interaction.guild).join(interaction.user)
+        await interaction.followup.send(f":party_popper: Let's get this party started !")
+        self.__logger.debug(f"Successfully handled join command (interaction:{interaction.id})")

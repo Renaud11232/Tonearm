@@ -6,7 +6,7 @@ from tonearm.bot.cogs import *
 import nextcord
 from nextcord.ext import commands
 
-from tonearm.bot.managers import ServiceManager, PlayerManager, BotManager, ChatManager
+from tonearm.bot.managers import ServiceManager, PlayerManager, BotManager, ChatManager, EmbedBuilderManager
 from tonearm.bot.services import MetadataService, MediaService
 
 
@@ -30,9 +30,11 @@ class Tonearm:
         self.__service_manager = ServiceManager(
             PlayerManager(self.__bot, MetadataService(youtube_api_key), MediaService(cobalt_api_url, cobalt_api_key)),
             BotManager(self.__bot),
-            ChatManager(self.__bot)
+            ChatManager(self.__bot),
+            EmbedBuilderManager()
         )
         self.__init_cogs()
+        self.__init_error_handler()
 
     def __init_logger(self, name: str):
         logger = logging.getLogger(name)
@@ -42,6 +44,7 @@ class Tonearm:
         logger.addHandler(handler)
 
     def __init_cogs(self):
+        self.__bot.add_cog(ApplicationCommandErrorListener(self.__service_manager))
         self.__bot.add_cog(ReadyListener(self.__service_manager))
         self.__bot.add_cog(VoiceStateChangeListener(self.__service_manager))
         self.__bot.add_cog(CleanCommand(self.__service_manager))
@@ -71,6 +74,11 @@ class Tonearm:
         self.__bot.add_cog(VersionCommand())
         self.__bot.add_cog(VolumeCommand())
         self.__bot.add_cog(VotenextCommand())
+
+    def __init_error_handler(self):
+        @self.__bot.event
+        async def on_application_command_error(interaction: nextcord.Interaction, error):
+            await self.__bot.get_cog(ApplicationCommandErrorListener.__name__).on_application_command_error(interaction, error)
 
     def run(self):
         self.__bot.run(self.__discord_token)

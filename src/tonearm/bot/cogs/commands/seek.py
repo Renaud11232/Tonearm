@@ -5,7 +5,6 @@ from nextcord.ext import commands
 
 from tonearm.bot.cogs.converters import Duration
 from tonearm.bot.managers import ServiceManager
-from tonearm.bot.exceptions import TonearmException
 
 class SeekCommand(commands.Cog):
 
@@ -20,11 +19,6 @@ class SeekCommand(commands.Cog):
     async def seek(self, interaction: nextcord.Interaction, duration: Duration):
         self.__logger.debug(f"Handling seek command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player = self.__service_manager.get_player(interaction.guild)
-        try:
-            await player.seek(interaction.user, duration)
-            await interaction.followup.send(f":dart: Dropping the needle, classic move.")
-            self.__logger.debug(f"Successfully handled seek command (interaction:{interaction.id})")
-        except TonearmException as e:
-            await interaction.followup.send(f":x: {str(e)}")
-            self.__logger.debug(f"Failed to handle seek command (interaction:{interaction.id}) due to exception ; {repr(e)}")
+        await self.__service_manager.get_player(interaction.guild).seek(interaction.user, duration)
+        await interaction.followup.send(f":dart: Dropping the needle, classic move.")
+        self.__logger.debug(f"Successfully handled seek command (interaction:{interaction.id})")

@@ -4,7 +4,6 @@ import nextcord
 from nextcord.ext import commands
 
 from tonearm.bot.managers import ServiceManager
-from tonearm.bot.exceptions import TonearmException
 
 class StopCommand(commands.Cog):
 
@@ -19,11 +18,6 @@ class StopCommand(commands.Cog):
     async def stop(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling stop command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player = self.__service_manager.get_player(interaction.guild)
-        try:
-            await player.stop(interaction.user)
-            await interaction.followup.send(f":stop_button: Music stopped. The crowd goes silent.")
-            self.__logger.debug(f"Successfully handled stop command (interaction:{interaction.id})")
-        except TonearmException as e:
-            await interaction.followup.send(f":x: {str(e)}")
-            self.__logger.debug(f"Failed to handle stop command (interaction:{interaction.id}) due to exception : {repr(e)}")
+        await self.__service_manager.get_player(interaction.guild).stop(interaction.user)
+        await interaction.followup.send(f":stop_button: Music stopped. The crowd goes silent.")
+        self.__logger.debug(f"Successfully handled stop command (interaction:{interaction.id})")
