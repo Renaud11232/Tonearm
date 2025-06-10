@@ -16,8 +16,8 @@ class StopCommand(commands.Cog):
         description="Stops the current playback"
     )
     async def stop(self, interaction: nextcord.Interaction):
-        self.__logger.debug(f"Handling stop command (interaction:{interaction.id})")
         await interaction.response.defer()
+        self.__logger.debug(f"Handling stop command (interaction:{interaction.id})")
         await self.__service_manager.get_player(interaction.guild).stop(interaction.user)
         await interaction.followup.send(f":stop_button: Music stopped. The crowd goes silent.")
         self.__logger.debug(f"Successfully handled stop command (interaction:{interaction.id})")

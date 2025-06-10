@@ -15,8 +15,8 @@ class ClearCommand(commands.Cog):
         description="Clears all songs in the queue"
     )
     async def clear(self, interaction: nextcord.Interaction):
-        self.__logger.debug(f"Handling clear command (interaction:{interaction.id})")
         await interaction.response.defer()
+        self.__logger.debug(f"Handling clear command (interaction:{interaction.id})")
         await self.__service_manager.get_player(interaction.guild).clear(interaction.user)
         await interaction.followup.send(f":broom: Wiped the queue. Sometimes starting fresh hits different.")
         self.__logger.debug(f"Successfully handled clear command (interaction:{interaction.id})")

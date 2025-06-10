@@ -3,6 +3,7 @@ import logging
 import nextcord
 from nextcord.ext import commands
 
+from tonearm.bot import BadDuration
 from tonearm.bot.exceptions import TonearmException
 from tonearm.bot.managers import ServiceManager
 
@@ -20,6 +21,8 @@ class ApplicationCommandErrorListener(commands.Cog):
             exception = error.original
             if isinstance(exception, TonearmException):
                 await interaction.followup.send(f":x: {str(exception)}")
+            elif isinstance(exception, BadDuration):
+                pass
             else:
                 raise error
         else:

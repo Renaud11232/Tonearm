@@ -24,8 +24,8 @@ class NextCommand(commands.Cog):
         await self.__next(interaction)
 
     async def __next(self, interaction: nextcord.Interaction):
-        self.__logger.debug(f"Handling next command (interaction:{interaction.id})")
         await interaction.response.defer()
+        self.__logger.debug(f"Handling next command (interaction:{interaction.id})")
         await self.__service_manager.get_player(interaction.guild).next(interaction.user)
         await interaction.followup.send(f":track_next: Skipping the current track, I didn't like this one either")
         self.__logger.debug(f"Successfully handled next command (interaction:{interaction.id})")

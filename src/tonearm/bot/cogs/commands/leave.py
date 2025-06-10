@@ -15,8 +15,8 @@ class LeaveCommand(commands.Cog):
         description="Leaves the current voice channel"
     )
     async def leave(self, interaction: nextcord.Interaction):
-        self.__logger.debug(f"Handling leave command (interaction:{interaction.id})")
         await interaction.response.defer()
+        self.__logger.debug(f"Handling leave command (interaction:{interaction.id})")
         await self.__service_manager.get_player(interaction.guild).leave(interaction.user)
         await interaction.followup.send(f":microphone: Mic dropped. I'm gone.")
         self.__logger.debug(f"Successfully handled leave command (interaction:{interaction.id})")

@@ -1,19 +1,23 @@
 import re
 
 import nextcord
+from nextcord.ext.commands import BadArgument
+
+
+class BadDuration(BadArgument):
+    pass
 
 
 class Duration(nextcord.OptionConverter):
 
     __REGEX = re.compile(r"^(?:([0-9]+)d)?\s*(?:([0-9]+)h)?\s*(?:([0-9]+)m)?\s*(?:([0-9]+)s)?$")
 
-    #TODO error handling
     async def convert(self, interaction: nextcord.Interaction, argument: str):
         if not argument:
-            raise ValueError("Empty duration")
+            return None
         match = Duration.__REGEX.search(argument)
         if not match:
-            raise ValueError("Invalid duration")
+            raise BadDuration("Invalid duration")
         groups = match.groups("0")
         days = int(groups[0])
         hours = int(groups[1])

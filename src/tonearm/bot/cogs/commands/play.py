@@ -15,8 +15,8 @@ class PlayCommand(commands.Cog):
         description="Play a track or playlist in your voice channel. You can provide link, or search for a track"
     )
     async def play(self, interaction: nextcord.Interaction, query: str):
-        self.__logger.debug(f"Handling play command (interaction:{interaction.id})")
         await interaction.response.defer()
+        self.__logger.debug(f"Handling play command (interaction:{interaction.id})")
         tracks = await self.__service_manager.get_player(interaction.guild).play(interaction.user, query)
         if len(tracks) == 1:
             await interaction.followup.send(f":cd: **{tracks[0].title}** added ! This one’s gonna slap.")

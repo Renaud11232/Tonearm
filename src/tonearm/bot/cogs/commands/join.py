@@ -16,8 +16,8 @@ class JoinCommand(commands.Cog):
         description="Joins your current voice channel"
     )
     async def join(self, interaction: nextcord.Interaction):
-        self.__logger.debug(f"Handling join command (interaction:{interaction.id})")
         await interaction.response.defer()
+        self.__logger.debug(f"Handling join command (interaction:{interaction.id})")
         await self.__service_manager.get_player(interaction.guild).join(interaction.user)
         await interaction.followup.send(f":party_popper: Let's get this party started !")
         self.__logger.debug(f"Successfully handled join command (interaction:{interaction.id})")
