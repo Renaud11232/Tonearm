@@ -1,18 +1,20 @@
 import logging
 
 import nextcord
+from injector import ProviderOf, inject
 from nextcord.ext import commands
 
 
 class BotService:
 
-    def __init__(self, bot: commands.Bot):
-        self.__bot = bot
+    @inject
+    def __init__(self, bot_provider: ProviderOf[commands.Bot]):
+        self.__bot_provider = bot_provider
         self.__logger = logging.getLogger("tonearm.bot")
 
     async def shutdown(self):
         self.__logger.info("Shutdown requested. Goodbye !")
-        await self.__bot.close()
+        await self.__bot_provider.get().close()
 
     async def on_ready(self):
         scopes = [
@@ -26,7 +28,7 @@ class BotService:
             use_voice_activation=True
         )
         invite_url = nextcord.utils.oauth_url(
-            self.__bot.user.id,
+            self.__bot_provider.get().user.id,
             scopes=scopes,
             permissions=permissions
         )

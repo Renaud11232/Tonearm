@@ -5,7 +5,6 @@ import logging
 import googleapiclient.discovery
 
 from tonearm.bot.data import TrackMetadata
-from tonearm.bot.exceptions import TonearmException
 
 
 class MetadataServiceBase(ABC):
@@ -19,23 +18,10 @@ class MetadataServiceBase(ABC):
 
 class YoutubeMetadataService(MetadataServiceBase, ABC):
 
-    def __init__(self, api_key: str | None):
+    def __init__(self, api_key: str):
         super().__init__()
-        if api_key is None:
-            self._youtube = None
-        else:
-            self._youtube = googleapiclient.discovery.build(
-                "youtube",
-                "v3",
-                developerKey=api_key
-            )
-
-    async def fetch(self, query: str) -> List[TrackMetadata]:
-        if self._youtube is None:
-            self._logger.warning("Unable to use YouTube API, no API key have been set")
-            raise TonearmException("No YouTube API key provided")
-        return await self._fetch(query)
-
-    @abstractmethod
-    async def _fetch(self, query: str) -> List[TrackMetadata]:
-        pass
+        self._youtube = googleapiclient.discovery.build(
+            "youtube",
+            "v3",
+            developerKey=api_key
+        )

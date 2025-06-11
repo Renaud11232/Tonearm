@@ -1,19 +1,21 @@
 import logging
 
+from injector import inject
 from nextcord.ext import commands
 
-from tonearm.bot.managers import ServiceManager
+from tonearm.bot.services import BotService
 
 
 class ReadyListener(commands.Cog):
 
-    def __init__(self, service_manager: ServiceManager):
+    @inject
+    def __init__(self, bot_service: BotService):
         super().__init__()
-        self.__service_manager = service_manager
+        self.__bot_service = bot_service
         self.__logger = logging.getLogger("tonearm.listeners")
 
     @commands.Cog.listener()
     async def on_ready(self):
         self.__logger.debug("Handling ready event")
-        await self.__service_manager.get_bot().on_ready()
+        await self.__bot_service.on_ready()
         self.__logger.debug("Successfully handled ready event")

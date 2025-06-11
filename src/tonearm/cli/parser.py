@@ -1,0 +1,64 @@
+import argparse
+import logging
+
+from .action import EnvDefault
+from .configuration import Configuration
+
+
+class ArgumentParser:
+    def __init__(self):
+        self.__parser = argparse.ArgumentParser(
+            description="Starts a new Tonearm instance"
+        )
+        self.__parser.add_argument(
+            "--discord-token",
+            action=EnvDefault,
+            type=str,
+            required=True,
+            env_var="DISCORD_TOKEN",
+            help="Bot token used to access Discord API. If omitted, the value of the `DISCORD_TOKEN` environment variable will be used."
+        )
+        self.__parser.add_argument(
+            "--log-level",
+            action=EnvDefault,
+            type=str,
+            required=True,
+            default="INFO",
+            env_var="LOG_LEVEL",
+            choices=logging.getLevelNamesMapping().keys(),
+            help="Log level. If omitted, the value of the `LOG_LEVEL` environment variable will be used. Defaults to `INFO`"
+        )
+        self.__parser.add_argument(
+            "--youtube-api-key",
+            action=EnvDefault,
+            type=str,
+            required=True,
+            env_var="YOUTUBE_API_KEY",
+            help="YouTube API key used to fetch video metadata. If omitted, YouTube support will be disabled"
+        )
+        self.__parser.add_argument(
+            "--cobalt-api-url",
+            action=EnvDefault,
+            type=str,
+            required=True,
+            env_var="COBALT_API_URL",
+            help="URL of the cobalt.tools instance to use to download media"
+        )
+        self.__parser.add_argument(
+            "--cobalt-api-key",
+            action=EnvDefault,
+            type=str,
+            required=False,
+            env_var="COBALT_API_KEY",
+            help="API key used to authenticate on the configured cobalt.tools instance"
+        )
+
+    def parse_config(self) -> Configuration:
+        args = self.__parser.parse_args()
+        return Configuration(
+            discord_token=args.discord_token,
+            log_level=args.log_level,
+            youtube_api_key=args.youtube_api_key,
+            cobalt_api_key=args.cobalt_api_key,
+            cobalt_api_url=args.cobalt_api_url,
+        )

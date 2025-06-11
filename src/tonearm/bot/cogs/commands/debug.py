@@ -1,4 +1,5 @@
 import nextcord
+from injector import inject
 from nextcord.ext import commands
 import logging
 
@@ -6,6 +7,7 @@ from tonearm.bot.managers import ServiceManager
 
 class DebugCommand(commands.Cog):
 
+    @inject
     def __init__(self, service_manager: ServiceManager):
         super().__init__()
         self.__service_manager = service_manager

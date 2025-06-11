@@ -1,3 +1,5 @@
+from injector import inject, ProviderOf
+
 from .base import ManagerBase
 
 import nextcord
@@ -8,9 +10,10 @@ from tonearm.bot.services import PlayerService, MetadataService, MediaService
 
 class PlayerManager(ManagerBase[nextcord.Guild, PlayerService]):
 
-    def __init__(self, bot: commands.Bot, metadata_service: MetadataService, media_service: MediaService):
+    @inject
+    def __init__(self, bot_provider: ProviderOf[commands.Bot], metadata_service: MetadataService, media_service: MediaService):
         super().__init__()
-        self.__bot = bot
+        self.__bot_provider = bot_provider
         self.__metadata_service = metadata_service
         self.__media_service = media_service
 
@@ -18,4 +21,4 @@ class PlayerManager(ManagerBase[nextcord.Guild, PlayerService]):
         return key.id
 
     def _create(self, key: nextcord.Guild) -> PlayerService:
-        return PlayerService(key, self.__bot, self.__metadata_service, self.__media_service)
+        return PlayerService(key, self.__bot_provider.get(), self.__metadata_service, self.__media_service)

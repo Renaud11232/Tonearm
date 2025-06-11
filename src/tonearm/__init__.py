@@ -1,66 +1,15 @@
-import argparse
-import logging
+from injector import Injector
 
 from tonearm.bot import Tonearm
 from tonearm.cli.action import EnvDefault
+from tonearm.modules import ConfigurationModule, BotModule
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Starts a new Tonearm instance"
-    )
-    parser.add_argument(
-        "--discord-token",
-        action=EnvDefault,
-        type=str,
-        required=True,
-        env_var="DISCORD_TOKEN",
-        help="Bot token used to access Discord API. If omitted, the value of the `DISCORD_TOKEN` environment variable will be used."
-    )
-    parser.add_argument(
-        "--log-level",
-        action=EnvDefault,
-        type=str,
-        required=True,
-        default="INFO",
-        env_var="LOG_LEVEL",
-        choices=logging.getLevelNamesMapping().keys(),
-        help="Log level. If omitted, the value of the `LOG_LEVEL` environment variable will be used. Defaults to `INFO`"
-    )
-    parser.add_argument(
-        "--youtube-api-key",
-        action=EnvDefault,
-        type=str,
-        required=False,
-        default=None,
-        env_var="YOUTUBE_API_KEY",
-        help="YouTube API key used to fetch video metadata. If omitted, YouTube support will be disabled"
-    )
-    parser.add_argument(
-        "--cobalt-api-url",
-        action=EnvDefault,
-        type=str,
-        required=True,
-        env_var="COBALT_API_URL",
-        help="URL of the cobalt.tools instance to use to download media"
-    )
-    parser.add_argument(
-        "--cobalt-api-key",
-        action=EnvDefault,
-        type=str,
-        required=False,
-        env_var="COBALT_API_KEY",
-        help="API key used to authenticate on the configured cobalt.tools instance"
-    )
-    args = parser.parse_args()
-    tonearm = Tonearm(
-        discord_token=args.discord_token,
-        log_level=args.log_level,
-        youtube_api_key=args.youtube_api_key,
-        cobalt_api_url=args.cobalt_api_url,
-        cobalt_api_key=args.cobalt_api_key
-    )
-    tonearm.run()
+    Injector([
+        ConfigurationModule(),
+        BotModule()
+    ]).get(Tonearm).run()
 
 
 if __name__ == "__main__":

@@ -2,8 +2,11 @@ import re
 from collections import namedtuple
 from typing import List
 
+from injector import inject
+
 from tonearm.bot.data import TrackMetadata
 from tonearm.bot.exceptions import TonearmException
+from tonearm.cli import Configuration
 from .base import MetadataServiceBase
 from .direct_url import DirectUrlMetadataService
 from .youtube_search import YoutubeSearchMetadataService
@@ -13,17 +16,18 @@ MetadataServiceEntry = namedtuple("MetadataServiceEntry", ["pattern", "service"]
 
 class MetadataService(MetadataServiceBase):
 
-    def __init__(self, youtube_api_key: str | None):
+    @inject
+    def __init__(self, configuration: Configuration):
         super().__init__()
         self.__metadata_services = [
-            MetadataServiceEntry(r"^(?:https://)youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(youtube_api_key)),
-            MetadataServiceEntry(r"^(?:https://)www\.youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(youtube_api_key)),
-            MetadataServiceEntry(r"^(?:https://)m\.youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(youtube_api_key)),
-            MetadataServiceEntry(r"^(?:https://)music\.youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(youtube_api_key)),
-            MetadataServiceEntry(r"^(?:https://)www\.music\.youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(youtube_api_key)),
-            MetadataServiceEntry(r"^(?:https://)youtu\.be(?:/.*)?$", YoutubeUrlMetadataService(youtube_api_key)),
+            MetadataServiceEntry(r"^(?:https://)youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(configuration.youtube_api_key)),
+            MetadataServiceEntry(r"^(?:https://)www\.youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(configuration.youtube_api_key)),
+            MetadataServiceEntry(r"^(?:https://)m\.youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(configuration.youtube_api_key)),
+            MetadataServiceEntry(r"^(?:https://)music\.youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(configuration.youtube_api_key)),
+            MetadataServiceEntry(r"^(?:https://)www\.music\.youtube\.com(?:/.*)?$", YoutubeUrlMetadataService(configuration.youtube_api_key)),
+            MetadataServiceEntry(r"^(?:https://)youtu\.be(?:/.*)?$", YoutubeUrlMetadataService(configuration.youtube_api_key)),
             MetadataServiceEntry(r"^https?://.*$", DirectUrlMetadataService()),
-            MetadataServiceEntry(r"^.*$", YoutubeSearchMetadataService(youtube_api_key))
+            MetadataServiceEntry(r"^.*$", YoutubeSearchMetadataService(configuration.youtube_api_key))
         ]
 
     async def fetch(self, query: str) -> List[TrackMetadata]:

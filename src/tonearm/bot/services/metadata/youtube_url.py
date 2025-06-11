@@ -10,10 +10,10 @@ from .base import YoutubeMetadataService
 
 class YoutubeUrlMetadataService(YoutubeMetadataService):
 
-    def __init__(self, api_key: str | None):
+    def __init__(self, api_key: str):
         super().__init__(api_key)
 
-    async def _fetch(self, query: str) -> List[TrackMetadata]:
+    async def fetch(self, query: str) -> List[TrackMetadata]:
         self._logger.debug(f"Fetching metadata via YouTube API : {query}")
         if self.__is_playlist(query):
             return await self.__fetch_playlist(query)
