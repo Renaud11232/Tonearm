@@ -1,4 +1,4 @@
-from tonearm.cobalt import CobaltClient, CobaltException
+from tonearm.api.cobalt import CobaltClient, CobaltException
 from tonearm.bot.exceptions import TonearmException
 from .base import MediaServiceBase
 

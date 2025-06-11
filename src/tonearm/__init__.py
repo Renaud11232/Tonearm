@@ -1,8 +1,7 @@
 from injector import Injector
 
-from tonearm.bot import Tonearm
-from tonearm.cli.action import EnvDefault
-from tonearm.modules import ConfigurationModule, BotModule
+from tonearm.bot import Tonearm, BotModule
+from tonearm.configuration import ConfigurationModule
 
 
 def main():

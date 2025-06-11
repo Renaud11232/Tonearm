@@ -4,7 +4,7 @@ from collections import namedtuple
 from injector import inject
 
 from tonearm.bot.exceptions import TonearmException
-from tonearm.cli import Configuration
+from tonearm.configuration import Configuration
 from .base import MediaServiceBase
 from .cobalt import CobaltMediaService
 

@@ -6,7 +6,7 @@ from injector import inject
 
 from tonearm.bot.data import TrackMetadata
 from tonearm.bot.exceptions import TonearmException
-from tonearm.cli import Configuration
+from tonearm.configuration import Configuration
 from .base import MetadataServiceBase
 from .direct_url import DirectUrlMetadataService
 from .youtube_search import YoutubeSearchMetadataService

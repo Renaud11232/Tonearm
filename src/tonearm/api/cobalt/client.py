@@ -2,7 +2,7 @@ from typing import Any
 
 import requests
 
-from .error import CobaltException
+from .exceptions import CobaltException
 
 
 class CobaltClient:
