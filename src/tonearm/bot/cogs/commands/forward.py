@@ -1,8 +1,9 @@
 import logging
 
 import nextcord
-from injector import inject
 from nextcord.ext import commands
+
+from injector import inject
 
 from tonearm.bot.cogs.converters import Duration
 from tonearm.bot.managers import ServiceManager

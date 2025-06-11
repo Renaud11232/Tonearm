@@ -1,9 +1,12 @@
-import nextcord
-from injector import inject
-from nextcord.ext import commands
 import logging
 
+import nextcord
+from nextcord.ext import commands
+
+from injector import inject
+
 from tonearm.bot.managers import ServiceManager
+
 
 class PlayCommand(commands.Cog):
 

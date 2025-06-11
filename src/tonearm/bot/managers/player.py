@@ -1,10 +1,9 @@
-from injector import inject, ProviderOf
-
-from .base import ManagerBase
-
 import nextcord
 from nextcord.ext import commands
 
+from injector import inject, ProviderOf
+
+from .base import ManagerBase
 from tonearm.bot.services import PlayerService, MetadataService, MediaService
 
 

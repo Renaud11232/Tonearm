@@ -1,4 +1,5 @@
 import nextcord
+
 from injector import inject
 
 from .chat import ChatManager

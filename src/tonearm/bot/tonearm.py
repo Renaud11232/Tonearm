@@ -1,8 +1,9 @@
 import logging
 import sys
 
-from injector import inject
 from nextcord.ext import commands
+
+from injector import inject
 
 from tonearm.configuration import Configuration
 

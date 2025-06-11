@@ -1,8 +1,9 @@
-from injector import Module, singleton, provider
-
 from tonearm.bot.cogs import *
 
+import nextcord
 from nextcord.ext import commands
+
+from injector import Module, singleton, provider
 
 
 class BotModule(Module):

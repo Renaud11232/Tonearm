@@ -1,8 +1,9 @@
 import logging
 
 import nextcord
-from injector import inject
 from nextcord.ext import commands, application_checks
+
+from injector import inject
 
 from tonearm.bot.services import BotService
 
