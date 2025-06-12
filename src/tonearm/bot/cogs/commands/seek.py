@@ -21,9 +21,9 @@ class SeekCommand(commands.Cog):
         description="Seeks to a specific time in the track"
     )
     async def seek(self, interaction: nextcord.Interaction, duration: str):
+        self.__logger.debug(f"Handling seek command (interaction:{interaction.id})")
         await interaction.response.defer()
         duration = await Duration().convert(interaction, duration)
-        self.__logger.debug(f"Handling seek command (interaction:{interaction.id})")
         await self.__service_manager.get_player(interaction.guild).seek(interaction.user, duration)
         await interaction.followup.send(f":dart: Dropping the needle, classic move.")
         self.__logger.debug(f"Successfully handled seek command (interaction:{interaction.id})")

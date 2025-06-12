@@ -19,6 +19,7 @@ class DebugCommand(commands.Cog):
     @nextcord.slash_command(
         description="Prints the current internal state of the bot for debugging purposes"
     )
+    #TODO: Delete this when its not needed anymore
     async def debug(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling debug command (interaction:{interaction.id})")
         await interaction.response.defer(ephemeral=True)
