@@ -1,7 +1,6 @@
 import nextcord
-from nextcord.ext import commands
 
-from injector import ProviderOf, inject, singleton
+from injector import singleton, inject, Injector
 
 from .base import ManagerBase
 from tonearm.bot.services import ChatService
@@ -11,12 +10,17 @@ from tonearm.bot.services import ChatService
 class ChatManager(ManagerBase[nextcord.TextChannel, ChatService]):
 
     @inject
-    def __init__(self, bot_provider: ProviderOf[commands.Bot]):
+    def __init__(self, injector: Injector):
         super().__init__()
-        self.__bot_provider = bot_provider
+        self.__injector = injector
 
     def _get_id(self, key: nextcord.TextChannel) -> int:
         return key.id
 
     def _create(self, key: nextcord.TextChannel) -> ChatService:
-        return ChatService(key, self.__bot_provider.get())
+        return self.__injector.create_object(
+            ChatService,
+            additional_kwargs={
+                "channel": key
+            }
+        )

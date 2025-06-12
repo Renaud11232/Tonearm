@@ -4,7 +4,8 @@ import logging
 
 import googleapiclient.discovery
 
-from tonearm.bot.data import TrackMetadata
+from tonearm.configuration import Configuration
+from .metadata import TrackMetadata
 
 
 class MetadataServiceBase(ABC):
@@ -18,10 +19,10 @@ class MetadataServiceBase(ABC):
 
 class YoutubeMetadataService(MetadataServiceBase, ABC):
 
-    def __init__(self, api_key: str):
+    def __init__(self, configuration: Configuration):
         super().__init__()
         self._youtube = googleapiclient.discovery.build(
             "youtube",
             "v3",
-            developerKey=api_key
+            developerKey=configuration.youtube_api_key
         )

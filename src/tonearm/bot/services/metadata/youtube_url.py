@@ -3,15 +3,20 @@ from urllib.parse import urlparse, parse_qs
 from typing import List
 import html
 
-from tonearm.bot.data import TrackMetadata
+from injector import singleton, inject
+
 from tonearm.bot.exceptions import TonearmException
+from tonearm.configuration import Configuration
 from .base import YoutubeMetadataService
+from .metadata import TrackMetadata
 
 
+@singleton
 class YoutubeUrlMetadataService(YoutubeMetadataService):
 
-    def __init__(self, api_key: str):
-        super().__init__(api_key)
+    @inject
+    def __init__(self, configuration: Configuration):
+        super().__init__(configuration)
 
     async def fetch(self, query: str) -> List[TrackMetadata]:
         self._logger.debug(f"Fetching metadata via YouTube API : {query}")
@@ -45,13 +50,11 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
             id=id,
             maxResults=1
         ).execute()
-        if "items" not in response or len(response["items"]) == 0:
-            raise TonearmException("The requested track was not found on YouTube")
         return [
             TrackMetadata(
                 url=url,
-                title=html.unescape(response["items"][0]["snippet"]["title"])
-            )
+                title=html.unescape(item["snippet"]["title"])
+            ) for item in response["items"]
         ]
 
     async def __fetch_playlist(self, url: str) -> List[TrackMetadata]:
@@ -62,8 +65,6 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
             playlistId=id,
             maxResults=50
         ).execute()
-        if "items" not in response or len(response["items"]) == 0:
-            raise TonearmException("The requested playlist was not found on YouTube")
         return [
             TrackMetadata(
                 url=f"https://www.youtube.com/watch?v={item["snippet"]["resourceId"]["videoId"]}",

@@ -7,15 +7,19 @@ import logging
 import nextcord
 from nextcord.ext import commands
 
+from injector import inject, noninjectable
+
 from tonearm.bot.audiosource import ControllableFFmpegPCMAudio
 from tonearm.bot.services.metadata import MetadataService
 from tonearm.bot.services.media import MediaService
-from tonearm.bot.data import TrackMetadata
+from tonearm.bot.services.metadata import TrackMetadata
 from tonearm.bot.exceptions import TonearmException
 
 
 class PlayerService:
 
+    @inject
+    @noninjectable("guild")
     def __init__(self, guild: nextcord.Guild, bot: commands.Bot, metadata_service: MetadataService, media_service: MediaService):
         self.__guild = guild
         self.__bot = bot

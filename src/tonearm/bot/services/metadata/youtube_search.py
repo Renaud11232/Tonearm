@@ -1,15 +1,19 @@
 from typing import List
 import html
 
-from tonearm.bot.data import TrackMetadata
-from tonearm.bot.exceptions import TonearmException
+from injector import singleton, inject
+
+from tonearm.configuration import Configuration
 from .base import YoutubeMetadataService
+from .metadata import TrackMetadata
 
 
+@singleton
 class YoutubeSearchMetadataService(YoutubeMetadataService):
 
-    def __init__(self, api_key: str):
-        super().__init__(api_key)
+    @inject
+    def __init__(self, configuration: Configuration):
+        super().__init__(configuration)
 
     async def fetch(self, query: str) -> List[TrackMetadata]:
         self._logger.debug(f"Fetching metadata via YouTube Search API : {query}")
@@ -19,11 +23,9 @@ class YoutubeSearchMetadataService(YoutubeMetadataService):
             type="video",
             maxResults=1
         ).execute()
-        if "items" not in response and len(response["items"]) == 0:
-            raise TonearmException("No YouTube video found for those keywords")
         return [
             TrackMetadata(
-                url=f"https://www.youtube.com/watch?v={response["items"][0]["id"]["videoId"]}",
-                title=html.unescape(response["items"][0]["snippet"]["title"])
-            )
+                url=f"https://www.youtube.com/watch?v={item["id"]["videoId"]}",
+                title=html.unescape(item["snippet"]["title"])
+            ) for item in response["items"]
         ]

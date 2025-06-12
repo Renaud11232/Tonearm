@@ -3,7 +3,7 @@ from typing import List
 import nextcord
 from injector import singleton
 
-from tonearm.bot.data import TrackMetadata
+from tonearm.bot.services.metadata import TrackMetadata
 
 
 @singleton

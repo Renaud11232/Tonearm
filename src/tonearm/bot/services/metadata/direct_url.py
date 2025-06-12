@@ -1,10 +1,14 @@
 from typing import List
 
-from tonearm.bot.data import TrackMetadata
+from injector import singleton
+
 from tonearm.bot.exceptions import TonearmException
+
 from .base import MetadataServiceBase
+from .metadata import TrackMetadata
 
 
+@singleton
 class DirectUrlMetadataService(MetadataServiceBase):
 
     def __init__(self):
