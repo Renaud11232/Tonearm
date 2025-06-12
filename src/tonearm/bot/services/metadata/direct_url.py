@@ -2,8 +2,7 @@ from typing import List
 
 from injector import singleton
 
-from tonearm.bot.exceptions import TonearmException
-
+from .exceptions import MetadataFetchingException
 from .base import MetadataServiceBase
 from .metadata import TrackMetadata
 
@@ -17,4 +16,4 @@ class DirectUrlMetadataService(MetadataServiceBase):
     async def fetch(self, query: str) -> List[TrackMetadata]:
         self._logger.debug(f"Fetching metadata for direct url : {query}")
         #TODO
-        raise TonearmException("Not implemented yet")
+        raise MetadataFetchingException("Direct URLs are not supported yet")

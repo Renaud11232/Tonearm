@@ -1,8 +1,7 @@
 from injector import singleton
 
-from tonearm.bot.exceptions import TonearmException
-
 from .base import MediaServiceBase
+from .exceptions import MediaFetchingException
 
 
 @singleton
@@ -14,4 +13,4 @@ class DirectUrlMediaService(MediaServiceBase):
     async def fetch(self, url: str) -> str:
         self._logger.debug(f"Fetching media from direct url : {url}")
         #TODO
-        raise TonearmException("Not implemented yet")
+        raise MediaFetchingException("Direct URLs are not supported yet")

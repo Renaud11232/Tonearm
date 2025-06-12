@@ -4,7 +4,7 @@ import threading
 
 import nextcord
 
-from ..exceptions import TonearmException
+from .exceptions import PlayerException
 
 
 class SeekableFFmpegPCMAudio(nextcord.FFmpegPCMAudio):
@@ -67,7 +67,30 @@ class SeekableFFmpegPCMAudio(nextcord.FFmpegPCMAudio):
                     self.__logger.debug(f"Chunk {next_chunk} does not exist in the track of length {len(self.__chunks)}, using the last chunk instead")
                     next_chunk = len(self.__chunks) - 1
                 else:
-                    self.__logger.debug(f"Chunk {next_chunk} is not loaded yet (current loaded length is {len(self.__chunks)}), raising TonearmException")
-                    raise TonearmException("I’d love to seek there, but it’s still downloading... patience, friend")
+                    self.__logger.debug(f"Chunk {next_chunk} is not loaded yet (current loaded length is {len(self.__chunks)})")
+                    raise PlayerException("I’d love to seek there, but it’s still downloading... patience, friend")
             self.__next_chunk = next_chunk
             self.__condition.notify()
+
+
+class ControllableFFmpegPCMAudio(nextcord.PCMVolumeTransformer):
+
+    def __init__(self, source, *, executable="ffmpeg", pipe=False, stderr=subprocess.DEVNULL, before_options=None, options=None):
+        self.__source = SeekableFFmpegPCMAudio(
+            source,
+            executable=executable,
+            pipe=pipe,
+            stderr=stderr,
+            before_options=before_options,
+            options=options
+        )
+        super().__init__(self.__source)
+
+    @property
+    def elapsed(self) -> int:
+        return self.__source.elapsed
+
+    @elapsed.setter
+    def elapsed(self, elapsed: int):
+        self.__source.elapsed = elapsed
+

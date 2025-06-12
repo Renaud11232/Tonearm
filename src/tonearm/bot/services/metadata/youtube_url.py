@@ -5,8 +5,11 @@ import html
 
 from injector import singleton, inject
 
-from tonearm.bot.exceptions import TonearmException
+import googleapiclient.errors
+
 from tonearm.configuration import Configuration
+
+from .exceptions import MetadataFetchingException
 from .base import YoutubeMetadataService
 from .metadata import TrackMetadata
 
@@ -39,35 +42,43 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
         regex = re.compile(r"(?:v=|/)([0-9A-Za-z_-]{11}).*")
         results = regex.search(url)
         if not results:
-            raise TonearmException("Unable to extract the video ID from the URL")
+            raise MetadataFetchingException("It looks like the URL you provided doesn't include a YouTube video ID.")
         return results.group(1)
 
     async def __fetch_video(self, url: str) -> List[TrackMetadata]:
         id = self.__get_video_id(url)
         self._logger.debug(f"Fetching metadata via YouTube Videos API for video id : {id}")
-        response = self._youtube.videos().list(
-            part="snippet",
-            id=id,
-            maxResults=1
-        ).execute()
-        return [
-            TrackMetadata(
-                url=url,
-                title=html.unescape(item["snippet"]["title"])
-            ) for item in response["items"]
-        ]
+        try:
+            response = self._youtube.videos().list(
+                part="snippet",
+                id=id,
+                maxResults=1
+            ).execute()
+            return [
+                TrackMetadata(
+                    url=url,
+                    title=html.unescape(item["snippet"]["title"])
+                ) for item in response["items"]
+            ]
+        except googleapiclient.errors.HttpError as e:
+            self._logger.warning(f"YouTube videos API returned error : {repr(e)}")
+            raise MetadataFetchingException(f"YouTube videos API returned status `{e.status_code}` : `{e.reason}`")
 
     async def __fetch_playlist(self, url: str) -> List[TrackMetadata]:
         id = self.__get_playlist_id(url)
         self._logger.debug(f"Fetching metadata via YouTube Playlist Items API for playlist id : {id}")
-        response = self._youtube.playlistItems().list(
-            part="snippet",
-            playlistId=id,
-            maxResults=50
-        ).execute()
-        return [
-            TrackMetadata(
-                url=f"https://www.youtube.com/watch?v={item["snippet"]["resourceId"]["videoId"]}",
-                title=html.unescape(item["snippet"]["title"])
-            ) for item in response["items"]
-        ]
+        try:
+            response = self._youtube.playlistItems().list(
+                part="snippet",
+                playlistId=id,
+                maxResults=50
+            ).execute()
+            return [
+                TrackMetadata(
+                    url=f"https://www.youtube.com/watch?v={item["snippet"]["resourceId"]["videoId"]}",
+                    title=html.unescape(item["snippet"]["title"])
+                ) for item in response["items"]
+            ]
+        except googleapiclient.errors.HttpError as e:
+            self._logger.warning(f"YouTube playlistItems API returned error : {repr(e)}")
+            raise MetadataFetchingException(f"YouTube playlistItems API returned status `{e.status_code}` : `{e.reason}`")

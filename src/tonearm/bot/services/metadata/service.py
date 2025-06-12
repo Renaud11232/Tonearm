@@ -4,12 +4,12 @@ from typing import List
 
 from injector import inject, singleton
 
-from tonearm.bot.exceptions import TonearmException
 from .base import MetadataServiceBase
 from .metadata import TrackMetadata
 from .direct_url import DirectUrlMetadataService
 from .youtube_search import YoutubeSearchMetadataService
 from .youtube_url import YoutubeUrlMetadataService
+from .exceptions import MetadataFetchingException
 
 
 MetadataServiceEntry = namedtuple("MetadataServiceEntry", ["pattern", "service"])
@@ -40,4 +40,4 @@ class MetadataService(MetadataServiceBase):
             if re.search(entry.pattern, query):
                 return await entry.service.fetch(query)
         self._logger.debug(f"No metadata service matched {query}")
-        raise TonearmException("I'm unable to fetch this track, it's hosted on a service I don't support.")
+        raise MetadataFetchingException("I'm unable to fetch this track, it's hosted on a service I don't support.")

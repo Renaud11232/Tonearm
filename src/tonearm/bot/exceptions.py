@@ -1,2 +1,0 @@
-class TonearmException(Exception):
-    pass

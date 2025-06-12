@@ -2,7 +2,7 @@ import re
 
 import nextcord
 
-from tonearm.bot.exceptions import TonearmException
+from .exceptions import ConverterException
 
 
 class Duration(nextcord.OptionConverter):
@@ -14,7 +14,7 @@ class Duration(nextcord.OptionConverter):
             return None
         match = Duration.__REGEX.search(argument)
         if not match:
-            raise TonearmException("Invalid duration")
+            raise ConverterException(f"`{argument}` is not a valid duration.")
         groups = match.groups("0")
         days = int(groups[0])
         hours = int(groups[1])

@@ -3,10 +3,10 @@ from collections import namedtuple
 
 from injector import inject, singleton
 
-from tonearm.bot.exceptions import TonearmException
 from .base import MediaServiceBase
 from .cobalt import CobaltMediaService
 from .direct_url import DirectUrlMediaService
+from .exceptions import MediaFetchingException
 
 MediaServiceEntry = namedtuple("MediaServiceEntry", ["pattern", "service"])
 
@@ -32,4 +32,4 @@ class MediaService(MediaServiceBase):
             if re.search(entry.pattern, url):
                 return await entry.service.fetch(url)
         self._logger.debug(f"No media service matched {url}")
-        raise TonearmException(f"I'm unable to load this track, it's hosted on a service I don't support.")
+        raise MediaFetchingException(f"I'm unable to load this track, it's hosted on a service I don't support.")

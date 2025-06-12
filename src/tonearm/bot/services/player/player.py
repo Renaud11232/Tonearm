@@ -9,11 +9,12 @@ from nextcord.ext import commands
 
 from injector import inject, noninjectable
 
-from tonearm.bot.audiosource import ControllableFFmpegPCMAudio
 from tonearm.bot.services.metadata import MetadataService
-from tonearm.bot.services.media import MediaService
+from tonearm.bot.services.media import MediaService, MediaFetchingException
 from tonearm.bot.services.metadata import TrackMetadata
-from tonearm.bot.exceptions import TonearmException
+
+from .exceptions import PlayerException
+from .audiosource import ControllableFFmpegPCMAudio
 
 
 class PlayerService:
@@ -49,21 +50,21 @@ class PlayerService:
         self.__logger.debug(f"Checking if member {member.id} of guild {self.__guild.id} is in a voice channel")
         if member.voice is None or member.voice.channel is None:
             self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} was not in a voice channel")
-            raise TonearmException("You must join a voice channel first")
+            raise PlayerException("You must join a voice channel first")
         self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} is in a voice channel")
 
     def __check_same_voice_channel(self, member: nextcord.Member):
         self.__logger.debug(f"Checking if member {member.id} of guild {self.__guild.id} is in the same voice channel as the bot")
         if self.__voice_client is None or member.voice.channel != self.__voice_client.channel:
             self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} was not in the same voice channel as the bot")
-            raise TonearmException("I'm not in your voice channel")
+            raise PlayerException("I'm not in your voice channel")
         self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} is in the same voice channel as the bot")
 
     def __check_active_audio_source(self):
         self.__logger.debug(f"Checking if the bot is currently playing a track in the guild {self.__guild.id}")
         if not self.__is_playing():
             self.__logger.debug(f"Bot is currently not playing any track in guild {self.__guild.id}")
-            raise TonearmException("I'm not currently playing any track")
+            raise PlayerException("I'm not currently playing any track")
         self.__logger.debug(f"Bot is currently playing a track in guild {self.__guild.id}")
 
     def __is_connected(self):
@@ -76,7 +77,7 @@ class PlayerService:
         self.__logger.debug(f"Checking if the bot is currently connected to a voice channel in the guild {self.__guild.id}")
         if self.__is_connected():
             self.__logger.debug(f"Bot has already joined a voice channel in guild {self.__guild.id}")
-            raise TonearmException("I've already joined a voice channel")
+            raise PlayerException("I've already joined a voice channel")
         self.__logger.debug(f"Bot hasn't joined a voice channel in guild {self.__guild.id} yet")
 
     async def join(self, member: nextcord.Member):
@@ -91,7 +92,7 @@ class PlayerService:
         self.__logger.debug(f"Checking if the bot was recently kicked from a voice channel in guild {self.__guild.id}")
         if not self.__graceful_leave and  self.__last_leave is not None and time.time() < self.__last_leave + 60:
             self.__logger.debug(f"The bot was kicked recently and must wait {math.floor(self.__last_leave + 60 - time.time())} seconds before joining a voice channel in guild {self.__guild.id}")
-            raise TonearmException(f"I can't join right now, please try again in {math.floor(self.__last_leave + 60 - time.time())} seconds")
+            raise PlayerException(f"I can't join right now, please try again in {math.floor(self.__last_leave + 60 - time.time())} seconds")
         self.__logger.debug(f"The bot wasn't kicked recently, connecting to channel {channel.id} of guild {self.__guild.id}")
         await channel.connect()
         self.__graceful_leave = False
@@ -108,7 +109,7 @@ class PlayerService:
             tracks = await self.__metadata_service.fetch(query)
             if len(tracks) == 0:
                 self.__logger.debug(f"No tracks found for query {repr(query)} in guild {self.__guild.id}")
-                raise TonearmException("No playable track were found")
+                raise PlayerException("No playable track were found")
             self.__logger.debug(f"Queuing {len(tracks)} matching tracks for query {repr(query)} in guild {self.__guild.id}")
             self.__next_tracks.extend(tracks)
             self.__logger.debug(f"Checking if a track is currently playing in guild {self.__guild.id}")
@@ -145,7 +146,7 @@ class PlayerService:
                     self.__audio_source,
                     after=self.__on_audio_source_ended
                 )
-            except TonearmException as e:
+            except MediaFetchingException as e:
                 self.__logger.warning(f"Failed to start playing track {repr(self.__current_track)} in guild {self.__guild.id} : {repr(e)}")
                 self.__current_track = None
                 raise e
@@ -164,7 +165,7 @@ class PlayerService:
             try:
                 await self.__safe_start_playing()
                 break
-            except TonearmException:
+            except MediaFetchingException:
                 self.__safe_switch_to_next_track()
 
     async def next(self, member: nextcord.Member):
