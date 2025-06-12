@@ -1,29 +1,31 @@
 import logging
 
 import nextcord
-from nextcord.ext import commands
+from nextcord.ext import commands, application_checks
 
-from injector import inject
+from injector import inject, singleton
 
-from tonearm.bot.managers import ServiceManager
+from tonearm.bot.managers import PlayerManager
 
 
+@singleton
 class DebugCommand(commands.Cog):
 
     @inject
-    def __init__(self, service_manager: ServiceManager):
+    def __init__(self, player_manager: PlayerManager):
         super().__init__()
-        self.__service_manager = service_manager
+        self.__player_manager = player_manager
         self.__logger = logging.getLogger("tonearm.commands")
 
     @nextcord.slash_command(
         description="Prints the current internal state of the bot for debugging purposes"
     )
+    @application_checks.is_owner()
     #TODO: Delete this when its not needed anymore
     async def debug(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling debug command (interaction:{interaction.id})")
         await interaction.response.defer(ephemeral=True)
-        debug_data = await self.__service_manager.get_player(interaction.guild).debug()
+        debug_data = await self.__player_manager.get(interaction.guild).debug()
         await interaction.followup.send(
             f":tools: Here it is, I hope it will help :\n"
             f"```\n"

@@ -1,12 +1,13 @@
 import nextcord
 from nextcord.ext import commands
 
-from injector import inject, ProviderOf
+from injector import inject, ProviderOf, singleton
 
 from .base import ManagerBase
 from tonearm.bot.services import PlayerService, MetadataService, MediaService
 
 
+@singleton
 class PlayerManager(ManagerBase[nextcord.Guild, PlayerService]):
 
     @inject

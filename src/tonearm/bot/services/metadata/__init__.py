@@ -2,7 +2,7 @@ import re
 from collections import namedtuple
 from typing import List
 
-from injector import inject
+from injector import inject, singleton
 
 from tonearm.bot.data import TrackMetadata
 from tonearm.bot.exceptions import TonearmException
@@ -14,6 +14,8 @@ from .youtube_url import YoutubeUrlMetadataService
 
 MetadataServiceEntry = namedtuple("MetadataServiceEntry", ["pattern", "service"])
 
+
+@singleton
 class MetadataService(MetadataServiceBase):
 
     @inject

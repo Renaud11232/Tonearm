@@ -1,6 +1,10 @@
 import nextcord
 from nextcord.ext import commands
 
+from injector import singleton
+
+
+@singleton
 class DjCommand(commands.Cog):
 
     @nextcord.slash_command(

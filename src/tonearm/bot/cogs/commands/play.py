@@ -3,17 +3,20 @@ import logging
 import nextcord
 from nextcord.ext import commands
 
-from injector import inject
+from injector import inject, singleton
 
-from tonearm.bot.managers import ServiceManager
+from tonearm.bot.managers import PlayerManager
+from tonearm.bot.services import EmbedService
 
 
+@singleton
 class PlayCommand(commands.Cog):
 
     @inject
-    def __init__(self, service_manager: ServiceManager):
+    def __init__(self, player_manager: PlayerManager, embed_service: EmbedService):
         super().__init__()
-        self.__service_manager = service_manager
+        self.__player_manager = player_manager
+        self.__embed_service = embed_service
         self.__logger = logging.getLogger("tonearm.commands")
 
     @nextcord.slash_command(
@@ -22,9 +25,8 @@ class PlayCommand(commands.Cog):
     async def play(self, interaction: nextcord.Interaction, query: str):
         self.__logger.debug(f"Handling play command (interaction:{interaction.id})")
         await interaction.response.defer()
-        tracks = await self.__service_manager.get_player(interaction.guild).play(interaction.user, query)
-        if len(tracks) == 1:
-            await interaction.followup.send(f":cd: **{tracks[0].title}** added ! This one’s gonna slap.")
-        else:
-            await interaction.followup.send(f":cd: Added {len(tracks)} tracks to the queue! Now that’s what I call a playlist.")
+        tracks = await self.__player_manager.get(interaction.guild).play(interaction.user, query)
+        await interaction.followup.send(
+            embed=self.__embed_service.play(tracks)
+        )
         self.__logger.debug(f"Successfully handled play command (interaction:{interaction.id}), adding {len(tracks)} tracks to the queue")

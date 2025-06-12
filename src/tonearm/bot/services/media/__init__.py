@@ -1,7 +1,7 @@
 import re
 from collections import namedtuple
 
-from injector import inject
+from injector import inject, singleton
 
 from tonearm.bot.exceptions import TonearmException
 from tonearm.configuration import Configuration
@@ -10,6 +10,8 @@ from .cobalt import CobaltMediaService
 
 MediaServiceEntry = namedtuple("MediaServiceEntry", ["pattern", "service"])
 
+
+@singleton
 class MediaService(MediaServiceBase):
 
     @inject

@@ -1,12 +1,13 @@
 import logging
 
-from injector import inject
+from injector import inject, singleton
 
 from nextcord.ext import commands
 
 from tonearm.bot.services import BotService
 
 
+@singleton
 class ReadyListener(commands.Cog):
 
     @inject

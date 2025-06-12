@@ -1,12 +1,13 @@
 import nextcord
 from nextcord.ext import commands
 
-from injector import ProviderOf, inject
+from injector import ProviderOf, inject, singleton
 
 from .base import ManagerBase
 from tonearm.bot.services import ChatService
 
 
+@singleton
 class ChatManager(ManagerBase[nextcord.TextChannel, ChatService]):
 
     @inject

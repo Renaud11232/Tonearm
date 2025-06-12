@@ -1,1 +1,1 @@
-from .duration import Duration, BadDuration
+from .duration import Duration

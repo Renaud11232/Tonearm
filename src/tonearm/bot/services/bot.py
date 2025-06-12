@@ -3,9 +3,10 @@ import logging
 import nextcord
 from nextcord.ext import commands
 
-from injector import ProviderOf, inject
+from injector import ProviderOf, inject, singleton
 
 
+@singleton
 class BotService:
 
     @inject
