@@ -1,0 +1,7 @@
+from collections import namedtuple
+
+QueueStatus = namedtuple("QueueStatus", ["previous_tracks", "current_track", "next_tracks"])
+
+AudioSourceStatus = namedtuple("AudioSourceStatus", ["elapsed", "total", "volume"])
+
+PlayerStatus = namedtuple("PlayerStatus", ["queue", "audio_source"])

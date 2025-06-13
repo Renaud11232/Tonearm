@@ -1,3 +1,3 @@
 from collections import namedtuple
 
-QueuedTrack = namedtuple("QueuedTrack", ["url", "title", "author", "member"])
+QueuedTrack = namedtuple("QueuedTrack", ["url", "title", "source", "member"])

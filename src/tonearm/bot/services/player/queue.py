@@ -9,6 +9,7 @@ from injector import inject
 from tonearm.bot.services.metadata import MetadataService
 
 from .track import QueuedTrack
+from .status import QueueStatus
 
 
 class Queue:
@@ -45,7 +46,7 @@ class Queue:
             QueuedTrack(
                 url=track.url,
                 title=track.title,
-                author="AUTHOR",
+                source="SOURCE_TODO",
                 member=member
             ) for track in self.__metadata_service.fetch(query)
         ]
@@ -54,3 +55,11 @@ class Queue:
             self.__condition.notify()
         self.__logger.debug(f"Added {len(tracks)} track(s) in queue {repr(self)}")
         return tracks
+
+    async def get_status(self) -> QueueStatus:
+        async with self.__condition:
+            return QueueStatus(
+                previous_tracks=self.__tracks[0: self.__next_track - 1] if self.__next_track > 1 else [],
+                current_track=self.__tracks[self.__next_track - 1] if self.__next_track > 0 else None,
+                next_tracks=self.__tracks[self.__next_track:]
+            )

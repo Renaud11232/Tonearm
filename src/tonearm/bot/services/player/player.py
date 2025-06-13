@@ -10,11 +10,12 @@ from nextcord.ext import commands
 from injector import inject, noninjectable
 
 from tonearm.bot.services.media import MediaService, MediaFetchingException
-from tonearm.bot.services.metadata import TrackMetadata
 
 from .exceptions import PlayerException
 from .audiosource import ControllableFFmpegPCMAudio
 from .queue import Queue
+from .track import QueuedTrack
+from .status import PlayerStatus, AudioSourceStatus
 
 
 class PlayerService:
@@ -130,7 +131,7 @@ class PlayerService:
             self.__audio_source = None
             self.__condition.notify()
 
-    async def play(self, member: nextcord.Member, query: str) -> List[TrackMetadata]:
+    async def play(self, member: nextcord.Member, query: str) -> List[QueuedTrack]:
         self.__logger.debug(f"Member {member.id} asked the bot to play {repr(query)} in guild {self.__guild.id}")
         async with self.__lock:
             self.__check_member_in_voice_channel(member)
@@ -286,3 +287,21 @@ class PlayerService:
             self.__check_same_voice_channel(member)
             self.__check_active_audio_source()
             self.__safe_seek(self.__audio_source.elapsed - duration)
+
+    async def now(self, member: nextcord.Member) -> PlayerStatus:
+        self.__logger.debug(f"Member {member.id} asked the bot to get the current track in guild {self.__guild.id}")
+        async with self.__lock:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            self.__check_active_audio_source()
+            return await self.__get_status()
+
+    async def __get_status(self) -> PlayerStatus:
+        return PlayerStatus(
+            queue=await self.__queue.get_status(),
+            audio_source=AudioSourceStatus(
+                elapsed=self.__audio_source.elapsed,
+                total=self.__audio_source.total,
+                volume=self.__audio_source.volume
+            )
+        )

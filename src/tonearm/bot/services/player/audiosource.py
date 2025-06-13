@@ -1,6 +1,7 @@
 import subprocess
 import logging
 import threading
+import math
 
 import nextcord
 
@@ -55,6 +56,13 @@ class SeekableFFmpegPCMAudio(nextcord.FFmpegPCMAudio):
     def elapsed(self) -> int:
         return self.__next_chunk * 20
 
+    @property
+    def total(self):
+        if self.__is_finished_reading():
+            return len(self.__chunks) * 20
+        else:
+            return math.inf
+
     @elapsed.setter
     def elapsed(self, elapsed: int):
         self.__logger.debug(f"Got request to update elapsed time to {elapsed}ms in audio source {repr(self)}")
@@ -95,4 +103,8 @@ class ControllableFFmpegPCMAudio(nextcord.PCMVolumeTransformer):
     @elapsed.setter
     def elapsed(self, elapsed: int):
         self.__source.elapsed = elapsed
+
+    @property
+    def total(self):
+        return self.__source.total
 

@@ -1,9 +1,10 @@
+import math
 from typing import List
 
 import nextcord
 from injector import singleton
 
-from tonearm.bot.services.metadata import TrackMetadata
+from tonearm.bot.services.player import PlayerStatus, QueuedTrack
 
 
 @singleton
@@ -59,7 +60,54 @@ class EmbedService:
         )
 
     @staticmethod
-    def play(tracks: List[TrackMetadata]):
+    def __format_duration(duration, minimum_positions):
+        if math.isinf(duration):
+            return "∞"
+        total_seconds = math.floor(duration / 1000)
+        seconds = total_seconds % 60
+        minutes = (total_seconds // 60) % 60
+        hours = (total_seconds // (60 * 60)) % 24
+        days = total_seconds // (60 * 60 *  24)
+        positions = []
+        show_next_number = False
+        if days > 0 or minimum_positions > 3:
+            positions.append(f"{days}")
+            show_next_number = True
+        if show_next_number or hours > 0 or minimum_positions > 2:
+            positions.append(f"{hours:0>2}")
+            show_next_number = True
+        if show_next_number or minutes > 0 or minimum_positions > 1:
+            positions.append(f"{minutes:0>2}")
+            show_next_number = True
+        if show_next_number or seconds > 0 or minimum_positions > 0:
+            positions.append(f"{seconds:0>2}")
+        return ":".join(positions)
+
+
+
+    @staticmethod
+    def now(player_status: PlayerStatus):
+        elapsed_fraction = round((player_status.audio_source.elapsed / player_status.audio_source.total) * 9)
+        bar_progress = "".join([":radio_button:" if i == elapsed_fraction else "▬" for i in range(10)])
+        total_time = EmbedService.__format_duration(player_status.audio_source.total, minimum_positions=2)
+        elapsed_time = EmbedService.__format_duration(player_status.audio_source.elapsed, minimum_positions=len(total_time.split(":")))
+        embed = nextcord.Embed(
+            title="Now Playing",
+            description=(
+                f"**[{player_status.queue.current_track.title}]({player_status.queue.current_track.url})\n**"
+                f"Requested by : {player_status.queue.current_track.member.mention}\n"
+                f"\n"
+                f":arrow_forward: {bar_progress} `[{elapsed_time}/{total_time}]` :sound: {round(player_status.audio_source.volume * 100)}%"
+            ),
+            colour=nextcord.Colour.dark_purple()
+        )
+        embed.set_footer(
+            text=f"Source: {player_status.queue.current_track.source}"
+        )
+        return embed
+
+    @staticmethod
+    def play(tracks: List[QueuedTrack]):
         embed = nextcord.Embed(
                 colour=nextcord.Colour.dark_purple()
             )
