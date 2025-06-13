@@ -8,5 +8,5 @@ class MediaServiceBase(ABC):
         self._logger = logging.getLogger("tonearm.media")
 
     @abstractmethod
-    async def fetch(self, url: str) -> str:
+    def fetch(self, url: str) -> str:
         pass

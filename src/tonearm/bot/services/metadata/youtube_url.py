@@ -21,12 +21,12 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
     def __init__(self, configuration: Configuration):
         super().__init__(configuration)
 
-    async def fetch(self, query: str) -> List[TrackMetadata]:
+    def fetch(self, query: str) -> List[TrackMetadata]:
         self._logger.debug(f"Fetching metadata via YouTube API : {query}")
         if self.__is_playlist(query):
-            return await self.__fetch_playlist(query)
+            return self.__fetch_playlist(query)
         else:
-            return await self.__fetch_video(query)
+            return self.__fetch_video(query)
 
     @staticmethod
     def __is_playlist(url: str) -> bool:
@@ -45,7 +45,7 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
             raise MetadataFetchingException("It looks like the URL you provided doesn't include a YouTube video ID.")
         return results.group(1)
 
-    async def __fetch_video(self, url: str) -> List[TrackMetadata]:
+    def __fetch_video(self, url: str) -> List[TrackMetadata]:
         id = self.__get_video_id(url)
         self._logger.debug(f"Fetching metadata via YouTube Videos API for video id : {id}")
         try:
@@ -64,7 +64,7 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
             self._logger.warning(f"YouTube videos API returned error : {repr(e)}")
             raise MetadataFetchingException(f"YouTube videos API returned status `{e.status_code}` : `{e.reason}`")
 
-    async def __fetch_playlist(self, url: str) -> List[TrackMetadata]:
+    def __fetch_playlist(self, url: str) -> List[TrackMetadata]:
         id = self.__get_playlist_id(url)
         self._logger.debug(f"Fetching metadata via YouTube Playlist Items API for playlist id : {id}")
         try:

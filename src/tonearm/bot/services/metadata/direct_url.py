@@ -13,7 +13,7 @@ class DirectUrlMetadataService(MetadataServiceBase):
     def __init__(self):
         super().__init__()
 
-    async def fetch(self, query: str) -> List[TrackMetadata]:
+    def fetch(self, query: str) -> List[TrackMetadata]:
         self._logger.debug(f"Fetching metadata for direct url : {query}")
         #TODO
         raise MetadataFetchingException("Direct URLs are not supported yet")

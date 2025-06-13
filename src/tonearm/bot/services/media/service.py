@@ -27,9 +27,9 @@ class MediaService(MediaServiceBase):
             MediaServiceEntry(r"^https?://.*$", direct_url_media_service)
         ]
 
-    async def fetch(self, url: str) -> str:
+    def fetch(self, url: str) -> str:
         for entry in self.__media_services:
             if re.search(entry.pattern, url):
-                return await entry.service.fetch(url)
+                return entry.service.fetch(url)
         self._logger.debug(f"No media service matched {url}")
         raise MediaFetchingException(f"I'm unable to load this track, it's hosted on a service I don't support.")

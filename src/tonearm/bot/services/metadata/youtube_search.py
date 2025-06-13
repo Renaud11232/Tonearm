@@ -18,7 +18,7 @@ class YoutubeSearchMetadataService(YoutubeMetadataService):
     def __init__(self, configuration: Configuration):
         super().__init__(configuration)
 
-    async def fetch(self, query: str) -> List[TrackMetadata]:
+    def fetch(self, query: str) -> List[TrackMetadata]:
         self._logger.debug(f"Fetching metadata via YouTube Search API : {query}")
         try:
             response = self._youtube.search().list(

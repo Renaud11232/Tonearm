@@ -15,7 +15,7 @@ class CobaltMediaService(MediaServiceBase):
         super().__init__()
         self.__cobalt = CobaltClient(configuration.cobalt_api_url, configuration.cobalt_api_key)
 
-    async def fetch(self, url: str) -> str:
+    def fetch(self, url: str) -> str:
         self._logger.debug(f"Fetching media via Cobalt API : {url}")
         try:
             return self.__cobalt.process(

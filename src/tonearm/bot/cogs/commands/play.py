@@ -29,4 +29,4 @@ class PlayCommand(commands.Cog):
         await interaction.followup.send(
             embed=self.__embed_service.play(tracks)
         )
-        self.__logger.debug(f"Successfully handled play command (interaction:{interaction.id}), adding {len(tracks)} tracks to the queue")
+        self.__logger.debug(f"Successfully handled play command (interaction:{interaction.id}), adding {len(tracks)} track(s) to the queue")
