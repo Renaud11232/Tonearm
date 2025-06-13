@@ -46,7 +46,8 @@ class Queue:
             QueuedTrack(
                 url=track.url,
                 title=track.title,
-                source="SOURCE_TODO",
+                source=track.source,
+                thumbnail=track.thumbnail,
                 member=member
             ) for track in self.__metadata_service.fetch(query)
         ]

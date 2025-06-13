@@ -101,8 +101,9 @@ class EmbedService:
             ),
             colour=nextcord.Colour.dark_purple()
         )
+        embed.set_thumbnail(url=player_status.queue.current_track.thumbnail)
         embed.set_footer(
-            text=f"Source: {player_status.queue.current_track.source}"
+            text=f"Source : {player_status.queue.current_track.source}"
         )
         return embed
 

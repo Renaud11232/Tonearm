@@ -57,7 +57,9 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
             return [
                 TrackMetadata(
                     url=url,
-                    title=html.unescape(item["snippet"]["title"])
+                    title=html.unescape(item["snippet"]["title"]),
+                    source=html.unescape(item["snippet"]["channelTitle"]),
+                    thumbnail=item["snippet"]["thumbnails"]["medium"]["url"]
                 ) for item in response["items"]
             ]
         except googleapiclient.errors.HttpError as e:
@@ -76,7 +78,9 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
             return [
                 TrackMetadata(
                     url=f"https://www.youtube.com/watch?v={item["snippet"]["resourceId"]["videoId"]}",
-                    title=html.unescape(item["snippet"]["title"])
+                    title=html.unescape(item["snippet"]["title"]),
+                    source=html.unescape(item["snippet"]["channelTitle"]),
+                    thumbnail=item["snippet"]["thumbnails"]["medium"]["url"]
                 ) for item in response["items"]
             ]
         except googleapiclient.errors.HttpError as e:

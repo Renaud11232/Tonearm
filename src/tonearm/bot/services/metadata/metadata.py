@@ -1,3 +1,3 @@
 from collections import namedtuple
 
-TrackMetadata = namedtuple("TrackMetadata", ["url", "title"])
+TrackMetadata = namedtuple("TrackMetadata", ["url", "title", "source", "thumbnail"])
