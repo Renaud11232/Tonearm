@@ -105,8 +105,8 @@ class PlayerService:
                     self.__logger.debug(f"Waiting for the current track to end in guild {self.__guild.id}")
                     while self.__audio_source is not None:
                         await self.__condition.wait()
-                    next_track = await self.__queue.get_next_track()
                     while self.__audio_source is None:
+                        next_track = await self.__queue.get_next_track()
                         try:
                             stream_url = self.__media_service.fetch(next_track.url)
                             self.__logger.debug(f"Starting playback of url {stream_url} in guild {self.__guild.id}")
@@ -117,13 +117,14 @@ class PlayerService:
                                 after=self.__on_audio_source_ended
                             )
                             self.__condition.notify()
+                        except asyncio.CancelledError as e:
+                            raise e
                         except MediaFetchingException as e:
                             self.__logger.warning(f"Failed to fetch media url in guild {self.__guild.id} : {repr(e)}")
-                            pass
+                        except:
+                            self.__logger.exception("An unexpected error was raised in the player loop")
         except asyncio.CancelledError:
             self.__logger.debug(f"Cancelled player loop for guild {self.__guild.id}")
-        except:
-            self.__logger.exception("An unexpected error was raised in the player loop")
 
     async def __on_audio_source_ended(self, error):
         if error is None:
