@@ -34,6 +34,7 @@ class PlayerService:
         self.__player_loop_task: asyncio.Task | None = None
         self.__graceful_leave = True
         self.__last_leave = None
+        self.__volume = 100
 
     @property
     def __voice_client(self) -> nextcord.VoiceClient | None:
@@ -110,6 +111,7 @@ class PlayerService:
                             stream_url = self.__media_service.fetch(next_track.url)
                             self.__logger.debug(f"Starting playback of url {stream_url} in guild {self.__guild.id}")
                             self.__audio_source = ControllableFFmpegPCMAudio(stream_url)
+                            self.__audio_source.volume = self.__volume / 100
                             self.__voice_client.play(
                                 self.__audio_source,
                                 after=self.__on_audio_source_ended
@@ -302,7 +304,7 @@ class PlayerService:
             audio_source=AudioSourceStatus(
                 elapsed=self.__audio_source.elapsed,
                 total=self.__audio_source.total,
-                volume=self.__audio_source.volume
+                volume=self.__volume
             )
         )
 
@@ -313,3 +315,14 @@ class PlayerService:
             self.__check_same_voice_channel(member)
             self.__check_active_audio_source()
             return await self.__get_status()
+
+    async def volume(self, member: nextcord.Member, volume: int):
+        self.__logger.debug(f"Member {member.id} asked the bot to change the volume to {volume}% in guild {self.__guild.id}")
+        async with self.__lock:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            if volume < 0 or volume > 200:
+                raise PlayerException("Volume must be between 0 and 200")
+            self.__volume = volume
+            if self.__is_playing():
+                self.__audio_source.volume = self.__volume / 100

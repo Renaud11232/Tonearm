@@ -98,7 +98,7 @@ class EmbedService:
                 f"**[{escape_markdown(player_status.queue.current_track.title)}]({escape_markdown(player_status.queue.current_track.url)})**\n"
                 f"Requested by : {player_status.queue.current_track.member.mention}\n"
                 f"\n"
-                f":arrow_forward: {bar_progress} `[{elapsed_time}/{total_time}]` :sound: {round(player_status.audio_source.volume * 100)}%"
+                f":arrow_forward: {bar_progress} `[{elapsed_time}/{total_time}]` :sound: {round(player_status.audio_source.volume)}%"
             ),
             colour=nextcord.Colour.dark_purple()
         )
@@ -178,5 +178,12 @@ class EmbedService:
     def stop():
         return nextcord.Embed(
             description=":stop_button: Music stopped. The crowd goes silent.",
+            colour=nextcord.Colour.dark_purple()
+        )
+
+    @staticmethod
+    def volume(volume: int):
+        return nextcord.Embed(
+            description=f":sound: Volume’s now {volume}%. Don’t blame me if it’s too loud !",
             colour=nextcord.Colour.dark_purple()
         )
