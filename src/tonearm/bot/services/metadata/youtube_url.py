@@ -79,7 +79,7 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
                 TrackMetadata(
                     url=f"https://www.youtube.com/watch?v={item["snippet"]["resourceId"]["videoId"]}",
                     title=html.unescape(item["snippet"]["title"]),
-                    source=html.unescape(item["snippet"]["channelTitle"]),
+                    source=html.unescape(item["snippet"]["videoOwnerChannelTitle"]),
                     thumbnail=item["snippet"]["thumbnails"]["medium"]["url"]
                 ) for item in response["items"]
             ]
