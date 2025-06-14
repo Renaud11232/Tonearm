@@ -8,6 +8,7 @@ from tonearm.bot.cogs.converters import ConverterException
 from tonearm.bot.services.media import MediaFetchingException
 from tonearm.bot.services.metadata import MetadataFetchingException
 from tonearm.bot.services.player import PlayerException
+from tonearm.bot.services.embed import EmbedException
 from tonearm.bot.services import EmbedService
 
 
@@ -24,7 +25,7 @@ class ApplicationCommandErrorListener(commands.Cog):
         self.__logger.debug(f"Failed to handle command (interaction:{interaction.id}) due to exception : {repr(error)}")
         if isinstance(error, nextcord.ApplicationInvokeError):
             exception = error.original
-            if isinstance(exception, (PlayerException, MediaFetchingException, MetadataFetchingException, ConverterException)):
+            if isinstance(exception, (PlayerException, MediaFetchingException, MetadataFetchingException, ConverterException, EmbedException)):
                 await interaction.followup.send(
                     embed=self.__embed_service.error(exception)
                 )

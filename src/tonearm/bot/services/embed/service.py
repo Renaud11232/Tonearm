@@ -2,9 +2,12 @@ import math
 from typing import List
 
 import nextcord
+from nextcord.utils import escape_markdown
 from injector import singleton
 
 from tonearm.bot.services.player import PlayerStatus, QueuedTrack
+
+from .expcetions import EmbedException
 
 
 @singleton
@@ -13,7 +16,7 @@ class EmbedService:
     @staticmethod
     def error(e):
         return nextcord.Embed(
-            description=f":x: {str(e)}",
+            description=f":x: {escape_markdown(str(e))}",
             colour=nextcord.Colour.red()
         )
 
@@ -83,8 +86,6 @@ class EmbedService:
             positions.append(f"{seconds:0>2}")
         return ":".join(positions)
 
-
-
     @staticmethod
     def now(player_status: PlayerStatus):
         elapsed_fraction = round((player_status.audio_source.elapsed / player_status.audio_source.total) * 9)
@@ -94,7 +95,7 @@ class EmbedService:
         embed = nextcord.Embed(
             title="Now Playing",
             description=(
-                f"**[{player_status.queue.current_track.title}]({player_status.queue.current_track.url})\n**"
+                f"**[{escape_markdown(player_status.queue.current_track.title)}]({escape_markdown(player_status.queue.current_track.url)})**\n"
                 f"Requested by : {player_status.queue.current_track.member.mention}\n"
                 f"\n"
                 f":arrow_forward: {bar_progress} `[{elapsed_time}/{total_time}]` :sound: {round(player_status.audio_source.volume * 100)}%"
@@ -103,7 +104,7 @@ class EmbedService:
         )
         embed.set_thumbnail(url=player_status.queue.current_track.thumbnail)
         embed.set_footer(
-            text=f"Source : {player_status.queue.current_track.source}"
+            text=f"Source : {escape_markdown(player_status.queue.current_track.source)}"
         )
         return embed
 
@@ -115,7 +116,41 @@ class EmbedService:
         if len(tracks) > 1:
             embed.description = f":cd: Added **{len(tracks)} tracks** to the queue! Now that’s what I call a playlist."
         else:
-            embed.description = f":cd: Added **{tracks[0].title}** to the queue ! This one’s gonna slap."
+            embed.description = f":cd: Added **{escape_markdown(tracks[0].title)}** to the queue ! This one’s gonna slap."
+        return embed
+
+    @staticmethod
+    def queue(player_status: PlayerStatus, page: int):
+        next_tracks = player_status.queue.next_tracks
+        if len(next_tracks) == 0:
+            max_pages = 1
+        else:
+            max_pages = math.ceil(len(next_tracks) / 10)
+        if page > max_pages:
+            raise EmbedException(f"No such page")
+        if len(next_tracks) == 0:
+            up_next = "*No track in the queue*"
+        else:
+            tracks = next_tracks[(page - 1) * 10: (page - 1) * 10 + 10]
+            up_next = "\n".join([
+                f"`{track + 1}.` [{escape_markdown(tracks[track].title if len(tracks[track].title) < 25 else f'{tracks[track].title[:25]}...')}]({escape_markdown(tracks[track].url)})" for track in range(len(tracks))
+            ])
+        embed = EmbedService.now(player_status)
+        embed.add_field(
+            name="Up next :",
+            value=up_next,
+            inline=False
+        )
+        embed.add_field(
+            name="In queue",
+            value=f"{len(next_tracks)} tracks" if len(next_tracks) > 1 else f"{len(next_tracks)} track",
+            inline=True
+        )
+        embed.add_field(
+            name="Page",
+            value=f"{page} out of {max_pages}",
+            inline=True
+        )
         return embed
 
     @staticmethod

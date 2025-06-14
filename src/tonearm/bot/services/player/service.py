@@ -305,3 +305,11 @@ class PlayerService:
                 volume=self.__audio_source.volume
             )
         )
+
+    async def queue(self, member: nextcord.Member) -> PlayerStatus:
+        self.__logger.debug(f"Member {member.id} asked the bot to get the queue in guild {self.__guild.id}")
+        async with self.__lock:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            self.__check_active_audio_source()
+            return await self.__get_status()
