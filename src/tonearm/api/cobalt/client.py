@@ -60,11 +60,8 @@ class CobaltClient:
             data["youtubeBetterAudio"] = youtube_better_audio
         if youtube_hls is not None:
             data["youtubeHLS"] = youtube_hls
-        response =  requests.post(
-            self.__base_url,
-            json=data,
-            headers=headers
-        ).json()
-        if response["status"] == "error":
-            raise CobaltException(response["error"]["code"])
-        return response
+        with requests.post(self.__base_url, json=data, headers=headers) as r:
+            response = r.json()
+            if response["status"] == "error":
+                raise CobaltException(response["error"]["code"])
+            return response
