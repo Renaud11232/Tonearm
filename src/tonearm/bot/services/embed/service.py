@@ -7,7 +7,7 @@ from injector import singleton
 
 from tonearm.bot.services.player import PlayerStatus, QueuedTrack
 
-from .expcetions import EmbedException
+from .exceptions import EmbedException
 
 
 @singleton
@@ -91,7 +91,11 @@ class EmbedService:
         elapsed_fraction = round((player_status.audio_source.elapsed / player_status.audio_source.total) * 9)
         bar_progress = "".join([":radio_button:" if i == elapsed_fraction else "▬" for i in range(10)])
         total_time = EmbedService.__format_duration(player_status.audio_source.total, minimum_positions=2)
-        elapsed_time = EmbedService.__format_duration(player_status.audio_source.elapsed, minimum_positions=len(total_time.split(":")))
+        total_time_positions = len(total_time.split(":"))
+        elapsed_time = EmbedService.__format_duration(
+            player_status.audio_source.elapsed,
+            minimum_positions=total_time_positions if total_time_positions > 2 else 2
+        )
         embed = nextcord.Embed(
             title="Now Playing",
             description=(

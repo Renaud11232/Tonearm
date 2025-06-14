@@ -1,2 +1,2 @@
 from .service import EmbedService
-from .expcetions import EmbedException
+from .exceptions import EmbedException
