@@ -122,6 +122,8 @@ class PlayerService:
                             pass
         except asyncio.CancelledError:
             self.__logger.debug(f"Cancelled player loop for guild {self.__guild.id}")
+        except:
+            self.__logger.exception("An unexpected error was raised in the player loop")
 
     async def __on_audio_source_ended(self, error):
         if error is None:
