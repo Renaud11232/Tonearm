@@ -25,4 +25,5 @@ class SettingCommand(commands.Cog):
     )
     async def set(self, interaction: nextcord.Interaction):
         #TODO
+        #Handle at least : channel, anarchy mode
         await interaction.send(":wrench: This feature is not implemented yet !")

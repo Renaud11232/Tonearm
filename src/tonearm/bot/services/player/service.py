@@ -328,3 +328,11 @@ class PlayerService:
             self.__volume = volume
             if self.__is_playing():
                 self.__audio_source.volume = self.__volume / 100
+
+    async def shuffle(self, member: nextcord.Member):
+        self.__logger.debug(f"Member {member.id} asked the bot to shuffle the queue in guild {self.__guild.id}")
+        async with self.__lock:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            self.__check_active_audio_source()
+            return await self.__queue.shuffle()

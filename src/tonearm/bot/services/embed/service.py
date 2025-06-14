@@ -136,7 +136,7 @@ class EmbedService:
         else:
             tracks = next_tracks[(page - 1) * 10: (page - 1) * 10 + 10]
             up_next = "\n".join([
-                f"{bold(f'{track + 1}.')} {link(escape_link_text(f'{tracks[track].title[:25]}{"..." if len(tracks[track].title) > 25 else ""}'), escape_link_url(tracks[track].url))}" for track in range(len(tracks))
+                f"{bold(f'{(page - 1) * 10 + track + 1}.')} {link(escape_link_text(f'{tracks[track].title[:25]}{"..." if len(tracks[track].title) > 25 else ""}'), escape_link_url(tracks[track].url))}" for track in range(len(tracks))
             ])
         embed = EmbedService.now(player_status)
         embed.add_field(
@@ -167,6 +167,13 @@ class EmbedService:
     def seek():
         return nextcord.Embed(
             description=":dart: Dropping the needle, classic move.",
+            colour=nextcord.Colour.dark_purple()
+        )
+
+    @staticmethod
+    def shuffle():
+        return nextcord.Embed(
+            description=":twisted_rightwards_arrows: Shuffled the queue. I hope you like surprises !",
             colour=nextcord.Colour.dark_purple()
         )
 
