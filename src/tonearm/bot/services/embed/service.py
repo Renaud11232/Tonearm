@@ -101,7 +101,7 @@ class EmbedService:
                 f"{bold(link(escape_link_text(player_status.queue.current_track.title), escape_link_url(player_status.queue.current_track.url)))}\n"
                 f"Requested by : {player_status.queue.current_track.member.mention}\n"
                 f"\n"
-                f":arrow_forward: {bar_progress} {inline_code(f'[{elapsed_time}/{total_time}]')} :sound: {round(player_status.audio_source.volume)}%"
+                f"{':pause_button:' if player_status.audio_source.paused else ':arrow_forward:'} {bar_progress} {inline_code(f'[{elapsed_time}/{total_time}]')} :sound: {round(player_status.audio_source.volume)}%"
             ),
             colour=nextcord.Colour.dark_purple()
         )
@@ -110,6 +110,13 @@ class EmbedService:
             text=f"Source : {escape_markdown(player_status.queue.current_track.source)}"
         )
         return embed
+
+    @staticmethod
+    def pause():
+        return nextcord.Embed(
+            description=":pause_button: Playback paused. Take your time !",
+            colour=nextcord.Colour.dark_purple()
+        )
 
     @staticmethod
     def play(tracks: List[QueuedTrack]):
@@ -155,6 +162,13 @@ class EmbedService:
             inline=True
         )
         return embed
+
+    @staticmethod
+    def resume():
+        return nextcord.Embed(
+            description=":play_pause: Back in action ! Enjoy the tracks.",
+            colour=nextcord.Colour.dark_purple()
+        )
 
     @staticmethod
     def rewind():

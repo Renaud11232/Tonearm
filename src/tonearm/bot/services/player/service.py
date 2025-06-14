@@ -61,10 +61,13 @@ class PlayerService:
 
     def __check_active_audio_source(self):
         self.__logger.debug(f"Checking if the bot is currently playing a track in the guild {self.__guild.id}")
-        if not self.__is_playing():
+        if not self.__is_active():
             self.__logger.debug(f"Bot is currently not playing any track in guild {self.__guild.id}")
             raise PlayerException("I'm not currently playing any track")
         self.__logger.debug(f"Bot is currently playing a track in guild {self.__guild.id}")
+
+    def __is_active(self):
+        return self.__is_playing() or self.__is_paused()
 
     def __is_connected(self):
         return self.__voice_client is not None and self.__voice_client.is_connected()
@@ -72,12 +75,29 @@ class PlayerService:
     def __is_playing(self):
         return self.__voice_client is not None and self.__voice_client.is_playing()
 
+    def __is_paused(self):
+        return self.__voice_client is not None and self.__voice_client.is_paused()
+
     def __check_not_in_voice_channel(self):
         self.__logger.debug(f"Checking if the bot is currently connected to a voice channel in the guild {self.__guild.id}")
         if self.__is_connected():
             self.__logger.debug(f"Bot has already joined a voice channel in guild {self.__guild.id}")
             raise PlayerException("I've already joined a voice channel")
         self.__logger.debug(f"Bot hasn't joined a voice channel in guild {self.__guild.id} yet")
+
+    def __check_not_paused(self):
+        self.__logger.debug(f"Checking if the audio is currently paused in guild {self.__guild.id}")
+        if self.__is_paused():
+            self.__logger.debug(f"Audio playback is already paused in guild {self.__guild.id}")
+            raise PlayerException("Already paused. No need to rush.")
+        self.__logger.debug(f"Audio playback isn't paused in guild {self.__guild.id} yet")
+
+    def __check_paused(self):
+        self.__logger.debug(f"Checking if the audio is currently paused in guild {self.__guild.id}")
+        if not self.__is_paused():
+            self.__logger.debug(f"Audio playback is not paused in guild {self.__guild.id}")
+            raise PlayerException("The music never really stopped.")
+        self.__logger.debug(f"Audio playback is paused in guild {self.__guild.id}")
 
     async def join(self, member: nextcord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to join him in a voice channel of guild {self.__guild.id}")
@@ -271,7 +291,7 @@ class PlayerService:
             self.__safe_seek(duration)
 
     def __safe_seek(self, duration: int):
-        if self.__is_playing():
+        if self.__is_active():
             self.__logger.debug(f"Bot is currently playing, trying to seek to {duration}ms in guild {self.__guild.id}")
             self.__audio_source.elapsed = duration
         else:
@@ -307,7 +327,8 @@ class PlayerService:
             audio_source=AudioSourceStatus(
                 elapsed=self.__audio_source.elapsed,
                 total=self.__audio_source.total,
-                volume=self.__volume
+                volume=self.__volume,
+                paused=self.__is_paused(),
             )
         )
 
@@ -327,7 +348,7 @@ class PlayerService:
             if volume < 0 or volume > 200:
                 raise PlayerException("Volume must be between 0 and 200")
             self.__volume = volume
-            if self.__is_playing():
+            if self.__is_active():
                 self.__audio_source.volume = self.__volume / 100
 
     async def shuffle(self, member: nextcord.Member):
@@ -337,3 +358,21 @@ class PlayerService:
             self.__check_same_voice_channel(member)
             self.__check_active_audio_source()
             return await self.__queue.shuffle()
+
+    async def pause(self, member: nextcord.Member):
+        self.__logger.debug(f"Member {member.id} asked the bot to pause playback in guild {self.__guild.id}")
+        async with self.__lock:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            self.__check_active_audio_source()
+            self.__check_not_paused()
+            self.__voice_client.pause()
+
+    async def resume(self, member: nextcord.Member):
+        self.__logger.debug(f"Member {member.id} asked the bot to pause playback in guild {self.__guild.id}")
+        async with self.__lock:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            self.__check_active_audio_source()
+            self.__check_paused()
+            self.__voice_client.resume()
