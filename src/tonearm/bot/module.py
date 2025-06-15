@@ -14,6 +14,7 @@ class BotModule(Module):
                     application_command_error_listener: ApplicationCommandErrorListener,
                     ready_listener: ReadyListener,
                     voice_state_change_listener: VoiceStateChangeListener,
+                    back_command: BackCommand,
                     clean_command: CleanCommand,
                     clear_command: ClearCommand,
                     debug_command: DebugCommand,
@@ -55,6 +56,7 @@ class BotModule(Module):
         bot.add_cog(application_command_error_listener)
         bot.add_cog(ready_listener)
         bot.add_cog(voice_state_change_listener)
+        bot.add_cog(back_command)
         bot.add_cog(clean_command)
         bot.add_cog(clear_command)
         bot.add_cog(debug_command)
