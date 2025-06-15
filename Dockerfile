@@ -11,7 +11,7 @@ RUN apt-get update \
 FROM python:3.13-slim
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ffmpeg libffi8 libsodium23 \
+    && apt-get install -y --no-install-recommends ffmpeg libffi-dev libnacl-dev \
     && rm -rf /var/cache/apt/archives /var/lib/apt/lists/*
 
 COPY --from=builder /app /app
