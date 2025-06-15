@@ -21,24 +21,35 @@ class Queue:
         self.__logger = logging.getLogger("tonearm.queue")
         self.__condition = asyncio.Condition()
         self.__tracks: List[QueuedTrack] = []
+        self.__previous_track = -1
+        self.__current_track = None
         self.__next_track = 0
 
     async def get_next_track(self) -> QueuedTrack:
         self.__logger.debug(f"Getting next track in queue {repr(self)}")
         async with self.__condition:
+            self.__previous_track += 1
+            self.__current_track = None
             self.__logger.debug(f"Waiting for next track to be available in queue {repr(self)}")
             while self.__next_track >= len(self.__tracks):
                 await self.__condition.wait()
-            track = self.__tracks[self.__next_track]
-            self.__logger.debug(f"Finished waiting, next track in queue {repr(self)} is {repr(track)}")
+            self.__current_track = self.__next_track
             self.__next_track += 1
+            track = self.__tracks[self.__current_track]
+            self.__logger.debug(f"Finished waiting, next track in queue {repr(self)} is {repr(track)}")
             return track
 
-    async def clear(self):
-        self.__logger.debug(f"Clearing queue {repr(self)}")
+    async def clear(self, full: bool = False):
         async with self.__condition:
-            self.__next_track = 0
-            self.__tracks.clear()
+            if full:
+                self.__logger.debug(f"Completely clearing queue {repr(self)}")
+                self.__previous_track = -1
+                self.__current_track = None
+                self.__next_track = 0
+                self.__tracks.clear()
+            else:
+                self.__logger.debug(f"Clearing next tracks from queue {repr(self)}")
+                self.__tracks[self.__next_track:] = []
 
     async def queue(self, member: nextcord.Member, query: str):
         self.__logger.debug(f"Fetching track metadata for query {repr(query)} in queue {repr(self)}")
@@ -58,13 +69,25 @@ class Queue:
         return tracks
 
     def __get_previous_tracks(self):
-        return self.__tracks[0: self.__next_track - 1] if self.__next_track > 1 else []
+        return list(reversed(self.__tracks[0: self.__previous_track])) if self.__previous_track > -1 else []
 
     def __get_current_track(self):
-        return self.__tracks[self.__next_track - 1] if self.__next_track > 0 else None
+        return self.__tracks[self.__current_track] if self.__current_track is not None else None
 
     def __get_next_tracks(self):
         return self.__tracks[self.__next_track:]
+
+    async def get_previous_tracks(self) -> List[QueuedTrack]:
+        async with self.__condition:
+            return self.__get_previous_tracks()
+
+    async def get_current_track(self) -> QueuedTrack | None:
+        async with self.__condition:
+            return self.__get_current_track()
+
+    async def get_next_tracks(self) -> List[QueuedTrack]:
+        async with self.__condition:
+            return self.__get_next_tracks()
 
     async def get_status(self) -> QueueStatus:
         async with self.__condition:

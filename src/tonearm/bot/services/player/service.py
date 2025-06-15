@@ -99,6 +99,13 @@ class PlayerService:
             raise PlayerException("The music never really stopped.")
         self.__logger.debug(f"Audio playback is paused in guild {self.__guild.id}")
 
+    async def __check_queue_not_empty(self):
+        self.__logger.debug(f"Checking if the queue is empty in guild {self.__guild.id}")
+        if await self.__queue.get_current_track() is None:
+            self.__logger.debug(f"Queue is empty in guild {self.__guild.id}")
+            raise PlayerException("The queue is empty, what can I do ?")
+        self.__logger.debug(f"Queue not empty in guild {self.__guild.id}")
+
     async def join(self, member: nextcord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to join him in a voice channel of guild {self.__guild.id}")
         async with self.__lock:
@@ -194,9 +201,9 @@ class PlayerService:
             self.__check_active_audio_source()
             await self.__safe_stop()
 
-    async def __safe_stop(self):
+    async def __safe_stop(self, full_clear=False):
         self.__logger.debug(f"Got request to stop playing any track in guild {self.__guild.id}")
-        await self.__queue.clear()
+        await self.__queue.clear(full=full_clear)
         self.__logger.debug(f"Stopping current track in guild {self.__guild.id}")
         self.__safe_stop_current_track()
         self.__logger.debug(f"Clearing previous tracks in guild {self.__guild.id}")
@@ -212,7 +219,7 @@ class PlayerService:
         self.__logger.debug(f"Got request to leave voice channel in guild {self.__guild.id}")
         self.__graceful_leave = True
         self.__logger.debug(f"Stopping audio playback first in guild {self.__guild.id}")
-        await self.__safe_stop()
+        await self.__safe_stop(full_clear=True)
         self.__safe_cancel_loop()
         if self.__voice_client is None:
             self.__logger.debug(f"No current voice channel for guild {self.__guild.id}, no need to disconnect")
@@ -246,7 +253,7 @@ class PlayerService:
     async def __on_bot_disconnected(self):
         if not self.__graceful_leave:
             self.__logger.warning(f"The bot was kicked from its voice channel in guild {self.__guild.id}, this might cause issues")
-            await self.__safe_stop()
+            await self.__safe_stop(full_clear=True)
             self.__safe_cancel_loop()
         self.__last_leave = time.time()
 
@@ -337,7 +344,7 @@ class PlayerService:
         async with self.__lock:
             self.__check_member_in_voice_channel(member)
             self.__check_same_voice_channel(member)
-            self.__check_active_audio_source()
+            await self.__check_queue_not_empty()
             return await self.__get_status()
 
     async def volume(self, member: nextcord.Member, volume: int):
@@ -356,7 +363,7 @@ class PlayerService:
         async with self.__lock:
             self.__check_member_in_voice_channel(member)
             self.__check_same_voice_channel(member)
-            self.__check_active_audio_source()
+            await self.__check_queue_not_empty()
             return await self.__queue.shuffle()
 
     async def pause(self, member: nextcord.Member):
@@ -376,3 +383,10 @@ class PlayerService:
             self.__check_active_audio_source()
             self.__check_paused()
             self.__voice_client.resume()
+
+    async def history(self, member: nextcord.Member) -> List[QueuedTrack]:
+        self.__logger.debug(f"Member {member.id} asked the bot to get the track history in guild {self.__guild.id}")
+        async with self.__lock:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            return await self.__queue.get_previous_tracks()

@@ -42,6 +42,15 @@ class EmbedService:
         )
 
     @staticmethod
+    def history(previous_tracks: List[QueuedTrack], page: int):
+        embed = nextcord.Embed(
+            title="History",
+            colour=nextcord.Colour.dark_purple()
+        )
+        EmbedService.__build_track_list(embed, previous_tracks, page, "Previous tracks :", "Played :")
+        return embed
+
+    @staticmethod
     def join():
         return nextcord.Embed(
             description=":party_popper: Let's get this party started !",
@@ -130,30 +139,29 @@ class EmbedService:
         return embed
 
     @staticmethod
-    def queue(player_status: PlayerStatus, page: int):
-        next_tracks = player_status.queue.next_tracks
-        if len(next_tracks) == 0:
+    def __build_track_list(embed: nextcord.Embed, tracks: List[QueuedTrack], page: int, title: str, title2: str):
+        if len(tracks) == 0:
             max_pages = 1
         else:
-            max_pages = math.ceil(len(next_tracks) / 10)
+            max_pages = math.ceil(len(tracks) / 10)
         if page > max_pages:
-            raise EmbedException(f"Wow, the queue isn't that big.")
-        if len(next_tracks) == 0:
-            up_next = "*No track in the queue*"
+            raise EmbedException(f"I can't show you page {page} out of {max_pages}")
+        if len(tracks) == 0:
+            track_list = "*Nothing to show here*"
         else:
-            tracks = next_tracks[(page - 1) * 10: (page - 1) * 10 + 10]
-            up_next = "\n".join([
-                f"{bold(f'{(page - 1) * 10 + track + 1}.')} {link(escape_link_text(f'{tracks[track].title[:25]}{"..." if len(tracks[track].title) > 25 else ""}'), escape_link_url(tracks[track].url))}" for track in range(len(tracks))
+            tracks_chunk = tracks[(page - 1) * 10: (page - 1) * 10 + 10]
+            track_list = "\n".join([
+                f"{bold(f'{(page - 1) * 10 + track + 1}.')} {link(escape_link_text(f'{tracks_chunk[track].title[:25]}{"..." if len(tracks_chunk[track].title) > 25 else ""}'), escape_link_url(tracks_chunk[track].url))}"
+                for track in range(len(tracks_chunk))
             ])
-        embed = EmbedService.now(player_status)
         embed.add_field(
-            name="Up next :",
-            value=up_next,
+            name=title,
+            value=track_list,
             inline=False
         )
         embed.add_field(
-            name="In queue",
-            value=f"{len(next_tracks)} tracks" if len(next_tracks) > 1 else f"{len(next_tracks)} track",
+            name=title2,
+            value=f"{len(tracks)} tracks" if len(tracks) > 1 else f"{len(tracks)} track",
             inline=True
         )
         embed.add_field(
@@ -161,6 +169,11 @@ class EmbedService:
             value=f"{page} out of {max_pages}",
             inline=True
         )
+
+    @staticmethod
+    def queue(player_status: PlayerStatus, page: int):
+        embed = EmbedService.now(player_status)
+        EmbedService.__build_track_list(embed, player_status.queue.next_tracks, page, "Up next :", "In queue")
         return embed
 
     @staticmethod

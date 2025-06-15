@@ -3,6 +3,7 @@ from .clear import ClearCommand
 from .debug import DebugCommand
 from .dj import DjCommand
 from .forward import ForwardCommand
+from .history import HistoryCommand
 from .join import JoinCommand
 from .jump import JumpCommand
 from .leave import LeaveCommand

@@ -19,6 +19,7 @@ class SeekableFFmpegPCMAudio(nextcord.FFmpegPCMAudio):
             before_options=before_options,
             options=options
         )
+        #TODO: start forgetting old chunks to avoid filling all the ram
         self.__condition = threading.Condition()
         self.__chunks = []
         self.__next_chunk = 0
