@@ -47,7 +47,7 @@ class EmbedService:
             title="History",
             colour=nextcord.Colour.dark_purple()
         )
-        EmbedService.__build_track_list(embed, previous_tracks, page, "Previous tracks :", "Played :")
+        EmbedService.__build_track_list(embed, previous_tracks, page, "Previous tracks :", "Played")
         return embed
 
     @staticmethod
