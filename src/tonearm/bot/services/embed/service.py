@@ -5,6 +5,7 @@ import nextcord
 from injector import singleton
 
 from tonearm.bot.services.player import PlayerStatus, QueuedTrack
+from tonearm.bot.services.bot import TonearmVersion
 from tonearm.utils.markdown import *
 
 from .exceptions import EmbedException
@@ -216,6 +217,18 @@ class EmbedService:
         return nextcord.Embed(
             description=":stop_button: Music stopped. The crowd goes silent.",
             colour=nextcord.Colour.dark_purple()
+        )
+
+    @staticmethod
+    def version(version: TonearmVersion):
+        return nextcord.Embed(
+            description=(
+                f":robot: {link('Tonearm', version.homepage)}\n"
+                f"\n"
+                f"Version {inline_code(f'v{version.version}')}, up and running !\n"
+                f"Crafted with :heart: by {', '.join(map(italic, version.authors))}."
+            ),
+            colour=nextcord.Colour.dark_purple(),
         )
 
     @staticmethod

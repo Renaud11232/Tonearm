@@ -14,3 +14,6 @@ def bold(text: str) -> str:
 
 def inline_code(text: str) -> str:
     return f"`{text.replace('`', '\\`')}`"
+
+def italic(text: str) -> str:
+    return f"*{text.replace('*', '\\*')}*"

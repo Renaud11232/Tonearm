@@ -1,9 +1,12 @@
 import logging
+import importlib.metadata
 
 import nextcord
 from nextcord.ext import commands
 
 from injector import ProviderOf, inject, singleton
+
+from .version import TonearmVersion
 
 
 @singleton
@@ -35,3 +38,17 @@ class BotService:
             permissions=permissions
         )
         self.__logger.info(f"Tonearm is ready ! You can invite the bot with {invite_url}")
+
+    @staticmethod
+    async def version() -> TonearmVersion:
+        metadata = importlib.metadata.metadata("Tonearm")
+        version = metadata.get("Version")
+        author_emails = metadata.get_all("Author-email") or []
+        authors = list(map(lambda email: email.split(" <")[0], author_emails))
+        project_urls = metadata.get_all("Project-URL") or []
+        homepage = next((url[10:] for url in project_urls if url.startswith("homepage, ")), None)
+        return TonearmVersion(
+            version=version,
+            authors=authors,
+            homepage=homepage
+        )
