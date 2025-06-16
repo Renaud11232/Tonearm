@@ -28,7 +28,8 @@ class CleanCommand(commands.Cog):
     async def clean(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling clean command (interaction:{interaction.id})")
         await interaction.response.defer(ephemeral=True)
-        messages = await self.__chat_manager.get(interaction.channel).clean()
+        chat_service = await self.__chat_manager.get(interaction.channel)
+        messages = await chat_service.clean()
         await interaction.followup.send(
             embed=self.__embed_service.clean()
         )

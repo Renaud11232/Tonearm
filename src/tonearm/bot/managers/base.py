@@ -1,6 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
-import threading
+import asyncio
 from typing import TypeVar, Generic
 
 KeyType = TypeVar('KeyType')
@@ -9,7 +9,7 @@ ServiceType = TypeVar('ServiceType')
 class ManagerBase(ABC, Generic[KeyType, ServiceType]):
 
     def __init__(self):
-        self.__lock = threading.Lock()
+        self.__lock = asyncio.Lock()
         self.__services = {}
         self.__logger = logging.getLogger("tonearm.managers")
 
@@ -21,8 +21,8 @@ class ManagerBase(ABC, Generic[KeyType, ServiceType]):
     def _get_id(self, key: KeyType) -> str | int:
         pass
 
-    def get(self, key: KeyType) -> ServiceType:
-        with self.__lock:
+    async def get(self, key: KeyType) -> ServiceType:
+        async with self.__lock:
             id = self._get_id(key)
             if not id in self.__services:
                 self.__services[id] = self._create(key)

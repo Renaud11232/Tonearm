@@ -28,7 +28,8 @@ class HistoryCommand(commands.Cog):
                       page: int = SlashOption(required=False, default=1, min_value=1)):
         self.__logger.debug(f"Handling history command (interaction:{interaction.id})")
         await interaction.response.defer()
-        previous_tracks = await self.__player_manager.get(interaction.guild).history(interaction.user)
+        player_service = await self.__player_manager.get(interaction.guild)
+        previous_tracks = await player_service.history(interaction.user)
         await interaction.followup.send(
             embed=self.__embed_service.history(previous_tracks, page)
         )

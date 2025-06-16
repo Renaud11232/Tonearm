@@ -25,7 +25,6 @@ class SeekableFFmpegPCMAudio(nextcord.FFmpegPCMAudio):
         self.__next_chunk = 0
         self.__logger = logging.getLogger("tonearm.audiosource")
         self.__reader = threading.Thread(target=self.__read_all)
-        self.__reader.setDaemon(True)
         self.__reader.start()
 
     def __read_chunk(self):

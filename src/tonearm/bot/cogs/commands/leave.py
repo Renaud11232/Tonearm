@@ -25,7 +25,8 @@ class LeaveCommand(commands.Cog):
     async def leave(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling leave command (interaction:{interaction.id})")
         await interaction.response.defer()
-        await self.__player_manager.get(interaction.guild).leave(interaction.user)
+        player_service = await self.__player_manager.get(interaction.guild)
+        await player_service.leave(interaction.user)
         await interaction.followup.send(
             embed=self.__embed_service.leave()
         )

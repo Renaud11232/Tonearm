@@ -27,7 +27,8 @@ class ForwardCommand(commands.Cog):
         self.__logger.debug(f"Handling forward command (interaction:{interaction.id})")
         await interaction.response.defer()
         duration = await Duration().convert(interaction, duration)
-        await self.__player_manager.get(interaction.guild).forward(interaction.user, duration)
+        player_service = await self.__player_manager.get(interaction.guild)
+        await player_service.forward(interaction.user, duration)
         await interaction.followup.send(
             embed=self.__embed_service.forward()
         )

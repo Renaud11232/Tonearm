@@ -25,7 +25,8 @@ class DebugCommand(commands.Cog):
     async def debug(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling debug command (interaction:{interaction.id})")
         await interaction.response.defer(ephemeral=True)
-        debug_data = await self.__player_manager.get(interaction.guild).debug()
+        player_service = await self.__player_manager.get(interaction.guild)
+        debug_data = await player_service.debug()
         await interaction.followup.send(
             f":tools: Here it is, I hope it will help :\n"
             f"```\n"

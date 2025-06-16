@@ -27,7 +27,8 @@ class RewindCommand(commands.Cog):
         self.__logger.debug(f"Handling rewind command (interaction:{interaction.id})")
         await interaction.response.defer()
         duration = await Duration().convert(interaction, duration)
-        await self.__player_manager.get(interaction.guild).rewind(interaction.user, duration)
+        player_service = await self.__player_manager.get(interaction.guild)
+        await player_service.rewind(interaction.user, duration)
         await interaction.followup.send(
             embed=self.__embed_service.rewind()
         )
