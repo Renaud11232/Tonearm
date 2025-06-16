@@ -7,6 +7,7 @@ from injector import singleton
 from tonearm.bot.services.player import PlayerStatus, QueuedTrack
 from tonearm.bot.services.bot import TonearmVersion
 from tonearm.utils.markdown import *
+from tonearm.utils.strings import *
 
 from .exceptions import EmbedException
 
@@ -148,16 +149,18 @@ class EmbedService:
         if page > max_pages:
             raise EmbedException(f"I can't show you page {page} out of {max_pages}")
         if len(tracks) == 0:
-            track_list = "*Nothing to show here*"
+            track_list = [
+                italic("Nothing to show here")
+            ]
         else:
             tracks_chunk = tracks[(page - 1) * 10: (page - 1) * 10 + 10]
-            track_list = "\n".join([
-                f"{bold(f'{(page - 1) * 10 + track + 1}.')} {link(escape_link_text(f'{tracks_chunk[track].title[:25]}{"..." if len(tracks_chunk[track].title) > 25 else ""}'), escape_link_url(tracks_chunk[track].url))}"
+            track_list = [
+                f"{bold(f'{(page - 1) * 10 + track + 1}.')} {link(escape_link_text(truncate(tracks_chunk[track].title, 25)), escape_link_url(tracks_chunk[track].url))}"
                 for track in range(len(tracks_chunk))
-            ])
+            ]
         embed.add_field(
             name=title,
-            value=track_list,
+            value="\n".join(track_list),
             inline=False
         )
         embed.add_field(

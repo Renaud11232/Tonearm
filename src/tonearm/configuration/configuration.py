@@ -5,12 +5,14 @@ class Configuration:
                  log_level: str,
                  youtube_api_key: str,
                  cobalt_api_url: str,
-                 cobalt_api_key: str | None):
+                 cobalt_api_key: str | None,
+                 data_path: str):
         self.__discord_token = discord_token
         self.__log_level = log_level
         self.__youtube_api_key = youtube_api_key
         self.__cobalt_api_url = cobalt_api_url
         self.__cobalt_api_key = cobalt_api_key
+        self.__data_path = data_path
 
     @property
     def discord_token(self) -> str:
@@ -31,4 +33,8 @@ class Configuration:
     @property
     def cobalt_api_key(self) -> str:
         return self.__cobalt_api_key
+
+    @property
+    def data_path(self) -> str:
+        return self.__data_path
     

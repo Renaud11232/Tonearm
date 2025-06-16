@@ -16,4 +16,6 @@ RUN apt-get update \
 
 COPY --from=builder /app /app
 
+ENV DATA_PATH /data
+
 ENTRYPOINT ["/app/bin/tonearm"]
