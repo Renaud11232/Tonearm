@@ -74,42 +74,53 @@ class EmbedService:
         )
 
     @staticmethod
-    def __format_duration(duration, minimum_positions):
+    def __slice_duration(duration):
         if math.isinf(duration):
-            return "∞"
+            return math.nan, math.nan, math.nan, math.nan
         total_seconds = math.floor(duration / 1000)
         seconds = total_seconds % 60
         minutes = (total_seconds // 60) % 60
         hours = (total_seconds // (60 * 60)) % 24
         days = total_seconds // (60 * 60 *  24)
-        positions = []
+        return days, hours, minutes, seconds
+
+    @staticmethod
+    def __format_duration(elapsed, total, minimum_positions):
+        elapsed_days, elapsed_hours, elapsed_minutes, elapsed_seconds = EmbedService.__slice_duration(elapsed)
+        total_days, total_hours, total_minutes, total_seconds = EmbedService.__slice_duration(total)
+        elapsed_segments = []
+        total_segments = []
         show_next_number = False
-        if days > 0 or minimum_positions > 3:
-            positions.append(f"{days}")
+        if elapsed_days > 0 or total_days > 0 or minimum_positions > 3:
+            elapsed_segments.append(f"{elapsed_days}")
+            total_segments.append("--" if math.isnan(total_days) else f"{total_days}")
             show_next_number = True
-        if show_next_number or hours > 0 or minimum_positions > 2:
-            positions.append(f"{hours:0>2}")
+        if show_next_number or elapsed_hours > 0 or total_hours > 0 or minimum_positions > 2:
+            elapsed_segments.append(f"{elapsed_hours:0>2}")
+            total_segments.append("--" if math.isnan(total_hours) else f"{total_hours:0>2}")
             show_next_number = True
-        if show_next_number or minutes > 0 or minimum_positions > 1:
-            positions.append(f"{minutes:0>2}")
+        if show_next_number or elapsed_minutes > 0 or total_minutes > 0 or minimum_positions > 1:
+            elapsed_segments.append(f"{elapsed_minutes:0>2}")
+            total_segments.append("--" if math.isnan(total_minutes) else f"{total_minutes:0>2}")
             show_next_number = True
-        if show_next_number or seconds > 0 or minimum_positions > 0:
-            positions.append(f"{seconds:0>2}")
-        return ":".join(positions)
+        if show_next_number or elapsed_seconds > 0 or total_seconds > 0 or minimum_positions > 0:
+            elapsed_segments.append(f"{elapsed_seconds:0>2}")
+            total_segments.append("--" if math.isnan(total_seconds) else f"{total_seconds:0>2}")
+        return ":".join(elapsed_segments), ":".join(total_segments)
 
     @staticmethod
     def now(player_status: PlayerStatus):
         elapsed_fraction = round((player_status.audio_source.elapsed / player_status.audio_source.total) * 9)
         bar_progress = "".join([":radio_button:" if i == elapsed_fraction else "▬" for i in range(10)])
-        total_time = EmbedService.__format_duration(player_status.audio_source.total, minimum_positions=2)
-        elapsed_time = EmbedService.__format_duration(
+        elapsed_time, total_time = EmbedService.__format_duration(
             player_status.audio_source.elapsed,
-            minimum_positions=max(len(total_time.split(":")), 2)
+            player_status.audio_source.total,
+            minimum_positions=2
         )
         embed = nextcord.Embed(
             title="Now Playing",
             description=(
-                f"{bold(link(escape_link_text(player_status.queue.current_track.title), escape_link_url(player_status.queue.current_track.url)))}\n"
+                f"{bold(link(escape_link_text(truncate(player_status.queue.current_track.title, 50)), escape_link_url(player_status.queue.current_track.url)))}\n"
                 f"Requested by : {player_status.queue.current_track.member.mention}\n"
                 f"\n"
                 f"{':pause_button:' if player_status.audio_source.paused else ':arrow_forward:'} {bar_progress} {inline_code(f'[{elapsed_time}/{total_time}]')} :sound: {round(player_status.audio_source.volume)}%"
