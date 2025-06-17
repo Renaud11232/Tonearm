@@ -26,7 +26,7 @@ class StorageService:
 
     async def set(self, key: str | List[str], value):
         key = self.__split_key(key)
-        with self.__lock:
+        async with self.__lock:
             parent = self.__data
             for k in key[:-1]:
                 if k not in parent:
@@ -37,7 +37,7 @@ class StorageService:
 
     async def get(self, key: str | List[str], *, default=None):
         key = self.__split_key(key)
-        with self.__lock:
+        async with self.__lock:
             value = self.__data
             for k in key:
                 if k not in value:
