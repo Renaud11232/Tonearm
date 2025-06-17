@@ -14,18 +14,18 @@ class ManagerBase(ABC, Generic[KeyType, ServiceType]):
         self.__logger = logging.getLogger("tonearm.managers")
 
     @abstractmethod
-    def _create(self, key: KeyType) -> ServiceType:
+    async def _create(self, key: KeyType) -> ServiceType:
         pass
 
     @abstractmethod
-    def _get_id(self, key: KeyType) -> str | int:
+    async def _get_id(self, key: KeyType) -> str | int:
         pass
 
     async def get(self, key: KeyType) -> ServiceType:
         async with self.__lock:
-            id = self._get_id(key)
+            id = await self._get_id(key)
             if not id in self.__services:
-                self.__services[id] = self._create(key)
+                self.__services[id] = await self._create(key)
                 self.__logger.debug(f"Created new {type(self.__services[id]).__name__} for {type(key).__name__} {id}")
             return self.__services[id]
 

@@ -10,6 +10,7 @@ from nextcord.ext import commands
 from injector import inject, noninjectable
 
 from tonearm.bot.services.media import MediaService, MediaFetchingException
+from tonearm.bot.services.storage import StorageService
 
 from .exceptions import PlayerException
 from .audiosource import ControllableFFmpegPCMAudio
@@ -21,9 +22,10 @@ from .status import PlayerStatus, AudioSourceStatus
 class PlayerService:
 
     @inject
-    @noninjectable("guild")
-    def __init__(self, guild: nextcord.Guild, bot: commands.Bot, queue: Queue, media_service: MediaService):
+    @noninjectable("guild", "storage_service")
+    def __init__(self, guild: nextcord.Guild, storage_service: StorageService, bot: commands.Bot, queue: Queue, media_service: MediaService):
         self.__guild = guild
+        self.__storage_service = storage_service
         self.__bot = bot
         self.__queue = queue
         self.__media_service = media_service
@@ -34,7 +36,6 @@ class PlayerService:
         self.__player_loop_task: asyncio.Task | None = None
         self.__graceful_leave = True
         self.__last_leave = None
-        self.__volume = 100
 
     @property
     def __voice_client(self) -> nextcord.VoiceClient | None:
@@ -138,7 +139,7 @@ class PlayerService:
                             stream_url = self.__media_service.fetch(next_track.url)
                             self.__logger.debug(f"Starting playback of url {stream_url} in guild {self.__guild.id}")
                             self.__audio_source = ControllableFFmpegPCMAudio(stream_url)
-                            self.__audio_source.volume = self.__volume / 100
+                            self.__audio_source.volume = await self.__storage_service.get("volume", default=100) / 100
                             self.__voice_client.play(
                                 self.__audio_source,
                                 after=self.__on_audio_source_ended
@@ -334,7 +335,7 @@ class PlayerService:
             audio_source=AudioSourceStatus(
                 elapsed=self.__audio_source.elapsed,
                 total=self.__audio_source.total,
-                volume=self.__volume,
+                volume=await self.__storage_service.get("volume", default=100),
                 paused=self.__is_paused(),
             )
         )
@@ -354,9 +355,9 @@ class PlayerService:
             self.__check_same_voice_channel(member)
             if volume < 0 or volume > 200:
                 raise PlayerException("Volume must be between 0 and 200")
-            self.__volume = volume
+            await self.__storage_service.set("volume", volume)
             if self.__is_active():
-                self.__audio_source.volume = self.__volume / 100
+                self.__audio_source.volume = volume / 100
 
     async def shuffle(self, member: nextcord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to shuffle the queue in guild {self.__guild.id}")

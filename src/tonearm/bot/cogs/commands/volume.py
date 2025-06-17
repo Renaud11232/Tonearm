@@ -26,7 +26,6 @@ class VolumeCommand(commands.Cog):
     async def volume(self,
                      interaction: nextcord.Interaction,
                      volume: int = SlashOption(required=True, min_value=0, max_value=200)):
-        #TODO persist volume
         self.__logger.debug(f"Handling volume command (interaction:{interaction.id})")
         await interaction.response.defer()
         player_service = await self.__player_manager.get(interaction.guild)

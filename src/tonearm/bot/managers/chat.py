@@ -14,10 +14,10 @@ class ChatManager(ManagerBase[nextcord.TextChannel, ChatService]):
         super().__init__()
         self.__injector = injector
 
-    def _get_id(self, key: nextcord.TextChannel) -> int:
+    async def _get_id(self, key: nextcord.TextChannel) -> int:
         return key.id
 
-    def _create(self, key: nextcord.TextChannel) -> ChatService:
+    async def _create(self, key: nextcord.TextChannel) -> ChatService:
         return self.__injector.create_object(
             ChatService,
             additional_kwargs={

@@ -2,6 +2,5 @@
 /.idea/
 *.iml
 /.github/
-/.git/
-/.gitignore
 /compose.yaml
+/data/
