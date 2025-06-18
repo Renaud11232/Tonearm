@@ -11,6 +11,7 @@ from injector import inject, noninjectable
 
 from tonearm.bot.services.media import MediaService, MediaFetchingException
 from tonearm.bot.services.storage import StorageService
+from tonearm.configuration import Configuration
 
 from .exceptions import PlayerException
 from .audiosource import ControllableFFmpegPCMAudio
@@ -23,12 +24,13 @@ class PlayerService:
 
     @inject
     @noninjectable("guild", "storage_service")
-    def __init__(self, guild: nextcord.Guild, storage_service: StorageService, bot: commands.Bot, queue: Queue, media_service: MediaService):
+    def __init__(self, guild: nextcord.Guild, storage_service: StorageService, bot: commands.Bot, queue: Queue, media_service: MediaService, configuration: Configuration):
         self.__guild = guild
         self.__storage_service = storage_service
         self.__bot = bot
         self.__queue = queue
         self.__media_service = media_service
+        self.__configuration = configuration
         self.__logger = logging.getLogger("tonearm.player")
         self.__lock = asyncio.Lock()
         self.__condition = asyncio.Condition()
@@ -138,7 +140,7 @@ class PlayerService:
                         try:
                             stream_url = self.__media_service.fetch(next_track.url)
                             self.__logger.debug(f"Starting playback of url {stream_url} in guild {self.__guild.id}")
-                            self.__audio_source = ControllableFFmpegPCMAudio(stream_url)
+                            self.__audio_source = ControllableFFmpegPCMAudio(stream_url, buffer_length=self.__configuration.buffer_length)
                             self.__audio_source.volume = await self.__storage_service.get("volume", default=100) / 100
                             self.__voice_client.play(
                                 self.__audio_source,

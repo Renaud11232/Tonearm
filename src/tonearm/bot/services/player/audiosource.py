@@ -11,7 +11,7 @@ from .buffer import AudioBuffer
 
 class SeekableFFmpegPCMAudio(nextcord.FFmpegPCMAudio):
 
-    def __init__(self, source, *, executable="ffmpeg", pipe=False, stderr=subprocess.DEVNULL, before_options=None, options=None):
+    def __init__(self, source, *, buffer_length: int, executable="ffmpeg", pipe=False, stderr=subprocess.DEVNULL, before_options=None, options=None):
         super().__init__(
             source,
             executable=executable,
@@ -23,7 +23,7 @@ class SeekableFFmpegPCMAudio(nextcord.FFmpegPCMAudio):
         self.__condition = threading.Condition()
         self.__offset = 0
         self.__next_chunk = 0
-        self.__chunks = AudioBuffer((1_000 // 20) * 60 * 60 * 2) # 2 hours of audio
+        self.__chunks = AudioBuffer((1_000 // 20) * buffer_length)
         self.__logger = logging.getLogger("tonearm.audiosource")
         self.__buffering_stopped = False
         self.__buffering_thread = threading.Thread(target=self.__buffer_all)
@@ -99,14 +99,15 @@ class SeekableFFmpegPCMAudio(nextcord.FFmpegPCMAudio):
 
 class ControllableFFmpegPCMAudio(nextcord.PCMVolumeTransformer):
 
-    def __init__(self, source, *, executable="ffmpeg", pipe=False, stderr=subprocess.DEVNULL, before_options=None, options=None):
+    def __init__(self, source, *, buffer_length: int, executable="ffmpeg", pipe=False, stderr=subprocess.DEVNULL, before_options=None, options=None):
         self.__source = SeekableFFmpegPCMAudio(
             source,
             executable=executable,
             pipe=pipe,
             stderr=stderr,
             before_options=before_options,
-            options=options
+            options=options,
+            buffer_length=buffer_length
         )
         super().__init__(self.__source)
 

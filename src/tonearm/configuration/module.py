@@ -66,6 +66,15 @@ class ConfigurationModule(Module):
             env_var="DATA_PATH",
             help="Directory path where Tonearm will store its data and configuration. If omitted, the value of the `DATA_PATH` environment variable will be used. Defaults to the current working directory"
         )
+        parser.add_argument(
+            "--buffer-length",
+            action=EnvDefault,
+            type=int,
+            required=True,
+            default=60 * 60 * 2,
+            env_var="BUFFER_LENGTH",
+            help="Buffer length in seconds. This will be used to control how much memory will be used by players, as a tradeoff, setting smaller buffer sizes means you won't be able to seek far into long tracks. Defaults to 7200 seconds (2 hours)."
+        )
         args = parser.parse_args()
         return Configuration(
             discord_token=args.discord_token,
@@ -74,4 +83,5 @@ class ConfigurationModule(Module):
             cobalt_api_key=args.cobalt_api_key,
             cobalt_api_url=args.cobalt_api_url,
             data_path=args.data_path,
+            buffer_length=args.buffer_length,
         )
