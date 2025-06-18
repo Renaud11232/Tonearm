@@ -252,6 +252,7 @@ class PlayerService:
         return len(others) == 0
 
     async def __on_bot_disconnected(self):
+        #FIXME: This gets triggered when the bot shortly disconnects and reconnects, killing him even tho it's still OK
         if not self.__graceful_leave:
             self.__logger.warning(f"The bot was kicked from its voice channel in guild {self.__guild.id}, this might cause issues")
             await self.__safe_stop(full_clear=True)
