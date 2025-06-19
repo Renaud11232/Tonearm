@@ -2,6 +2,7 @@ import asyncio
 from typing import List
 import logging
 import random
+from collections import deque
 
 import nextcord
 
@@ -11,6 +12,7 @@ from tonearm.bot.services.metadata import MetadataService
 
 from .track import QueuedTrack
 from .status import QueueStatus
+from .exceptions import QueueException
 
 
 class Queue:
@@ -20,36 +22,33 @@ class Queue:
         self.__metadata_service = metadata_service
         self.__logger = logging.getLogger("tonearm.queue")
         self.__condition = asyncio.Condition()
-        self.__tracks: List[QueuedTrack] = []
-        self.__previous_track = -1
-        self.__current_track = None
-        self.__next_track = 0
+        self.__previous_tracks: deque[QueuedTrack] = deque()
+        self.__current_track: QueuedTrack | None = None
+        self.__next_tracks: deque[QueuedTrack] = deque()
 
     async def get_next_track(self) -> QueuedTrack:
         self.__logger.debug(f"Getting next track in queue {repr(self)}")
         async with self.__condition:
-            self.__previous_track += 1
-            self.__current_track = None
+            if self.__current_track is not None:
+                self.__previous_tracks.append(self.__current_track)
+                self.__current_track = None
             self.__logger.debug(f"Waiting for next track to be available in queue {repr(self)}")
-            while self.__next_track >= len(self.__tracks):
+            while len(self.__next_tracks) < 1:
                 await self.__condition.wait()
-            self.__current_track = self.__next_track
-            self.__next_track += 1
-            track = self.__tracks[self.__current_track]
-            self.__logger.debug(f"Finished waiting, next track in queue {repr(self)} is {repr(track)}")
-            return track
+            self.__current_track = self.__next_tracks.popleft()
+            self.__logger.debug(f"Finished waiting, next track in queue {repr(self)} is {repr(self.__current_track)}")
+            return self.__current_track
 
     async def clear(self, full: bool = False):
         async with self.__condition:
             if full:
                 self.__logger.debug(f"Completely clearing queue {repr(self)}")
-                self.__previous_track = -1
+                self.__previous_tracks.clear()
                 self.__current_track = None
-                self.__next_track = 0
-                self.__tracks.clear()
+                self.__next_tracks.clear()
             else:
                 self.__logger.debug(f"Clearing next tracks from queue {repr(self)}")
-                self.__tracks[self.__next_track:] = []
+                self.__next_tracks.clear()
 
     async def queue(self, member: nextcord.Member, query: str):
         self.__logger.debug(f"Fetching track metadata for query {repr(query)} in queue {repr(self)}")
@@ -63,19 +62,19 @@ class Queue:
             ) for track in self.__metadata_service.fetch(query)
         ]
         async with self.__condition:
-            self.__tracks.extend(tracks)
+            self.__next_tracks.extend(tracks)
             self.__condition.notify()
         self.__logger.debug(f"Added {len(tracks)} track(s) in queue {repr(self)}")
         return tracks
 
     def __get_previous_tracks(self):
-        return list(reversed(self.__tracks[0: self.__previous_track])) if self.__previous_track > -1 else []
+        return list(reversed(self.__previous_tracks))
 
     def __get_current_track(self):
-        return self.__tracks[self.__current_track] if self.__current_track is not None else None
+        return self.__current_track
 
     def __get_next_tracks(self):
-        return self.__tracks[self.__next_track:]
+        return list(self.__next_tracks)
 
     async def get_previous_tracks(self) -> List[QueuedTrack]:
         async with self.__condition:
@@ -100,6 +99,22 @@ class Queue:
     async def shuffle(self):
         self.__logger.debug(f"Shuffling next tracks in queue {repr(self)}")
         async with self.__condition:
-            next_tracks = self.__get_next_tracks()
-            random.shuffle(next_tracks)
-            self.__tracks[self.__next_track:] = next_tracks
+            random.shuffle(self.__next_tracks)
+
+    async def jump(self, position: int):
+        self.__logger.debug(f"Jumping to next track {position} in queue {repr(self)}")
+        async with self.__condition:
+            #TODO
+            pass
+
+    async def back(self, position: int):
+        self.__logger.debug(f"Going back to previous track {position} in queue {repr(self)}")
+        async with self.__condition:
+            if position >= len(self.__previous_tracks):
+                self.__logger.debug(f"Not enough tracks in history to go to previous track {position} in queue {repr(self)}")
+                raise QueueException(f"That’s further back than my memory goes. Try a smaller number.")
+            if self.__current_track is not None:
+                self.__next_tracks.insert(0, self.__current_track)
+                self.__current_track = None
+            #TODO
+            self.__condition.notify()

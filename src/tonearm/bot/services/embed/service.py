@@ -23,6 +23,16 @@ class EmbedService:
         )
 
     @staticmethod
+    def back(position: int):
+        if position == 1:
+            return EmbedService.previous()
+        return nextcord.Embed(
+            description=f":track_previous: Rewinding {position} songs. Let’s bring those back!",
+            colour=nextcord.Colour.dark_purple()
+        )
+
+
+    @staticmethod
     def clean():
         return nextcord.Embed(
             description=":ghost: All my messages are gone. It's like I was never here !",
@@ -56,6 +66,15 @@ class EmbedService:
     def join():
         return nextcord.Embed(
             description=":party_popper: Let's get this party started !",
+            colour=nextcord.Colour.dark_purple()
+        )
+
+    @staticmethod
+    def jump(position: int):
+        if position == 1:
+            return EmbedService.next()
+        return nextcord.Embed(
+            description=f":track_next: Boom. Skipped straight to track {position}. Enjoy !",
             colour=nextcord.Colour.dark_purple()
         )
 
@@ -150,6 +169,13 @@ class EmbedService:
         else:
             embed.description = f":cd: Added {bold(escape_markdown(tracks[0].title))} to the queue ! This one’s gonna slap."
         return embed
+
+    @staticmethod
+    def previous():
+        return nextcord.Embed(
+            description=":track_previous: Because one listen wasn’t enough...",
+            colour=nextcord.Colour.dark_purple()
+        )
 
     @staticmethod
     def __build_track_list(embed: nextcord.Embed, tracks: List[QueuedTrack], page: int, title: str, title2: str):
