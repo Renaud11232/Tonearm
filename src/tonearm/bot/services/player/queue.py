@@ -30,10 +30,10 @@ class Queue:
         self.__logger.debug(f"Getting next track in queue {repr(self)}")
         async with self.__condition:
             if self.__current_track is not None:
-                self.__previous_tracks.append(self.__current_track)
+                self.__previous_tracks.appendleft(self.__current_track)
                 self.__current_track = None
             self.__logger.debug(f"Waiting for next track to be available in queue {repr(self)}")
-            while len(self.__next_tracks) < 1:
+            while len(self.__next_tracks) == 0:
                 await self.__condition.wait()
             self.__current_track = self.__next_tracks.popleft()
             self.__logger.debug(f"Finished waiting, next track in queue {repr(self)} is {repr(self.__current_track)}")
@@ -68,7 +68,7 @@ class Queue:
         return tracks
 
     def __get_previous_tracks(self):
-        return list(reversed(self.__previous_tracks))
+        return list(self.__previous_tracks)
 
     def __get_current_track(self):
         return self.__current_track
@@ -102,10 +102,17 @@ class Queue:
             random.shuffle(self.__next_tracks)
 
     async def jump(self, position: int):
-        self.__logger.debug(f"Jumping to next track {position} in queue {repr(self)}")
+        self.__logger.debug(f"Jumping to track {position} in queue {repr(self)}")
         async with self.__condition:
-            #TODO
-            pass
+            if position >= len(self.__next_tracks):
+                self.__logger.debug(f"Not enough tracks to jump to track {position} in queue {repr(self)}")
+                raise QueueException("Jump failed. That’s outside the queue’s bounds.")
+            if self.__current_track is not None:
+                self.__previous_tracks.appendleft(self.__current_track)
+                self.__current_track = None
+            for _ in range(position):
+                self.__previous_tracks.appendleft(self.__next_tracks.popleft())
+            self.__condition.notify()
 
     async def back(self, position: int):
         self.__logger.debug(f"Going back to previous track {position} in queue {repr(self)}")
@@ -114,7 +121,8 @@ class Queue:
                 self.__logger.debug(f"Not enough tracks in history to go to previous track {position} in queue {repr(self)}")
                 raise QueueException(f"That’s further back than my memory goes. Try a smaller number.")
             if self.__current_track is not None:
-                self.__next_tracks.insert(0, self.__current_track)
+                self.__next_tracks.appendleft(self.__current_track)
                 self.__current_track = None
-            #TODO
+            for _ in range(position + 1):
+                self.__next_tracks.appendleft(self.__previous_tracks.popleft())
             self.__condition.notify()
