@@ -70,19 +70,25 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
         id = self.__get_playlist_id(url)
         self._logger.debug(f"Fetching metadata via YouTube Playlist Items API for playlist id : {id}")
         try:
-            response = self._youtube.playlistItems().list(
+            items = []
+            request = self._youtube.playlistItems().list(
                 part="snippet",
                 playlistId=id,
                 maxResults=50
-            ).execute()
-            return [
-                TrackMetadata(
-                    url=f"https://www.youtube.com/watch?v={item["snippet"]["resourceId"]["videoId"]}",
-                    title=html.unescape(item["snippet"]["title"]),
-                    source=html.unescape(item["snippet"]["videoOwnerChannelTitle"]),
-                    thumbnail=item["snippet"]["thumbnails"]["medium"]["url"]
-                ) for item in response["items"]
-            ]
+            )
+            while request:
+                response = request.execute()
+                for item in response["items"]:
+                    items.append(
+                        TrackMetadata(
+                            url=f"https://www.youtube.com/watch?v={item["snippet"]["resourceId"]["videoId"]}",
+                            title=html.unescape(item["snippet"]["title"]),
+                            source=html.unescape(item["snippet"]["videoOwnerChannelTitle"]),
+                            thumbnail=item["snippet"]["thumbnails"]["medium"]["url"]
+                        )
+                    )
+                    request = self._youtube.playlistItems().list_next(request, response)
+            return items
         except googleapiclient.errors.HttpError as e:
             self._logger.warning(f"YouTube playlistItems API returned error : {repr(e)}")
             raise MetadataFetchingException(f"YouTube playlistItems API returned status `{e.status_code}` : `{e.reason}`")
