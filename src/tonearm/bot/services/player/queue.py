@@ -126,3 +126,14 @@ class Queue:
             for _ in range(track + 1):
                 self.__next_tracks.appendleft(self.__previous_tracks.popleft())
             self.__condition.notify()
+
+    async def remove(self, track: int) -> QueuedTrack:
+        self.__logger.debug(f"Removing track {track} in queue {repr(self)}")
+        async with self.__condition:
+            if track >= len(self.__next_tracks):
+                self.__logger.debug(f"Not enough tracks to remove track {track} in queue {repr(self)}")
+                raise QueueException("Oops ! Nothing to remove at that spot !")
+            removed_track = self.__next_tracks[track]
+            del self.__next_tracks[track]
+            self.__condition.notify()
+            return removed_track

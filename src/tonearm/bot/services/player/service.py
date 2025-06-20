@@ -419,3 +419,11 @@ class PlayerService:
             self.__check_active_audio_source()
             await self.__queue.jump(track - 1)
             self.__safe_stop_current_track()
+
+    async def remove(self, member: nextcord.Member, track: int) -> QueuedTrack:
+        self.__logger.debug(f"Member {member.id} asked the bot to remove track {track} from the queue in guild {self.__guild.id}")
+        async with self.__condition:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            await self.__check_queue_not_empty()
+            return await self.__queue.remove(track - 1)

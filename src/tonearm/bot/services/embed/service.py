@@ -233,6 +233,13 @@ class EmbedService:
         return embed
 
     @staticmethod
+    def remove(track: QueuedTrack):
+        return nextcord.Embed(
+            description=f":scissors: Say goodbye to {bold(escape_markdown(track.title))}. It didn’t make the cut.",
+            colour=nextcord.Colour.dark_purple()
+        )
+
+    @staticmethod
     def resume():
         return nextcord.Embed(
             description=":play_pause: Back in action ! Enjoy the tracks.",
