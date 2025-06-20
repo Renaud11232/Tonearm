@@ -129,7 +129,7 @@ class PlayerService:
         self.__logger.debug(f"Checking if the bot was recently kicked from a voice channel in guild {self.__guild.id}")
         if not self.__graceful_leave and self.__last_leave is not None and time.time() < self.__last_leave + 60:
             self.__logger.debug(f"The bot was kicked recently and must wait {math.ceil(self.__last_leave + 60 - time.time())} seconds before joining a voice channel in guild {self.__guild.id}")
-            raise PlayerException(f"I can't join right now, please try again in {math.ceil(self.__last_leave + 60 - time.time())} seconds")
+            raise PlayerException(f"Clearly someone didn't want me here, ask me again in {math.ceil(self.__last_leave + 60 - time.time())} second(s)")
         self.__logger.debug(f"The bot wasn't kicked recently, connecting to channel {channel.id} of guild {self.__guild.id}")
         await channel.connect()
         self.__graceful_leave = False
