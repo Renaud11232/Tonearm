@@ -26,6 +26,7 @@ class StorageManager(ManagerBase[nextcord.Guild, StorageService]):
         return self.__injector.create_object(
             StorageService,
             additional_kwargs={
+                "guild": key,
                 "file_name": os.path.join(self.__configuration.data_path, "guilds", f"{key.id}.json")
             }
         )

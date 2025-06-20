@@ -47,6 +47,34 @@ class EmbedService:
         )
 
     @staticmethod
+    def dj_add_role(role: nextcord.Role):
+        return nextcord.Embed(
+            description=f":white_check_mark: Members of {role.mention} are now DJs.",
+            colour=nextcord.Colour.dark_purple()
+        )
+
+    @staticmethod
+    def dj_add_member(member: nextcord.Member):
+        return nextcord.Embed(
+            description=f":white_check_mark: {member.mention} is now a DJ.",
+            colour=nextcord.Colour.dark_purple()
+        )
+
+    @staticmethod
+    def dj_remove_role(role: nextcord.Role):
+        return nextcord.Embed(
+            description=f":white_check_mark: Members of {role.mention} are no longer DJs.",
+            colour=nextcord.Colour.dark_purple()
+        )
+
+    @staticmethod
+    def dj_remove_member(member: nextcord.Member):
+        return nextcord.Embed(
+            description=f":white_check_mark: {member.mention} is no longer a DJ.",
+            colour=nextcord.Colour.dark_purple()
+        )
+
+    @staticmethod
     def forward():
         return nextcord.Embed(
             description=":fast_forward: Who needs intros anyway ?",

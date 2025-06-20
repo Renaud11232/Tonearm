@@ -3,13 +3,17 @@ import pathlib
 import asyncio
 from typing import List
 
-from injector import noninjectable
+import nextcord
+
+from injector import noninjectable, inject
 
 
 class StorageService:
 
     @noninjectable("file_name")
-    def __init__(self, file_name: str):
+    @inject
+    def __init__(self, guild: nextcord.Guild, file_name: str):
+        self.__guild = guild
         self.__file_name = file_name
         self.__lock = asyncio.Lock()
         try:
@@ -24,7 +28,7 @@ class StorageService:
         with open(self.__file_name, 'w', encoding="utf-8") as f:
             json.dump(self.__data, f, indent=2)
 
-    async def set(self, key: str | List[str], value):
+    async def __set(self, key: str | List[str], value):
         key = self.__split_key(key)
         async with self.__lock:
             parent = self.__data
@@ -35,7 +39,7 @@ class StorageService:
             parent[key[-1]] = value
             self.__save()
 
-    async def get(self, key: str | List[str], *, default=None):
+    async def __get(self, key: str | List[str], *, default=None):
         key = self.__split_key(key)
         async with self.__lock:
             value = self.__data
@@ -50,3 +54,25 @@ class StorageService:
         if isinstance(key, str):
             return key.split(".")
         return key
+
+    async def get_volume(self) -> int:
+        return await self.__get("volume", default=100)
+
+    async def set_volume(self, volume: int):
+        await self.__set("volume", volume)
+
+    async def get_dj_roles(self) -> List[nextcord.Role]:
+        roles = await self.__get("dj.roles", default=[])
+        return [self.__guild.get_role(role) for role in roles]
+
+    async def set_dj_roles(self, dj_roles: List[nextcord.Role]):
+        roles = [role.id for role in dj_roles]
+        return await self.__set("dj.roles", roles)
+
+    async def get_djs(self) -> List[nextcord.Member]:
+        members = await self.__get("dj.members", default=[])
+        return [self.__guild.get_member(member) for member in members]
+
+    async def set_djs(self, djs: List[nextcord.Member]):
+        members = [member.id for member in djs]
+        return await self.__set("dj.members", members)

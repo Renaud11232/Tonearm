@@ -141,7 +141,7 @@ class PlayerService:
                         self.__logger.debug(f"Starting playback of url {stream_url} in guild {self.__guild.id}")
                         async with self.__condition:
                             self.__audio_source = ControllableFFmpegPCMAudio(stream_url, buffer_length=self.__configuration.buffer_length)
-                            self.__audio_source.volume = await self.__storage_service.get("volume", default=100) / 100
+                            self.__audio_source.volume = await self.__storage_service.get_volume() / 100
                             self.__voice_client.play(
                                 self.__audio_source,
                                 after=self.__on_audio_source_ended
@@ -329,7 +329,7 @@ class PlayerService:
             audio_source=AudioSourceStatus(
                 elapsed=self.__audio_source.elapsed,
                 total=self.__audio_source.total,
-                volume=await self.__storage_service.get("volume", default=100),
+                volume=await self.__storage_service.get_volume(),
                 paused=self.__is_paused(),
             )
         )
@@ -349,7 +349,7 @@ class PlayerService:
             self.__check_same_voice_channel(member)
             if volume < 0 or volume > 200:
                 raise PlayerException("Volume must be between 0 and 200")
-            await self.__storage_service.set("volume", volume)
+            await self.__storage_service.set_volume(volume)
             if self.__is_active():
                 self.__audio_source.volume = volume / 100
 
