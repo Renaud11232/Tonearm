@@ -41,7 +41,7 @@ class DjCommand(commands.Cog):
         dj_service = await self.__dj_manager.get(interaction.guild)
         await dj_service.add_role(role)
         await interaction.followup.send(
-            embed=self.__embed_service.dj_add_role(role)
+            embed=self.__embed_service.dj_add(role)
         )
         self.__logger.debug(f"Successfully handled dj add role command (interaction:{interaction.id})")
 
@@ -55,7 +55,7 @@ class DjCommand(commands.Cog):
         dj_service = await self.__dj_manager.get(interaction.guild)
         await dj_service.add(member)
         await interaction.followup.send(
-            embed=self.__embed_service.dj_add_member(member)
+            embed=self.__embed_service.dj_add(member)
         )
         self.__logger.debug(f"Successfully handled dj add member command (interaction:{interaction.id})")
 
@@ -75,7 +75,7 @@ class DjCommand(commands.Cog):
         dj_service = await self.__dj_manager.get(interaction.guild)
         await dj_service.remove_role(role)
         await interaction.followup.send(
-            embed=self.__embed_service.dj_remove_role(role)
+            embed=self.__embed_service.dj_remove(role)
         )
         self.__logger.debug(f"Successfully handled dj remove role command (interaction:{interaction.id})")
 
@@ -89,6 +89,6 @@ class DjCommand(commands.Cog):
         dj_service = await self.__dj_manager.get(interaction.guild)
         await dj_service.remove(member)
         await interaction.followup.send(
-            embed=self.__embed_service.dj_remove_member(member)
+            embed=self.__embed_service.dj_remove(member)
         )
         self.__logger.debug(f"Successfully handled dj remove member command (interaction:{interaction.id})")

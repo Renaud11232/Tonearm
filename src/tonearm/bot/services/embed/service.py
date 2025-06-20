@@ -47,30 +47,16 @@ class EmbedService:
         )
 
     @staticmethod
-    def dj_add_role(role: nextcord.Role):
+    def dj_add(role_or_member: nextcord.Role | nextcord.Member):
         return nextcord.Embed(
-            description=f":white_check_mark: Members of {role.mention} are now DJs.",
+            description=f":white_check_mark: Promoted {role_or_member.mention} to DJ. Don’t scratch the vinyl !",
             colour=nextcord.Colour.dark_purple()
         )
 
     @staticmethod
-    def dj_add_member(member: nextcord.Member):
+    def dj_remove(role_or_member: nextcord.Role | nextcord.Member):
         return nextcord.Embed(
-            description=f":white_check_mark: {member.mention} is now a DJ.",
-            colour=nextcord.Colour.dark_purple()
-        )
-
-    @staticmethod
-    def dj_remove_role(role: nextcord.Role):
-        return nextcord.Embed(
-            description=f":white_check_mark: Members of {role.mention} are no longer DJs.",
-            colour=nextcord.Colour.dark_purple()
-        )
-
-    @staticmethod
-    def dj_remove_member(member: nextcord.Member):
-        return nextcord.Embed(
-            description=f":white_check_mark: {member.mention} is no longer a DJ.",
+            description=f":white_check_mark: {role_or_member.mention} is off the decks for now.",
             colour=nextcord.Colour.dark_purple()
         )
 
