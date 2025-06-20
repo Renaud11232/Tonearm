@@ -101,28 +101,28 @@ class Queue:
         async with self.__condition:
             random.shuffle(self.__next_tracks)
 
-    async def jump(self, position: int):
-        self.__logger.debug(f"Jumping to track {position} in queue {repr(self)}")
+    async def jump(self, track: int):
+        self.__logger.debug(f"Jumping to track {track} in queue {repr(self)}")
         async with self.__condition:
-            if position >= len(self.__next_tracks):
-                self.__logger.debug(f"Not enough tracks to jump to track {position} in queue {repr(self)}")
+            if track >= len(self.__next_tracks):
+                self.__logger.debug(f"Not enough tracks to jump to track {track} in queue {repr(self)}")
                 raise QueueException("Jump failed. That’s outside the queue’s bounds.")
             if self.__current_track is not None:
                 self.__previous_tracks.appendleft(self.__current_track)
                 self.__current_track = None
-            for _ in range(position):
+            for _ in range(track):
                 self.__previous_tracks.appendleft(self.__next_tracks.popleft())
             self.__condition.notify()
 
-    async def back(self, position: int):
-        self.__logger.debug(f"Going back to previous track {position} in queue {repr(self)}")
+    async def back(self, track: int):
+        self.__logger.debug(f"Going back to previous track {track} in queue {repr(self)}")
         async with self.__condition:
-            if position >= len(self.__previous_tracks):
-                self.__logger.debug(f"Not enough tracks in history to go to previous track {position} in queue {repr(self)}")
+            if track >= len(self.__previous_tracks):
+                self.__logger.debug(f"Not enough tracks in history to go to previous track {track} in queue {repr(self)}")
                 raise QueueException(f"That’s further back than my memory goes. Try a smaller number.")
             if self.__current_track is not None:
                 self.__next_tracks.appendleft(self.__current_track)
                 self.__current_track = None
-            for _ in range(position + 1):
+            for _ in range(track + 1):
                 self.__next_tracks.appendleft(self.__previous_tracks.popleft())
             self.__condition.notify()

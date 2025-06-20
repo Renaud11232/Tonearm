@@ -25,23 +25,23 @@ class BackCommand(commands.Cog):
     )
     async def back(self,
                    interaction: nextcord.Interaction,
-                   positions: int = SlashOption(required=True, min_value=1)):
-        await self.__back(interaction, positions)
+                   track: int = SlashOption(required=True, min_value=1)):
+        await self.__back(interaction, track)
 
     @nextcord.slash_command(
         description="Jumps back to a specific track in the history"
     )
     async def unskipto(self,
                        interaction: nextcord.Interaction,
-                   positions: int = SlashOption(required=True, min_value=1)):
-        await self.__back(interaction, positions)
+                       track: int = SlashOption(required=True, min_value=1)):
+        await self.__back(interaction, track)
 
-    async def __back(self, interaction: nextcord.Interaction, positions: int):
+    async def __back(self, interaction: nextcord.Interaction, track: int):
         self.__logger.debug(f"Handling `back` command (interaction:{interaction.id})")
         await interaction.response.defer()
         player_service = await self.__player_manager.get(interaction.guild)
-        await player_service.back(interaction.user, positions)
+        await player_service.back(interaction.user, track)
         await interaction.followup.send(
-            embed=self.__embed_service.back(positions)
+            embed=self.__embed_service.back(track)
         )
         self.__logger.debug(f"Successfully handled `back` command (interaction:{interaction.id})")

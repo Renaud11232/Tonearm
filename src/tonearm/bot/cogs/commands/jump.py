@@ -25,23 +25,23 @@ class JumpCommand(commands.Cog):
     )
     async def jump(self,
                    interaction: nextcord.Interaction,
-                   positions: int = SlashOption(required=False, min_value=1)):
-        await self.__jump(interaction, positions)
+                   track: int = SlashOption(required=False, min_value=1)):
+        await self.__jump(interaction, track)
 
     @nextcord.slash_command(
         description="Jumps to a specific track in the queue"
     )
     async def skipto(self,
                      interaction: nextcord.Interaction,
-                     positions: int = SlashOption(required=False, min_value=1)):
-        await self.__jump(interaction, positions)
+                     track: int = SlashOption(required=False, min_value=1)):
+        await self.__jump(interaction, track)
 
-    async def __jump(self, interaction: nextcord.Interaction, positions: int):
+    async def __jump(self, interaction: nextcord.Interaction, track: int):
         self.__logger.debug(f"Handling `jump` command (interaction:{interaction.id})")
         await interaction.response.defer()
         player_service = await self.__player_manager.get(interaction.guild)
-        await player_service.jump(interaction.user, positions)
+        await player_service.jump(interaction.user, track)
         await interaction.followup.send(
-            embed=self.__embed_service.jump(positions)
+            embed=self.__embed_service.jump(track)
         )
         self.__logger.debug(f"Successfully handled `jump` command (interaction:{interaction.id})")

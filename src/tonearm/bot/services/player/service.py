@@ -403,19 +403,19 @@ class PlayerService:
             self.__check_same_voice_channel(member)
             return await self.__queue.get_previous_tracks()
 
-    async def back(self, member: nextcord.Member, position: int = 1):
-        self.__logger.debug(f"Member {member.id} asked the bot to go back to track {position} in the history in guild {self.__guild.id}")
+    async def back(self, member: nextcord.Member, track: int = 1):
+        self.__logger.debug(f"Member {member.id} asked the bot to go back to track {track} in the history in guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)
             self.__check_same_voice_channel(member)
-            await self.__queue.back(position - 1)
+            await self.__queue.back(track - 1)
             self.__safe_stop_current_track()
 
-    async def jump(self, member: nextcord.Member, position: int = 1):
-        self.__logger.debug(f"Member {member.id} asked the bot to jump to track {position} in guild {self.__guild.id}")
+    async def jump(self, member: nextcord.Member, track: int = 1):
+        self.__logger.debug(f"Member {member.id} asked the bot to jump to track {track} in guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)
             self.__check_same_voice_channel(member)
             self.__check_active_audio_source()
-            await self.__queue.jump(position - 1)
+            await self.__queue.jump(track - 1)
             self.__safe_stop_current_track()

@@ -24,11 +24,11 @@ class EmbedService:
         )
 
     @staticmethod
-    def back(position: int):
-        if position == 1:
+    def back(track: int):
+        if track == 1:
             return EmbedService.previous()
         return nextcord.Embed(
-            description=f":track_previous: Rewinding {position} songs. Let’s bring those back!",
+            description=f":track_previous: Rewinding to track {track}. Let’s bring those back!",
             colour=nextcord.Colour.dark_purple()
         )
 
@@ -85,11 +85,11 @@ class EmbedService:
         )
 
     @staticmethod
-    def jump(position: int):
-        if position == 1:
+    def jump(track: int):
+        if track == 1:
             return EmbedService.next()
         return nextcord.Embed(
-            description=f":track_next: Boom. Skipped straight to track {position}. Enjoy !",
+            description=f":track_next: Boom. Skipped straight to track {track}. Enjoy !",
             colour=nextcord.Colour.dark_purple()
         )
 
