@@ -33,11 +33,11 @@ class NowCommand(commands.Cog):
         await self.__now(interaction)
 
     async def __now(self, interaction: nextcord.Interaction):
-        self.__logger.debug(f"Handling now command (interaction:{interaction.id})")
+        self.__logger.debug(f"Handling `now` command (interaction:{interaction.id})")
         await interaction.response.defer()
         player_service = await self.__player_manager.get(interaction.guild)
         status = await player_service.now(interaction.user)
         await interaction.followup.send(
             embed=self.__embed_service.now(status)
         )
-        self.__logger.debug(f"Successfully handled now command (interaction:{interaction.id}, with status : {repr(status)}")
+        self.__logger.debug(f"Successfully handled `now` command (interaction:{interaction.id}, with status : {repr(status)}")

@@ -26,11 +26,11 @@ class HistoryCommand(commands.Cog):
     async def history(self,
                       interaction: nextcord.Interaction,
                       page: int = SlashOption(required=False, default=1, min_value=1)):
-        self.__logger.debug(f"Handling history command (interaction:{interaction.id})")
+        self.__logger.debug(f"Handling `history` command (interaction:{interaction.id})")
         await interaction.response.defer()
         player_service = await self.__player_manager.get(interaction.guild)
         previous_tracks = await player_service.history(interaction.user)
         await interaction.followup.send(
             embed=self.__embed_service.history(previous_tracks, page)
         )
-        self.__logger.debug(f"Successfully handled history command (interaction:{interaction.id}, with previous tracks : {repr(previous_tracks)}")
+        self.__logger.debug(f"Successfully handled `history` command (interaction:{interaction.id}, with previous tracks : {repr(previous_tracks)}")

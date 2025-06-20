@@ -24,7 +24,7 @@ class RewindCommand(commands.Cog):
         description="Rewinds a specific amount of time into the track"
     )
     async def rewind(self, interaction: nextcord.Interaction, duration: str):
-        self.__logger.debug(f"Handling rewind command (interaction:{interaction.id})")
+        self.__logger.debug(f"Handling `rewind` command (interaction:{interaction.id})")
         await interaction.response.defer()
         duration = await Duration().convert(interaction, duration)
         player_service = await self.__player_manager.get(interaction.guild)
@@ -32,4 +32,4 @@ class RewindCommand(commands.Cog):
         await interaction.followup.send(
             embed=self.__embed_service.rewind()
         )
-        self.__logger.debug(f"Successfully handled rewind command (interaction:{interaction.id})")
+        self.__logger.debug(f"Successfully handled `rewind` command (interaction:{interaction.id})")

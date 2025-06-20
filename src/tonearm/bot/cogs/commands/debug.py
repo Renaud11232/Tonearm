@@ -23,7 +23,7 @@ class DebugCommand(commands.Cog):
     @application_checks.is_owner()
     #TODO: Delete this when its not needed anymore
     async def debug(self, interaction: nextcord.Interaction):
-        self.__logger.debug(f"Handling debug command (interaction:{interaction.id})")
+        self.__logger.debug(f"Handling `debug` command (interaction:{interaction.id})")
         await interaction.response.defer(ephemeral=True)
         player_service = await self.__player_manager.get(interaction.guild)
         debug_data = await player_service.debug()
@@ -33,4 +33,4 @@ class DebugCommand(commands.Cog):
             f"{debug_data}\n"
             f"```\n"
         )
-        self.__logger.debug(f"Successfully handled debug command (interaction:{interaction.id}), returning {repr(debug_data)}")
+        self.__logger.debug(f"Successfully handled `debug` command (interaction:{interaction.id}), returning {repr(debug_data)}")

@@ -26,11 +26,11 @@ class QueueCommand(commands.Cog):
     async def queue(self,
                     interaction: nextcord.Interaction,
                     page: int = SlashOption(required=False, default=1, min_value=1)):
-        self.__logger.debug(f"Handling queue command (interaction:{interaction.id})")
+        self.__logger.debug(f"Handling `queue` command (interaction:{interaction.id})")
         await interaction.response.defer()
         player_service = await self.__player_manager.get(interaction.guild)
         status = await player_service.queue(interaction.user)
         await interaction.followup.send(
             embed=self.__embed_service.queue(status, page)
         )
-        self.__logger.debug(f"Successfully handled queue command (interaction:{interaction.id}, with status : {repr(status)}")
+        self.__logger.debug(f"Successfully handled `queue` command (interaction:{interaction.id}, with status : {repr(status)}")

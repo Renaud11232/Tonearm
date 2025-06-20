@@ -23,7 +23,7 @@ class ShutdownCommand(commands.Cog):
     )
     @application_checks.is_owner()
     async def shutdown(self, interaction: nextcord.Interaction):
-        self.__logger.debug(f"Handling shutdown command (interaction:{interaction.id})")
+        self.__logger.debug(f"Handling `shutdown` command (interaction:{interaction.id})")
         await interaction.response.defer()
         await interaction.followup.send(
             embed=self.__embed_service.shutdown()

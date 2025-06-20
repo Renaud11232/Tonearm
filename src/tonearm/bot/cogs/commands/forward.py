@@ -24,7 +24,7 @@ class ForwardCommand(commands.Cog):
         description="Forwards a specific amount of time into the track"
     )
     async def forward(self, interaction: nextcord.Interaction, duration: str):
-        self.__logger.debug(f"Handling forward command (interaction:{interaction.id})")
+        self.__logger.debug(f"Handling `forward` command (interaction:{interaction.id})")
         await interaction.response.defer()
         duration = await Duration().convert(interaction, duration)
         player_service = await self.__player_manager.get(interaction.guild)
@@ -32,4 +32,4 @@ class ForwardCommand(commands.Cog):
         await interaction.followup.send(
             embed=self.__embed_service.forward()
         )
-        self.__logger.debug(f"Successfully handled forward command (interaction:{interaction.id})")
+        self.__logger.debug(f"Successfully handled `forward` command (interaction:{interaction.id})")

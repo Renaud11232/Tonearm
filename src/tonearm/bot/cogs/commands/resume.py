@@ -23,11 +23,11 @@ class ResumeCommand(commands.Cog):
         description="Resumes the currently paused track"
     )
     async def resume(self, interaction: nextcord.Interaction):
-        self.__logger.debug(f"Handling resume command (interaction:{interaction.id})")
+        self.__logger.debug(f"Handling `resume` command (interaction:{interaction.id})")
         await interaction.response.defer()
         player_service = await self.__player_manager.get(interaction.guild)
         await player_service.resume(interaction.user)
         await interaction.followup.send(
             embed=self.__embed_service.resume()
         )
-        self.__logger.debug(f"Successfully handled resume command (interaction:{interaction.id}")
+        self.__logger.debug(f"Successfully handled `resume` command (interaction:{interaction.id}")

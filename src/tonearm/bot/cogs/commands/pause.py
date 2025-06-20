@@ -23,11 +23,11 @@ class PauseCommand(commands.Cog):
         description="Pauses the currently playing track"
     )
     async def pause(self, interaction: nextcord.Interaction):
-        self.__logger.debug(f"Handling pause command (interaction:{interaction.id})")
+        self.__logger.debug(f"Handling `pause` command (interaction:{interaction.id})")
         await interaction.response.defer()
         player_service = await self.__player_manager.get(interaction.guild)
         await player_service.pause(interaction.user)
         await interaction.followup.send(
             embed=self.__embed_service.pause()
         )
-        self.__logger.debug(f"Successfully handled pause command (interaction:{interaction.id}")
+        self.__logger.debug(f"Successfully handled `pause` command (interaction:{interaction.id}")
