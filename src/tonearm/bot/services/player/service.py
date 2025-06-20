@@ -11,6 +11,7 @@ from injector import inject, noninjectable
 
 from tonearm.bot.services.media import MediaService, MediaFetchingException
 from tonearm.bot.services.storage import StorageService
+from tonearm.bot.services.embed import EmbedService
 from tonearm.configuration import Configuration
 
 from .exceptions import PlayerException
@@ -24,13 +25,21 @@ class PlayerService:
 
     @inject
     @noninjectable("guild", "storage_service")
-    def __init__(self, guild: nextcord.Guild, storage_service: StorageService, bot: commands.Bot, queue: Queue, media_service: MediaService, configuration: Configuration):
+    def __init__(self,
+                 guild: nextcord.Guild,
+                 storage_service: StorageService,
+                 bot: commands.Bot,
+                 queue: Queue,
+                 media_service: MediaService,
+                 configuration: Configuration,
+                 embed_service: EmbedService):
         self.__guild = guild
         self.__storage_service = storage_service
         self.__bot = bot
         self.__queue = queue
         self.__media_service = media_service
         self.__configuration = configuration
+        self.__embed_service = embed_service
         self.__logger = logging.getLogger("tonearm.player")
         self.__condition = asyncio.Condition()
         self.__audio_source: ControllableFFmpegPCMAudio | None = None
@@ -150,10 +159,18 @@ class PlayerService:
                         raise e
                     except MediaFetchingException as e:
                         self.__logger.warning(f"Failed to fetch media url in guild {self.__guild.id} : {repr(e)}")
+                        await self.__send_to_channel(self.__embed_service.error(f"Ouch, I could not fetch the stream URL for the next track : {repr(e)}"))
                     except:
                         self.__logger.exception("An unexpected error was raised in the player loop")
+                        await self.__send_to_channel(self.__embed_service.error(f"An unexpected error was raised in the player loop, please contact {self.__bot.get_user(self.__bot.owner_id).mention}, and tell them to check the logs."))
+                        await self.__safe_leave()
         except asyncio.CancelledError:
             self.__logger.debug(f"Cancelled player loop for guild {self.__guild.id}")
+
+    async def __send_to_channel(self, embed: nextcord.Embed):
+        channel = await self.__storage_service.get_channel()
+        if channel is not None:
+            await channel.send(embed=embed)
 
     async def __on_audio_source_ended(self, error):
         if error is None:

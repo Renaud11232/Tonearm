@@ -36,17 +36,17 @@ class DjService:
 
     async def add(self, member: nextcord.Member):
         async with self.__lock:
-            djs = await self.__storage_service.get_djs()
+            djs = await self.__storage_service.get_dj_members()
             if member in djs:
                 raise DjException(f"{member.mention} is already a DJ !")
             djs.append(member)
-            await self.__storage_service.set_djs(djs)
+            await self.__storage_service.set_dj_members(djs)
 
     async def remove(self, member: nextcord.Member):
         async with self.__lock:
-            djs = await self.__storage_service.get_djs()
+            djs = await self.__storage_service.get_dj_members()
             try:
                 djs.remove(member)
-                await self.__storage_service.set_djs(djs)
+                await self.__storage_service.set_dj_members(djs)
             except ValueError:
                 raise DjException(f"{member.mention} isn't a DJ !")

@@ -1,10 +1,11 @@
 import math
-from typing import List
+from typing import List, Any
 
 import nextcord
 from injector import singleton
 
-from tonearm.bot.services.player import PlayerStatus, QueuedTrack
+from tonearm.bot.services.player.status import PlayerStatus
+from tonearm.bot.services.player.track import QueuedTrack
 from tonearm.bot.services.bot import TonearmVersion
 from tonearm.utils.markdown import *
 from tonearm.utils.strings import *
@@ -249,6 +250,26 @@ class EmbedService:
     def seek():
         return nextcord.Embed(
             description=":dart: Dropping the needle, classic move.",
+            colour=nextcord.Colour.dark_purple()
+        )
+
+    @staticmethod
+    def __setting_repr(value: Any) -> str:
+        if hasattr(value, "mention"):
+            return value.mention
+        return inline_code(escape_markdown(repr(value)))
+
+    @staticmethod
+    def setting_set(name: str, value: Any):
+        return nextcord.Embed(
+            description=f":tools: All set! {inline_code(escape_markdown(name))} is now {EmbedService.__setting_repr(value)}.",
+            colour=nextcord.Colour.dark_purple()
+        )
+
+    @staticmethod
+    def setting_reset(name: str, value: Any):
+        return nextcord.Embed(
+            description=f":tools: Boom ! {inline_code(escape_markdown(name))} is back to default: {EmbedService.__setting_repr(value)}.",
             colour=nextcord.Colour.dark_purple()
         )
 

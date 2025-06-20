@@ -1,7 +1,7 @@
 import json
 import pathlib
 import asyncio
-from typing import List
+from typing import List, Any
 
 import nextcord
 
@@ -39,7 +39,7 @@ class StorageService:
             parent[key[-1]] = value
             self.__save()
 
-    async def __get(self, key: str | List[str], *, default=None):
+    async def __get(self, key: str | List[str], *, default=None) -> Any:
         key = self.__split_key(key)
         async with self.__lock:
             value = self.__data
@@ -69,10 +69,23 @@ class StorageService:
         roles = [role.id for role in dj_roles]
         return await self.__set("dj.roles", roles)
 
-    async def get_djs(self) -> List[nextcord.Member]:
+    async def get_dj_members(self) -> List[nextcord.Member]:
         members = await self.__get("dj.members", default=[])
         return [self.__guild.get_member(member) for member in members]
 
-    async def set_djs(self, djs: List[nextcord.Member]):
-        members = [member.id for member in djs]
+    async def set_dj_members(self, dj_members: List[nextcord.Member]):
+        members = [member.id for member in dj_members]
         return await self.__set("dj.members", members)
+
+    async def set_channel(self, channel: nextcord.TextChannel | None):
+        await self.__set("channel", None if channel is None else channel.id)
+
+    async def get_channel(self) -> nextcord.TextChannel | None:
+        channel = await self.__get("channel", default=None)
+        return None if channel is None else self.__guild.get_channel(channel)
+
+    async def set_anarchy(self, anarchy: bool):
+        await self.__set("anarchy", anarchy)
+
+    async def get_anarchy(self) -> bool:
+        return await self.__get("anarchy", default=False)
