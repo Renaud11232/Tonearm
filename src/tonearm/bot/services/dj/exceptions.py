@@ -1,0 +1,2 @@
+class DjException(Exception):
+    pass

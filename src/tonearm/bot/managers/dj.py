@@ -2,14 +2,14 @@ import nextcord
 
 from injector import singleton, inject, Injector
 
-from tonearm.bot.services import SettingsService
+from tonearm.bot.services import DjService
 
 from .base import ManagerBase
 from .storage import StorageManager
 
 
 @singleton
-class SettingsManager(ManagerBase[nextcord.Guild, SettingsService]):
+class DjManager(ManagerBase[nextcord.Guild, DjService]):
 
     @inject
     def __init__(self, storage_manager: StorageManager, injector: Injector):
@@ -20,9 +20,9 @@ class SettingsManager(ManagerBase[nextcord.Guild, SettingsService]):
     async def _get_id(self, key: nextcord.Guild) -> int:
         return key.id
 
-    async def _create(self, key: nextcord.Guild) -> SettingsService:
+    async def _create(self, key: nextcord.Guild) -> DjService:
         return self.__injector.create_object(
-            SettingsService,
+            DjService,
             additional_kwargs={
                 "storage_service": await self.__storage_manager.get(key)
             }

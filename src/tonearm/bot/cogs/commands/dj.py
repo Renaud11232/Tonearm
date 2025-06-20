@@ -5,7 +5,7 @@ from nextcord.ext import commands
 
 from injector import singleton, inject
 
-from tonearm.bot.managers import SettingsManager
+from tonearm.bot.managers import DjManager
 from tonearm.bot.services import EmbedService
 
 
@@ -13,9 +13,9 @@ from tonearm.bot.services import EmbedService
 class DjCommand(commands.Cog):
 
     @inject
-    def __init__(self, settings_manager: SettingsManager, embed_service: EmbedService):
+    def __init__(self, dj_manager: DjManager, embed_service: EmbedService):
         super().__init__()
-        self.__settings_manager = settings_manager
+        self.__dj_manager = dj_manager
         self.__embed_service = embed_service
         self.__logger = logging.getLogger("tonearm.commands")
 
@@ -38,8 +38,8 @@ class DjCommand(commands.Cog):
     async def add_role(self, interaction: nextcord.Interaction, role: nextcord.Role):
         self.__logger.debug(f"Handling dj add role command (interaction:{interaction.id})")
         await interaction.response.defer()
-        settings_service = await self.__settings_manager.get(interaction.guild)
-        await settings_service.add_dj_role(role)
+        dj_service = await self.__dj_manager.get(interaction.guild)
+        await dj_service.add_role(role)
         await interaction.followup.send(
             embed=self.__embed_service.dj_add_role(role)
         )
@@ -52,8 +52,8 @@ class DjCommand(commands.Cog):
     async def add_member(self, interaction: nextcord.Interaction, member: nextcord.Member):
         self.__logger.debug(f"Handling dj add member command (interaction:{interaction.id})")
         await interaction.response.defer()
-        settings_service = await self.__settings_manager.get(interaction.guild)
-        await settings_service.add_dj(member)
+        dj_service = await self.__dj_manager.get(interaction.guild)
+        await dj_service.add(member)
         await interaction.followup.send(
             embed=self.__embed_service.dj_add_member(member)
         )
@@ -72,8 +72,8 @@ class DjCommand(commands.Cog):
     async def remove_role(self, interaction: nextcord.Interaction, role: nextcord.Role):
         self.__logger.debug(f"Handling dj remove role command (interaction:{interaction.id})")
         await interaction.response.defer()
-        settings_service = await self.__settings_manager.get(interaction.guild)
-        await settings_service.remove_dj_role(role)
+        dj_service = await self.__dj_manager.get(interaction.guild)
+        await dj_service.remove_role(role)
         await interaction.followup.send(
             embed=self.__embed_service.dj_remove_role(role)
         )
@@ -86,8 +86,8 @@ class DjCommand(commands.Cog):
     async def remove_member(self, interaction: nextcord.Interaction, member: nextcord.Member):
         self.__logger.debug(f"Handling dj remove member command (interaction:{interaction.id})")
         await interaction.response.defer()
-        settings_service = await self.__settings_manager.get(interaction.guild)
-        await settings_service.remove_dj(member)
+        dj_service = await self.__dj_manager.get(interaction.guild)
+        await dj_service.remove(member)
         await interaction.followup.send(
             embed=self.__embed_service.dj_remove_member(member)
         )
