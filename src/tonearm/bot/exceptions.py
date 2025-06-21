@@ -1,5 +1,11 @@
-class TonearmInvokeException(Exception):
+class TonearmException(Exception):
     pass
 
-class TonearmCheckException(Exception):
+class TonearmCheckException(TonearmException):
+    pass
+
+class TonearmConverterException(TonearmException):
+    pass
+
+class TonearmInvokeException(TonearmException):
     pass

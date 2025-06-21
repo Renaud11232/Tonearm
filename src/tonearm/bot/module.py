@@ -12,6 +12,7 @@ class BotModule(Module):
     @provider
     def provide_bot(self,
                     application_command_error_listener: ApplicationCommandErrorListener,
+                    error_listener: ErrorListener,
                     ready_listener: ReadyListener,
                     voice_state_change_listener: VoiceStateChangeListener,
                     back_command: BackCommand,
@@ -54,6 +55,7 @@ class BotModule(Module):
             activity=activity
         )
         bot.add_cog(application_command_error_listener)
+        bot.add_cog(error_listener)
         bot.add_cog(ready_listener)
         bot.add_cog(voice_state_change_listener)
         bot.add_cog(back_command)
@@ -88,4 +90,7 @@ class BotModule(Module):
         @bot.event
         async def on_application_command_error(interaction: nextcord.Interaction, error):
             await application_command_error_listener.on_application_command_error(interaction, error)
+        @bot.event
+        async def on_error(event: str, *args, **kwargs):
+            await error_listener.on_error(event, *args, **kwargs)
         return bot

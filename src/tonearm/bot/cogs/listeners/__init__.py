@@ -1,3 +1,4 @@
 from .ready import ReadyListener
 from .voice_state_change import VoiceStateChangeListener
 from .application_command_error import ApplicationCommandErrorListener
+from .error import ErrorListener

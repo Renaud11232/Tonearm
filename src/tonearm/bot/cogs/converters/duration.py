@@ -2,19 +2,19 @@ import re
 
 import nextcord
 
-from .exceptions import ConverterException
+from tonearm.bot.exceptions import TonearmConverterException
 
 
-class Duration(nextcord.OptionConverter):
+class DurationConverter(nextcord.OptionConverter):
 
     __REGEX = re.compile(r"^(?:([0-9]+)d)?\s*(?:([0-9]+)h)?\s*(?:([0-9]+)m)?\s*(?:([0-9]+)s)?$")
 
-    async def convert(self, interaction: nextcord.Interaction, argument: str):
+    async def convert(self, interaction: nextcord.Interaction, argument: str) -> int | None:
         if not argument:
             return None
-        match = Duration.__REGEX.search(argument)
+        match = DurationConverter.__REGEX.search(argument)
         if not match:
-            raise ConverterException(f"`{argument}` is not a valid duration.")
+            raise TonearmConverterException(f"`{argument}` is not a valid duration.")
         groups = match.groups("0")
         days = int(groups[0])
         hours = int(groups[1])

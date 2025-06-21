@@ -5,7 +5,7 @@ from nextcord.ext import commands
 
 from injector import inject, singleton
 
-from tonearm.bot.cogs.converters import Duration
+from tonearm.bot.cogs.converters import DurationConverter
 from tonearm.bot.managers import PlayerManager
 from tonearm.bot.services import EmbedService
 
@@ -23,10 +23,9 @@ class SeekCommand(commands.Cog):
     @nextcord.slash_command(
         description="Seeks to a specific time in the track"
     )
-    async def seek(self, interaction: nextcord.Interaction, duration: str):
+    async def seek(self, interaction: nextcord.Interaction, duration: DurationConverter):
         self.__logger.debug(f"Handling `seek` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        duration = await Duration().convert(interaction, duration)
         self.__player_manager.get(interaction.guild).seek(interaction.user, duration)
         await interaction.followup.send(
             embed=self.__embed_service.seek()

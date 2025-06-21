@@ -5,7 +5,7 @@ from nextcord.ext import commands
 
 from injector import inject, singleton
 
-from tonearm.bot.cogs.converters import Duration
+from tonearm.bot.cogs.converters import DurationConverter
 from tonearm.bot.managers import PlayerManager
 from tonearm.bot.services import EmbedService
 
@@ -23,11 +23,9 @@ class ForwardCommand(commands.Cog):
     @nextcord.slash_command(
         description="Forwards a specific amount of time into the track"
     )
-    async def forward(self, interaction: nextcord.Interaction, duration: str):
+    async def forward(self, interaction: nextcord.Interaction, duration: DurationConverter):
         self.__logger.debug(f"Handling `forward` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        #TODO: Now that errors are properly managed, try to redo the converter the proper way
-        duration = await Duration().convert(interaction, duration)
         self.__player_manager.get(interaction.guild).forward(interaction.user, duration)
         await interaction.followup.send(
             embed=self.__embed_service.forward()
