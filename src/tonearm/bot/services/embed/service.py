@@ -35,9 +35,9 @@ class EmbedService:
 
 
     @staticmethod
-    def clean():
+    def clean(messages: List[nextcord.Message]):
         return nextcord.Embed(
-            description=":ghost: All my messages are gone. It's like I was never here !",
+            description=f":ghost: All my {len(messages)} message(s) are gone. It's like I was never here !",
             colour=nextcord.Colour.dark_purple()
         )
 

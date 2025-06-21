@@ -1,6 +1,7 @@
 import logging
 
 import nextcord
+from nextcord import SlashOption
 from nextcord.ext import commands
 
 from injector import inject, singleton
@@ -25,12 +26,14 @@ class CleanCommand(commands.Cog):
     @nextcord.slash_command(
         description="Deletes bot messages in the channel (up to 100 at once)"
     )
-    async def clean(self, interaction: nextcord.Interaction):
+    async def clean(self,
+                    interaction: nextcord.Interaction,
+                    limit: int = SlashOption(required=True, min_value=1, max_value=100)):
         self.__logger.debug(f"Handling `clean` command (interaction:{interaction.id})")
         await interaction.response.defer(ephemeral=True)
         chat_service = await self.__chat_manager.get(interaction.channel)
-        messages = await chat_service.clean()
+        messages = await chat_service.clean(limit)
         await interaction.followup.send(
-            embed=self.__embed_service.clean()
+            embed=self.__embed_service.clean(messages)
         )
         self.__logger.debug(f"Successfully handled `clean` command (interaction:{interaction.id}), deleting {len(messages)} messages")

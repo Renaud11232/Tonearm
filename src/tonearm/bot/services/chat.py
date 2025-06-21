@@ -17,11 +17,11 @@ class ChatService:
         self.__lock = asyncio.Lock()
         self.__logger = logging.getLogger("tonearm.chat")
 
-    async def clean(self):
+    async def clean(self, limit: int):
         async with self.__lock:
             messages = []
             self.__logger.debug(f"Browsing messages in channel {self.__channel.id}")
-            async for message in self.__channel.history():
+            async for message in self.__channel.history(limit=limit):
                 if message.author == self.__bot.user:
                     self.__logger.debug(f"Deleting message {message.id} from channel {self.__channel.id}")
                     messages.append(message)
