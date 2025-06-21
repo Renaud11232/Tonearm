@@ -19,5 +19,5 @@ class ReadyListener(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         self.__logger.debug("Handling ready event")
-        await self.__bot_service.on_ready()
+        self.__bot_service.on_ready()
         self.__logger.debug("Successfully handled ready event")

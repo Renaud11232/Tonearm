@@ -31,8 +31,7 @@ class CleanCommand(commands.Cog):
                     limit: int = SlashOption(required=True, min_value=1, max_value=100)):
         self.__logger.debug(f"Handling `clean` command (interaction:{interaction.id})")
         await interaction.response.defer(ephemeral=True)
-        chat_service = await self.__chat_manager.get(interaction.channel)
-        messages = await chat_service.clean(limit)
+        messages = await self.__chat_manager.get(interaction.channel).clean(limit)
         await interaction.followup.send(
             embed=self.__embed_service.clean(messages)
         )

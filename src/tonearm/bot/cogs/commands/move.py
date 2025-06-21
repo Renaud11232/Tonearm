@@ -29,8 +29,7 @@ class MoveCommand(commands.Cog):
                    to: int = SlashOption(required=True, min_value=1)):
         self.__logger.debug(f"Handling `move` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player_service = await self.__player_manager.get(interaction.guild)
-        moved_track = await player_service.move(interaction.user, fr0m, to)
+        moved_track = await self.__player_manager.get(interaction.guild).move(interaction.user, fr0m, to)
         await interaction.followup.send(
             embed=self.__embed_service.move(moved_track, fr0m, to)
         )

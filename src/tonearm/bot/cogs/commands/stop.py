@@ -25,8 +25,7 @@ class StopCommand(commands.Cog):
     async def stop(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `stop` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player_service = await self.__player_manager.get(interaction.guild)
-        await player_service.stop(interaction.user)
+        await self.__player_manager.get(interaction.guild).stop(interaction.user)
         await interaction.followup.send(
             embed=self.__embed_service.stop()
         )

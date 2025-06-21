@@ -26,9 +26,9 @@ class ForwardCommand(commands.Cog):
     async def forward(self, interaction: nextcord.Interaction, duration: str):
         self.__logger.debug(f"Handling `forward` command (interaction:{interaction.id})")
         await interaction.response.defer()
+        #TODO: Now that errors are properly managed, try to redo the converter the proper way
         duration = await Duration().convert(interaction, duration)
-        player_service = await self.__player_manager.get(interaction.guild)
-        await player_service.forward(interaction.user, duration)
+        self.__player_manager.get(interaction.guild).forward(interaction.user, duration)
         await interaction.followup.send(
             embed=self.__embed_service.forward()
         )

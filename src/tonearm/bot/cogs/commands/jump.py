@@ -39,8 +39,7 @@ class JumpCommand(commands.Cog):
     async def __jump(self, interaction: nextcord.Interaction, track: int):
         self.__logger.debug(f"Handling `jump` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player_service = await self.__player_manager.get(interaction.guild)
-        await player_service.jump(interaction.user, track)
+        await self.__player_manager.get(interaction.guild).jump(interaction.user, track)
         await interaction.followup.send(
             embed=self.__embed_service.jump(track)
         )

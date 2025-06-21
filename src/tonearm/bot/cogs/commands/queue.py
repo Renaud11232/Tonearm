@@ -28,8 +28,7 @@ class QueueCommand(commands.Cog):
                     page: int = SlashOption(required=False, default=1, min_value=1)):
         self.__logger.debug(f"Handling `queue` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player_service = await self.__player_manager.get(interaction.guild)
-        status = await player_service.queue(interaction.user)
+        status = self.__player_manager.get(interaction.guild).queue(interaction.user)
         await interaction.followup.send(
             embed=self.__embed_service.queue(status, page)
         )

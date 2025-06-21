@@ -28,8 +28,7 @@ class VolumeCommand(commands.Cog):
                      volume: int = SlashOption(required=True, min_value=0, max_value=200)):
         self.__logger.debug(f"Handling `volume` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player_service = await self.__player_manager.get(interaction.guild)
-        await player_service.volume(interaction.user, volume)
+        self.__player_manager.get(interaction.guild).volume(interaction.user, volume)
         await interaction.followup.send(
             embed=self.__embed_service.volume(volume)
         )

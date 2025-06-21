@@ -19,10 +19,10 @@ class StorageManager(ManagerBase[nextcord.Guild, StorageService]):
         self.__configuration = configuration
         self.__injector = injector
 
-    async def _get_id(self, key: nextcord.Guild) -> int:
+    def _get_id(self, key: nextcord.Guild) -> int:
         return key.id
 
-    async def _create(self, key: nextcord.Guild) -> StorageService:
+    def _create(self, key: nextcord.Guild) -> StorageService:
         return self.__injector.create_object(
             StorageService,
             additional_kwargs={

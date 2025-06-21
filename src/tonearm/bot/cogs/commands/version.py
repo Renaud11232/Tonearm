@@ -24,7 +24,7 @@ class VersionCommand(commands.Cog):
     async def version(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `version` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        version = await self.__bot_service.version()
+        version = self.__bot_service.version()
         await interaction.followup.send(
             embed=self.__embed_service.version(version)
         )

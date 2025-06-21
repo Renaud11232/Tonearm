@@ -17,13 +17,13 @@ class DjManager(ManagerBase[nextcord.Guild, DjService]):
         self.__storage_manager = storage_manager
         self.__injector = injector
 
-    async def _get_id(self, key: nextcord.Guild) -> int:
+    def _get_id(self, key: nextcord.Guild) -> int:
         return key.id
 
-    async def _create(self, key: nextcord.Guild) -> DjService:
+    def _create(self, key: nextcord.Guild) -> DjService:
         return self.__injector.create_object(
             DjService,
             additional_kwargs={
-                "storage_service": await self.__storage_manager.get(key)
+                "storage_service": self.__storage_manager.get(key)
             }
         )

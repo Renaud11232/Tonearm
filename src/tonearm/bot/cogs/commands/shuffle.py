@@ -25,8 +25,7 @@ class ShuffleCommand(commands.Cog):
     async def shuffle(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `shuffle` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player_service = await self.__player_manager.get(interaction.guild)
-        await player_service.shuffle(interaction.user)
+        self.__player_manager.get(interaction.guild).shuffle(interaction.user)
         await interaction.followup.send(
             embed=self.__embed_service.shuffle()
         )

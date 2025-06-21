@@ -47,8 +47,7 @@ class LoopCommand(commands.Cog):
     async def __loop(self, interaction: nextcord.Interaction, mode: str):
         self.__logger.debug(f"Handling `loop` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player_service = await self.__player_manager.get(interaction.guild)
-        loop_mode = await player_service.loop(interaction.user, mode)
+        loop_mode = await self.__player_manager.get(interaction.guild).loop(interaction.user, mode)
         await interaction.followup.send(
             embed=self.__embed_service.loop(loop_mode)
         )

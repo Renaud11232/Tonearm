@@ -25,8 +25,7 @@ class PlayCommand(commands.Cog):
     async def play(self, interaction: nextcord.Interaction, query: str):
         self.__logger.debug(f"Handling `play` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player_service = await self.__player_manager.get(interaction.guild)
-        tracks = await player_service.play(interaction.user, query)
+        tracks = await self.__player_manager.get(interaction.guild).play(interaction.user, query)
         await interaction.followup.send(
             embed=self.__embed_service.play(tracks)
         )

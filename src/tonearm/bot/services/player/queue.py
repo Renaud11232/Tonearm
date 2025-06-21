@@ -69,16 +69,15 @@ class Queue:
             self.__next_tracks.reverse()
             self.__previous_tracks = deque()
 
-    async def clear(self, full: bool = False):
-        async with self.__condition:
-            if full:
-                self.__logger.debug(f"Completely clearing queue {repr(self)}")
-                self.__previous_tracks.clear()
-                self.__current_track = None
-                self.__next_tracks.clear()
-            else:
-                self.__logger.debug(f"Clearing next tracks from queue {repr(self)}")
-                self.__next_tracks.clear()
+    def clear(self, full: bool = False):
+        if full:
+            self.__logger.debug(f"Completely clearing queue {repr(self)}")
+            self.__previous_tracks.clear()
+            self.__current_track = None
+            self.__next_tracks.clear()
+        else:
+            self.__logger.debug(f"Clearing next tracks from queue {repr(self)}")
+            self.__next_tracks.clear()
 
     async def queue(self, member: nextcord.Member, query: str):
         self.__logger.debug(f"Fetching track metadata for query {repr(query)} in queue {repr(self)}")
@@ -97,40 +96,26 @@ class Queue:
         self.__logger.debug(f"Added {len(tracks)} track(s) in queue {repr(self)}")
         return tracks
 
-    def __get_previous_tracks(self):
+    def get_previous_tracks(self) -> List[QueuedTrack]:
         return list(self.__previous_tracks)
 
-    def __get_current_track(self):
+    def get_current_track(self) -> QueuedTrack | None:
         return self.__current_track
 
-    def __get_next_tracks(self):
+    def get_next_tracks(self) -> List[QueuedTrack]:
         return list(self.__next_tracks)
 
-    async def get_previous_tracks(self) -> List[QueuedTrack]:
-        async with self.__condition:
-            return self.__get_previous_tracks()
+    def get_status(self) -> QueueStatus:
+        return QueueStatus(
+            previous_tracks=self.get_previous_tracks(),
+            current_track=self.get_current_track(),
+            next_tracks=self.get_next_tracks(),
+            loop_mode=self.__loop_mode
+        )
 
-    async def get_current_track(self) -> QueuedTrack | None:
-        async with self.__condition:
-            return self.__get_current_track()
-
-    async def get_next_tracks(self) -> List[QueuedTrack]:
-        async with self.__condition:
-            return self.__get_next_tracks()
-
-    async def get_status(self) -> QueueStatus:
-        async with self.__condition:
-            return QueueStatus(
-                previous_tracks=self.__get_previous_tracks(),
-                current_track=self.__get_current_track(),
-                next_tracks=self.__get_next_tracks(),
-                loop_mode=self.__loop_mode
-            )
-
-    async def shuffle(self):
+    def shuffle(self):
         self.__logger.debug(f"Shuffling next tracks in queue {repr(self)}")
-        async with self.__condition:
-            random.shuffle(self.__next_tracks)
+        random.shuffle(self.__next_tracks)
 
     async def jump(self, track: int):
         self.__logger.debug(f"Jumping to track {track} in queue {repr(self)}")

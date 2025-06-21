@@ -38,8 +38,7 @@ class DjCommand(commands.Cog):
     async def add_role(self, interaction: nextcord.Interaction, role: nextcord.Role):
         self.__logger.debug(f"Handling `dj add role` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        dj_service = await self.__dj_manager.get(interaction.guild)
-        await dj_service.add_role(role)
+        self.__dj_manager.get(interaction.guild).add_role(role)
         await interaction.followup.send(
             embed=self.__embed_service.dj_add(role)
         )
@@ -52,8 +51,7 @@ class DjCommand(commands.Cog):
     async def add_member(self, interaction: nextcord.Interaction, member: nextcord.Member):
         self.__logger.debug(f"Handling `dj add member` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        dj_service = await self.__dj_manager.get(interaction.guild)
-        await dj_service.add(member)
+        self.__dj_manager.get(interaction.guild).add(member)
         await interaction.followup.send(
             embed=self.__embed_service.dj_add(member)
         )
@@ -72,8 +70,7 @@ class DjCommand(commands.Cog):
     async def remove_role(self, interaction: nextcord.Interaction, role: nextcord.Role):
         self.__logger.debug(f"Handling `dj remove role` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        dj_service = await self.__dj_manager.get(interaction.guild)
-        await dj_service.remove_role(role)
+        self.__dj_manager.get(interaction.guild).remove_role(role)
         await interaction.followup.send(
             embed=self.__embed_service.dj_remove(role)
         )
@@ -86,8 +83,7 @@ class DjCommand(commands.Cog):
     async def remove_member(self, interaction: nextcord.Interaction, member: nextcord.Member):
         self.__logger.debug(f"Handling `dj remove member` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        dj_service = await self.__dj_manager.get(interaction.guild)
-        await dj_service.remove(member)
+        self.__dj_manager.get(interaction.guild).remove(member)
         await interaction.followup.send(
             embed=self.__embed_service.dj_remove(member)
         )

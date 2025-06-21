@@ -21,7 +21,7 @@ class BotService:
         self.__logger.info("Shutdown requested. Goodbye !")
         await self.__bot_provider.get().close()
 
-    async def on_ready(self):
+    def on_ready(self):
         scopes = [
             "bot",
             "applications.commands"
@@ -40,7 +40,7 @@ class BotService:
         self.__logger.info(f"Tonearm is ready ! You can invite the bot with {invite_url}")
 
     @staticmethod
-    async def version() -> TonearmVersion:
+    def version() -> TonearmVersion:
         metadata = importlib.metadata.metadata("Tonearm")
         version = metadata.get("Version")
         author_emails = metadata.get_all("Author-email") or []

@@ -25,8 +25,7 @@ class JoinCommand(commands.Cog):
     async def join(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `join` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player_service = await self.__player_manager.get(interaction.guild)
-        await player_service.join(interaction.user)
+        await self.__player_manager.get(interaction.guild).join(interaction.user)
         await interaction.followup.send(
             embed=self.__embed_service.join()
         )

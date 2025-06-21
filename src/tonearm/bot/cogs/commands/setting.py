@@ -38,8 +38,7 @@ class SettingCommand(commands.Cog):
     async def set_channel(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `setting set channel` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        storage_service = await self.__storage_manager.get(interaction.guild)
-        await storage_service.set_channel(interaction.channel)
+        self.__storage_manager.get(interaction.guild).set_channel(interaction.channel)
         await interaction.followup.send(
             embed=self.__embed_service.setting_set("channel", interaction.channel)
         )
@@ -52,8 +51,7 @@ class SettingCommand(commands.Cog):
     async def set_anarchy(self, interaction: nextcord.Interaction, value: bool):
         self.__logger.debug(f"Handling `setting set anarchy` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        storage_service = await self.__storage_manager.get(interaction.guild)
-        await storage_service.set_anarchy(value)
+        self.__storage_manager.get(interaction.guild).set_anarchy(value)
         await interaction.followup.send(
             embed=self.__embed_service.setting_set("anarchy", value)
         )
@@ -72,8 +70,7 @@ class SettingCommand(commands.Cog):
     async def reset_channel(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `setting reset channel` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        storage_service = await self.__storage_manager.get(interaction.guild)
-        await storage_service.set_channel(None)
+        self.__storage_manager.get(interaction.guild).set_channel(None)
         await interaction.followup.send(
             embed=self.__embed_service.setting_reset("channel", None)
         )
@@ -86,8 +83,7 @@ class SettingCommand(commands.Cog):
     async def reset_anarchy(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `setting reset anarchy` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        storage_service = await self.__storage_manager.get(interaction.guild)
-        await storage_service.set_anarchy(False)
+        self.__storage_manager.get(interaction.guild).set_anarchy(False)
         await interaction.followup.send(
             embed=self.__embed_service.setting_reset("anarchy", False)
         )

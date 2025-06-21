@@ -2,7 +2,7 @@ import logging
 
 import nextcord
 from nextcord import SlashOption
-from nextcord.ext import commands
+from nextcord.ext import commands, application_checks
 
 from injector import singleton, inject
 
@@ -23,6 +23,7 @@ class BackCommand(commands.Cog):
     @nextcord.slash_command(
         description="Jumps back to a specific track in the history"
     )
+    @application_checks.guild_only()
     async def back(self,
                    interaction: nextcord.Interaction,
                    track: int = SlashOption(required=True, min_value=1)):
@@ -31,6 +32,7 @@ class BackCommand(commands.Cog):
     @nextcord.slash_command(
         description="Jumps back to a specific track in the history"
     )
+    @application_checks.guild_only()
     async def unskipto(self,
                        interaction: nextcord.Interaction,
                        track: int = SlashOption(required=True, min_value=1)):
@@ -39,8 +41,7 @@ class BackCommand(commands.Cog):
     async def __back(self, interaction: nextcord.Interaction, track: int):
         self.__logger.debug(f"Handling `back` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player_service = await self.__player_manager.get(interaction.guild)
-        await player_service.back(interaction.user, track)
+        await self.__player_manager.get(interaction.guild).back(interaction.user, track)
         await interaction.followup.send(
             embed=self.__embed_service.back(track)
         )

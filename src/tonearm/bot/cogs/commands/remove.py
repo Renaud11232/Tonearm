@@ -28,8 +28,7 @@ class RemoveCommand(commands.Cog):
                      track: int = SlashOption(required=True, min_value=0)):
         self.__logger.debug(f"Handling `remove` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        player_service = await self.__player_manager.get(interaction.guild)
-        removed_track = await player_service.remove(interaction.user, track)
+        removed_track = await self.__player_manager.get(interaction.guild).remove(interaction.user, track)
         await interaction.followup.send(
             embed=self.__embed_service.remove(removed_track)
         )
