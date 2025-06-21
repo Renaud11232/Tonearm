@@ -1,25 +1,55 @@
+import logging
+
 import nextcord
+from nextcord import SlashOption
 from nextcord.ext import commands
 
-from injector import singleton
+from injector import singleton, inject
+
+from tonearm.bot.managers import PlayerManager
+from tonearm.bot.services import EmbedService
 
 
 @singleton
 class LoopCommand(commands.Cog):
 
-    @nextcord.slash_command(
-        description="Sets the loop mode of the current playback queue"
-    )
-    async def loop(self, interaction: nextcord.Interaction):
-        await self.__loop(interaction)
+    @inject
+    def __init__(self, player_manager: PlayerManager, embed_service: EmbedService):
+        super().__init__()
+        self.__player_manager = player_manager
+        self.__embed_service = embed_service
+        self.__logger = logging.getLogger("tonearm.commands")
 
     @nextcord.slash_command(
         description="Sets the loop mode of the current playback queue"
     )
-    async def repeat(self, interaction: nextcord.Interaction):
-        await self.__loop(interaction)
+    async def loop(self,
+                   interaction: nextcord.Interaction,
+                   mode: str = SlashOption(choices={
+                       "off": "OFF",
+                       "track": "TRACK",
+                       "queue": "QUEUE"
+                   })):
+        await self.__loop(interaction, mode)
 
-    @staticmethod
-    async def __loop(interaction: nextcord.Interaction):
-        #TODO
-        await interaction.send(":wrench: This feature is not implemented yet !")
+    @nextcord.slash_command(
+        description="Sets the loop mode of the current playback queue"
+    )
+    async def repeat(self,
+                     interaction: nextcord.Interaction,
+                     mode: str = SlashOption(choices={
+                         "off": "OFF",
+                         "track": "TRACK",
+                         "queue": "QUEUE"
+                     })):
+        await self.__loop(interaction, mode)
+
+    async def __loop(self, interaction: nextcord.Interaction, mode: str):
+        self.__logger.debug(f"Handling `loop` command (interaction:{interaction.id})")
+        await interaction.response.defer()
+        player_service = await self.__player_manager.get(interaction.guild)
+        loop_mode = await player_service.loop(interaction.user, mode)
+        await interaction.followup.send(
+            embed=self.__embed_service.loop(loop_mode)
+        )
+        self.__logger.debug(f"Successfully handled `loop` command (interaction:{interaction.id})")

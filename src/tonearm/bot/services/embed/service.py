@@ -6,6 +6,7 @@ from injector import singleton
 
 from tonearm.bot.services.player.status import PlayerStatus
 from tonearm.bot.services.player.track import QueuedTrack
+from tonearm.bot.services.player.loop import LoopMode
 from tonearm.bot.services.bot import TonearmVersion
 from tonearm.utils.markdown import *
 from tonearm.utils.strings import *
@@ -101,6 +102,19 @@ class EmbedService:
         )
 
     @staticmethod
+    def loop(mode: LoopMode):
+        embed = nextcord.Embed(
+            colour=nextcord.Colour.dark_purple()
+        )
+        if mode == LoopMode.OFF:
+            embed.description = ":arrow_right: Looping turned off. One play, no reruns."
+        elif mode == LoopMode.TRACK:
+            embed.description = ":repeat_one: You must really love this one. Looping it on repeat."
+        else:
+            embed.description = ":repeat: Get ready for the encore. And the encore's encore. Looping the queue !"
+        return embed
+
+    @staticmethod
     def move(track: QueuedTrack, fr0m: int, to: int):
         return nextcord.Embed(
             description=f":ninja: Shifted {bold(escape_markdown(track.title))} like a playlist ninja. Moved from {fr0m} to {to}.",
@@ -158,13 +172,19 @@ class EmbedService:
             player_status.audio_source.total,
             minimum_positions=2
         )
+        status_icon = ":pause_button:" if player_status.audio_source.paused else ":arrow_forward:"
+        loop_icon = {
+            LoopMode.OFF.name: ":arrow_right:",
+            LoopMode.TRACK.name: ":repeat_one:",
+            LoopMode.QUEUE.name: ":repeat:"
+        }[player_status.queue.loop_mode.name]
         embed = nextcord.Embed(
             title="Now Playing",
             description=(
                 f"{bold(link(escape_link_text(truncate(player_status.queue.current_track.title, 50)), escape_link_url(player_status.queue.current_track.url)))}\n"
                 f"Requested by : {player_status.queue.current_track.member.mention}\n"
                 f"\n"
-                f"{':pause_button:' if player_status.audio_source.paused else ':arrow_forward:'} {bar_progress} {inline_code(f'[{elapsed_time}/{total_time}]')} :sound: {round(player_status.audio_source.volume)}%"
+                f"{status_icon} {bar_progress} {loop_icon} {inline_code(f'[{elapsed_time}/{total_time}]')} :sound: {round(player_status.audio_source.volume)}%"
             ),
             colour=nextcord.Colour.dark_purple()
         )

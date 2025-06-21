@@ -19,6 +19,7 @@ from .audiosource import ControllableFFmpegPCMAudio
 from .queue import Queue
 from .track import QueuedTrack
 from .status import PlayerStatus, AudioSourceStatus
+from .loop import LoopMode
 
 
 class PlayerService:
@@ -117,6 +118,13 @@ class PlayerService:
             raise PlayerException("The queue is empty, what can I do ?")
         self.__logger.debug(f"Queue not empty in guild {self.__guild.id}")
 
+    async def __check_history_not_empty(self):
+        self.__logger.debug(f"Checking if the history is empty in guild {self.__guild.id}")
+        if len(await self.__queue.get_previous_tracks()) == 0:
+            self.__logger.debug(f"History is empty in guild {self.__guild.id}")
+            raise PlayerException("I can't do that with no track in the history.")
+        self.__logger.debug(f"History not empty in guild {self.__guild.id}")
+
     async def join(self, member: nextcord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to join him in a voice channel of guild {self.__guild.id}")
         async with self.__condition:
@@ -133,6 +141,7 @@ class PlayerService:
         self.__logger.debug(f"The bot wasn't kicked recently, connecting to channel {channel.id} of guild {self.__guild.id}")
         await channel.connect()
         self.__graceful_leave = False
+        await self.__queue.loop(LoopMode.OFF)
         self.__player_loop_task = asyncio.create_task(self.__player_loop())
 
     async def __player_loop(self):
@@ -220,6 +229,7 @@ class PlayerService:
         self.__logger.debug(f"Got request to stop playing any track in guild {self.__guild.id}")
         await self.__queue.clear(full=full_clear)
         self.__logger.debug(f"Stopping current track in guild {self.__guild.id}")
+        await self.__queue.loop(LoopMode.OFF)
         self.__safe_stop_current_track()
         self.__logger.debug(f"Clearing previous tracks in guild {self.__guild.id}")
 
@@ -407,15 +417,16 @@ class PlayerService:
             self.__check_same_voice_channel(member)
             return await self.__queue.get_previous_tracks()
 
-    async def back(self, member: nextcord.Member, track: int = 1):
+    async def back(self, member: nextcord.Member, track: int):
         self.__logger.debug(f"Member {member.id} asked the bot to go back to track {track} in the history in guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)
             self.__check_same_voice_channel(member)
+            await self.__check_history_not_empty()
             await self.__queue.back(track - 1)
             self.__safe_stop_current_track()
 
-    async def jump(self, member: nextcord.Member, track: int = 1):
+    async def jump(self, member: nextcord.Member, track: int):
         self.__logger.debug(f"Member {member.id} asked the bot to jump to track {track} in guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)
@@ -439,3 +450,12 @@ class PlayerService:
             self.__check_same_voice_channel(member)
             await self.__check_queue_not_empty()
             return await self.__queue.move(fr0m - 1, to - 1)
+
+    async def loop(self, member: nextcord.Member, mode: str) -> LoopMode:
+        self.__logger.debug(f"Member {member.id} asked the bot to change the loop mode to {mode} in in guild {self.__guild.id}")
+        async with self.__condition:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            loop_mode = LoopMode[mode]
+            await self.__queue.loop(loop_mode)
+            return loop_mode

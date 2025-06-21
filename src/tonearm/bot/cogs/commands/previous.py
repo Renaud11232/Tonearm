@@ -35,7 +35,7 @@ class PreviousCommand(commands.Cog):
         self.__logger.debug(f"Handling `previous` command (interaction:{interaction.id})")
         await interaction.response.defer()
         player_service = await self.__player_manager.get(interaction.guild)
-        await player_service.back(interaction.user)
+        await player_service.back(interaction.user, 1)
         await interaction.followup.send(
             embed=self.__embed_service.previous()
         )
