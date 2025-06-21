@@ -427,3 +427,11 @@ class PlayerService:
             self.__check_same_voice_channel(member)
             await self.__check_queue_not_empty()
             return await self.__queue.remove(track - 1)
+
+    async def move(self, member: nextcord.Member, fr0m: int, to: int) -> QueuedTrack:
+        self.__logger.debug(f"Member {member.id} asked the bot to move track {fr0m} to {to} in in guild {self.__guild.id}")
+        async with self.__condition:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            await self.__check_queue_not_empty()
+            return await self.__queue.move(fr0m - 1, to - 1)

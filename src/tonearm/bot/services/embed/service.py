@@ -101,6 +101,13 @@ class EmbedService:
         )
 
     @staticmethod
+    def move(track: QueuedTrack, fr0m: int, to: int):
+        return nextcord.Embed(
+            description=f":ninja: Shifted {bold(escape_markdown(track.title))} like a playlist ninja. Moved from {fr0m} to {to}.",
+            colour=nextcord.Colour.dark_purple()
+        )
+
+    @staticmethod
     def next():
         return nextcord.Embed(
             description=":track_next: Skipping the current track, I didn't like this one either.",

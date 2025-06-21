@@ -137,3 +137,15 @@ class Queue:
             del self.__next_tracks[track]
             self.__condition.notify()
             return removed_track
+
+    async def move(self, from_position: int, to_position: int) -> QueuedTrack:
+        self.__logger.debug(f"Moving track {from_position} to {to_position} in queue {repr(self)}")
+        async with self.__condition:
+            if from_position >= len(self.__next_tracks) or to_position >= len(self.__next_tracks):
+                self.__logger.debug(f"Not enough tracks to move track {from_position} to {to_position} in queue {repr(self)}")
+                raise QueueException(f"I couldn’t move anything. The queue only has {len(self.__next_tracks)} track(s).")
+            moved_track = self.__next_tracks[from_position]
+            del self.__next_tracks[from_position]
+            self.__next_tracks.insert(to_position, moved_track)
+            self.__condition.notify()
+            return moved_track
