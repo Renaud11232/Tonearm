@@ -159,18 +159,22 @@ class PlayerService:
                         raise e
                     except MediaFetchingException as e:
                         self.__logger.warning(f"Failed to fetch media url in guild {self.__guild.id} : {repr(e)}")
-                        await self.__send_to_channel(self.__embed_service.error(f"Ouch, I could not fetch the stream URL for the next track : {repr(e)}"))
+                        await self.__send_to_channel(f"Ouch, I could not fetch the stream URL for the next track : {str(e)}")
                     except:
-                        self.__logger.exception("An unexpected error was raised in the player loop")
-                        await self.__send_to_channel(self.__embed_service.error(f"An unexpected error was raised in the player loop, please contact {self.__bot.get_user(self.__bot.owner_id).mention}, and tell them to check the logs."))
-                        await self.__safe_leave()
+                        self.__logger.exception("An unexpected error was raised in the player loop :")
+                        await self.__send_to_channel(f"An unexpected error was raised in the player loop, please contact {(await self.__bot.application_info()).owner.mention}.")
         except asyncio.CancelledError:
             self.__logger.debug(f"Cancelled player loop for guild {self.__guild.id}")
 
-    async def __send_to_channel(self, embed: nextcord.Embed):
+    async def __send_to_channel(self, message: str):
         channel = await self.__storage_service.get_channel()
+        self.__logger.debug(f"Sending message to the configured bot channel ({channel.id}) : in guild {self.__guild.id}")
         if channel is not None:
-            await channel.send(embed=embed)
+            await channel.send(
+                embed=self.__embed_service.error(message)
+            )
+        else:
+            self.__logger.debug(f"No channel configured for guild {self.__guild.id}")
 
     async def __on_audio_source_ended(self, error):
         if error is None:

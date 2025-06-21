@@ -1,5 +1,7 @@
 from injector import singleton, inject
 
+from requests.exceptions import ConnectionError
+
 from tonearm.api.cobalt import CobaltClient, CobaltException
 from tonearm.configuration import Configuration
 
@@ -23,6 +25,9 @@ class CobaltMediaService(MediaServiceBase):
                 audio_format="wav",
                 download_mode="audio"
             )["url"]
+        except ConnectionError as e:
+            self._logger.warning(f"Unable to connect to the Cobalt API : {repr(e)}")
+            raise MediaFetchingException(f"Unable to connect to the Cobalt API")
         except CobaltException as e:
             self._logger.warning(f"Cobalt API returned error : {repr(e)}")
             raise MediaFetchingException(f"Cobalt API returned error : `{str(e)}`")
