@@ -184,7 +184,7 @@ class EmbedService:
                 f"{bold(link(escape_link_text(truncate(player_status.queue.current_track.title, 50)), escape_link_url(player_status.queue.current_track.url)))}\n"
                 f"Requested by : {player_status.queue.current_track.member.mention}\n"
                 f"\n"
-                f"{status_icon} {bar_progress} {loop_icon} {inline_code(f'[{elapsed_time}/{total_time}]')} :sound: {round(player_status.audio_source.volume)}%"
+                f"{status_icon} {bar_progress} {inline_code(f'[{elapsed_time}/{total_time}]')} {loop_icon} :sound: {round(player_status.audio_source.volume)}%"
             ),
             colour=nextcord.Colour.dark_purple()
         )
