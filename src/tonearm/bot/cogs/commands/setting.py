@@ -1,23 +1,33 @@
 import logging
 
 import nextcord
-from nextcord.ext import commands
+from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.managers import StorageManager
 from tonearm.bot.services import EmbedService
+from tonearm.bot.checks import IsGuildAdministrator
+
+from .base import CommandCogBase
 
 
 @singleton
-class SettingCommand(commands.Cog):
+class SettingCommand(CommandCogBase):
 
     @inject
-    def __init__(self, storage_manager: StorageManager, embed_service: EmbedService):
+    def __init__(self,
+                 storage_manager: StorageManager,
+                 embed_service: EmbedService,
+                 is_guild_administrator: IsGuildAdministrator):
         super().__init__()
         self.__storage_manager = storage_manager
         self.__embed_service = embed_service
         self.__logger = logging.getLogger("tonearm.commands")
+        self._add_checks(self.set_channel, self.set_anarchy, self.reset_channel, self.reset_anarchy, checks=[
+            application_checks.guild_only(),
+            is_guild_administrator()
+        ])
 
     @nextcord.slash_command(
         description="Manages various bot settings"

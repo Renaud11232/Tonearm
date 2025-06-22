@@ -1,23 +1,30 @@
 import logging
 
 import nextcord
-from nextcord.ext import commands
+from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.managers import DjManager
 from tonearm.bot.services import EmbedService
+from tonearm.bot.checks import IsGuildAdministrator
+
+from .base import CommandCogBase
 
 
 @singleton
-class DjCommand(commands.Cog):
+class DjCommand(CommandCogBase):
 
     @inject
-    def __init__(self, dj_manager: DjManager, embed_service: EmbedService):
+    def __init__(self, dj_manager: DjManager, embed_service: EmbedService, is_guild_administrator: IsGuildAdministrator):
         super().__init__()
         self.__dj_manager = dj_manager
         self.__embed_service = embed_service
         self.__logger = logging.getLogger("tonearm.commands")
+        self._add_checks(self.add_role, self.add_member, self.remove_role, self.remove_member, checks=[
+            application_checks.guild_only(),
+            is_guild_administrator()
+        ])
 
     @nextcord.slash_command(
         description="Manages the DJ roles and members"

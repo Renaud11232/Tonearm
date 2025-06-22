@@ -2,27 +2,34 @@ import logging
 
 import nextcord
 from nextcord import SlashOption
-from nextcord.ext import commands
+from nextcord.ext import application_checks
 
 from injector import inject, singleton
 
 from tonearm.bot.managers import ChatManager
 from tonearm.bot.services import EmbedService
+from tonearm.bot.checks import IsGuildAdministrator
+
+from .base import CommandCogBase
 
 
 @singleton
-class CleanCommand(commands.Cog):
+class CleanCommand(CommandCogBase):
 
     @inject
-    def __init__(self, chat_manager: ChatManager, embed_service: EmbedService):
+    def __init__(self,
+                 chat_manager: ChatManager,
+                 embed_service: EmbedService,
+                 is_guild_administrator: IsGuildAdministrator):
         super().__init__()
         self.__chat_manager = chat_manager
         self.__embed_service = embed_service
         self.__logger = logging.getLogger("tonearm.commands")
+        self._add_checks(self.clean, checks=[
+            application_checks.guild_only(),
+            is_guild_administrator()
+        ])
 
-    #TODO: Translate commands and messages
-    #TODO: Implements checks and permissions
-    #TODO: Option documentation
     @nextcord.slash_command(
         description="Deletes bot messages in the channel (up to 100 at once)"
     )

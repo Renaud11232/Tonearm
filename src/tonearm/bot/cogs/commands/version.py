@@ -1,22 +1,32 @@
 import logging
 
 import nextcord
-from nextcord.ext import commands
+from nextcord.ext import application_checks
 
 from injector import inject, singleton
 
+from tonearm.bot.checks import IsCorrectChannel
 from tonearm.bot.services import EmbedService, BotService
+
+from .base import CommandCogBase
 
 
 @singleton
-class VersionCommand(commands.Cog):
+class VersionCommand(CommandCogBase):
 
     @inject
-    def __init__(self, bot_service: BotService, embed_service: EmbedService):
+    def __init__(self,
+                 bot_service: BotService,
+                 embed_service: EmbedService,
+                 is_correct_channel: IsCorrectChannel):
         super().__init__()
         self.__bot_service = bot_service
         self.__embed_service = embed_service
         self.__logger = logging.getLogger("tonearm.commands")
+        self._add_checks(self.version, checks=[
+            application_checks.guild_only(),
+            is_correct_channel()
+        ])
 
     @nextcord.slash_command(
         description="Shows nerdy details about the bot"

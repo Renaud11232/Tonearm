@@ -45,7 +45,8 @@ class BotModule(Module):
                     volume_command: VolumeCommand,
                     votenext_command: VotenextCommand) -> commands.Bot:
         intents = nextcord.Intents.default()
-        intents.voice_states = True
+        intents.members = True #Needed to check dj members
+        intents.voice_states = True #Needed to check when members leave voice channels
         activity = nextcord.Activity(
             type=nextcord.ActivityType.listening,
             name="/play"

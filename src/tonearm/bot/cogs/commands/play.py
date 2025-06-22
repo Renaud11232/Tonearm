@@ -1,23 +1,33 @@
 import logging
 
 import nextcord
-from nextcord.ext import commands
+from nextcord.ext import application_checks
 
 from injector import inject, singleton
 
+from tonearm.bot.checks import IsCorrectChannel
 from tonearm.bot.managers import PlayerManager
 from tonearm.bot.services import EmbedService
 
+from .base import CommandCogBase
+
 
 @singleton
-class PlayCommand(commands.Cog):
+class PlayCommand(CommandCogBase):
 
     @inject
-    def __init__(self, player_manager: PlayerManager, embed_service: EmbedService):
+    def __init__(self,
+                 player_manager: PlayerManager,
+                 embed_service: EmbedService,
+                 is_correct_channel: IsCorrectChannel):
         super().__init__()
         self.__player_manager = player_manager
         self.__embed_service = embed_service
         self.__logger = logging.getLogger("tonearm.commands")
+        self._add_checks(self.play, checks=[
+            application_checks.guild_only(),
+            is_correct_channel()
+        ])
 
     @nextcord.slash_command(
         description="Play a track or playlist in your voice channel. You can provide link, or search for a track"

@@ -1,11 +1,24 @@
 import nextcord
-from nextcord.ext import commands
+from nextcord.ext import application_checks
 
-from injector import singleton
+from injector import singleton, inject
+
+from tonearm.bot.checks import IsCorrectChannel, IsNotAnarchy
+
+from .base import CommandCogBase
 
 
 @singleton
-class VotenextCommand(commands.Cog):
+class VotenextCommand(CommandCogBase):
+
+    @inject
+    def __init__(self, is_correct_channel: IsCorrectChannel, is_not_anarchy: IsNotAnarchy):
+        super().__init__()
+        self._add_checks(self.votenext, self.voteskip, checks=[
+            application_checks.guild_only(),
+            is_correct_channel(),
+            is_not_anarchy()
+        ])
 
     @nextcord.slash_command(
         description="Votes to skip the current track"

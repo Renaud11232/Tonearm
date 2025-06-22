@@ -1,15 +1,17 @@
 import logging
 
 import nextcord
-from nextcord.ext import commands, application_checks
+from nextcord.ext import application_checks
 
 from injector import inject, singleton
 
 from tonearm.bot.services import BotService, EmbedService
 
+from .base import CommandCogBase
+
 
 @singleton
-class ShutdownCommand(commands.Cog):
+class ShutdownCommand(CommandCogBase):
 
     @inject
     def __init__(self, bot_service: BotService, embed_service: EmbedService):
@@ -17,11 +19,13 @@ class ShutdownCommand(commands.Cog):
         self.__bot_service = bot_service
         self.__embed_service = embed_service
         self.__logger = logging.getLogger("tonearm.commands")
+        self._add_checks(self.shutdown, checks=[
+            application_checks.is_owner()
+        ])
 
     @nextcord.slash_command(
         description="Shuts the bot down"
     )
-    @application_checks.is_owner()
     async def shutdown(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `shutdown` command (interaction:{interaction.id})")
         await interaction.response.defer()
