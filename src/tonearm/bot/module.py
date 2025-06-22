@@ -18,7 +18,6 @@ class BotModule(Module):
                     back_command: BackCommand,
                     clean_command: CleanCommand,
                     clear_command: ClearCommand,
-                    debug_command: DebugCommand,
                     dj_command: DjCommand,
                     forward_command: ForwardCommand,
                     history_command: HistoryCommand,
@@ -62,7 +61,6 @@ class BotModule(Module):
         bot.add_cog(back_command)
         bot.add_cog(clean_command)
         bot.add_cog(clear_command)
-        bot.add_cog(debug_command)
         bot.add_cog(dj_command)
         bot.add_cog(forward_command)
         bot.add_cog(history_command)

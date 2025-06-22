@@ -297,16 +297,6 @@ class PlayerService:
                 self.__logger.debug(f"The bot is now alone in a voice channel in guild {self.__guild.id}, leaving")
                 await self.__safe_leave()
 
-    def debug(self) -> str:
-        return (
-            f"self.__audio_source = {repr(self.__audio_source)}\n"
-            f"self.__graceful_leave = {repr(self.__graceful_leave)}\n"
-            f"self.__last_leave = {repr(self.__last_leave)}\n"
-            f"\n"
-            f"self.__is_connected() -> {repr(self.__is_connected())}\n"
-            f"self.__is_playing() -> {repr(self.__is_playing())}"
-        )
-
     def clear(self, member: nextcord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to clear the queue in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
