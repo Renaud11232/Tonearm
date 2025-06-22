@@ -9,6 +9,8 @@ from injector import singleton, inject
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
 from tonearm.bot.managers import PlayerManager
 from tonearm.bot.services import EmbedService
+from tonearm.bot.cogs.converters import LoopModeConverter
+from tonearm.bot.services.player import LoopMode
 
 from .base import CommandCogBase
 
@@ -37,11 +39,7 @@ class LoopCommand(CommandCogBase):
     )
     async def loop(self,
                    interaction: nextcord.Interaction,
-                   mode: str = SlashOption(choices={
-                       "off": "OFF",
-                       "track": "TRACK",
-                       "queue": "QUEUE"
-                   })):
+                   mode: LoopModeConverter = SlashOption(choices=["off", "track", "queue"])):
         await self.__loop(interaction, mode)
 
     @nextcord.slash_command(
@@ -49,18 +47,14 @@ class LoopCommand(CommandCogBase):
     )
     async def repeat(self,
                      interaction: nextcord.Interaction,
-                     mode: str = SlashOption(choices={
-                         "off": "OFF",
-                         "track": "TRACK",
-                         "queue": "QUEUE"
-                     })):
+                     mode: LoopModeConverter = SlashOption(choices=["off", "track", "queue"])):
         await self.__loop(interaction, mode)
 
-    async def __loop(self, interaction: nextcord.Interaction, mode: str):
+    async def __loop(self, interaction: nextcord.Interaction, mode: LoopMode):
         self.__logger.debug(f"Handling `loop` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        loop_mode = await self.__player_manager.get(interaction.guild).loop(interaction.user, mode)
+        await self.__player_manager.get(interaction.guild).loop(interaction.user, mode)
         await interaction.followup.send(
-            embed=self.__embed_service.loop(loop_mode)
+            embed=self.__embed_service.loop(mode)
         )
         self.__logger.debug(f"Successfully handled `loop` command (interaction:{interaction.id})")

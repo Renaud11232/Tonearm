@@ -9,3 +9,4 @@ class TonearmConverterException(TonearmException):
 
 class TonearmInvokeException(TonearmException):
     pass
+#TODO: Check if best to use nextcord Exception super classes
