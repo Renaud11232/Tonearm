@@ -6,7 +6,7 @@ from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
-from tonearm.bot.checks import CanUseDjCommand, IsCorrectChannel
+from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
 from tonearm.bot.managers import PlayerManager
 from tonearm.bot.services import EmbedService
 

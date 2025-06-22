@@ -3,7 +3,7 @@ from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
-from tonearm.bot.checks import IsCorrectChannel, IsNotAnarchy
+from tonearm.bot.cogs.checks import IsCorrectChannel, IsNotAnarchy
 
 from .base import CommandCogBase
 

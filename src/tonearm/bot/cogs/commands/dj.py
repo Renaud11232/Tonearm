@@ -7,7 +7,7 @@ from injector import singleton, inject
 
 from tonearm.bot.managers import DjManager
 from tonearm.bot.services import EmbedService
-from tonearm.bot.checks import IsGuildAdministrator
+from tonearm.bot.cogs.checks import IsGuildAdministrator
 
 from .base import CommandCogBase
 
