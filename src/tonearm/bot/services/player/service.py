@@ -20,6 +20,7 @@ from .queue import Queue
 from .track import QueuedTrack
 from .status import PlayerStatus, AudioSourceStatus
 from .loop import LoopMode
+from .voice_client import TonearmVoiceClient
 
 
 #TODO: Convert parameters in command cogs and not here (index + 1 / -1)
@@ -50,12 +51,10 @@ class PlayerService:
         self.__last_leave = None
 
     @property
-    def __voice_client(self) -> nextcord.VoiceClient | None:
+    def __voice_client(self) -> TonearmVoiceClient | None:
         protocol = nextcord.utils.get(self.__bot.voice_clients, guild=self.__guild)
-        if isinstance(protocol, nextcord.VoiceClient):
+        if isinstance(protocol, TonearmVoiceClient):
             return protocol
-        if protocol is not None:
-            self.__logger.warning(f"Voice client didn't have the right type (was : {type(protocol).__name__}, expected : VoiceClient), used `None` instead")
         return None
 
     def __check_member_in_voice_channel(self, member: nextcord.Member):
@@ -78,18 +77,6 @@ class PlayerService:
             self.__logger.debug(f"Bot is currently not playing any track in guild {self.__guild.id}")
             raise PlayerException("I'm not currently playing any track")
         self.__logger.debug(f"Bot is currently playing a track in guild {self.__guild.id}")
-
-    def __is_active(self):
-        return self.__is_playing() or self.__is_paused()
-
-    def __is_connected(self):
-        return self.__voice_client is not None and self.__voice_client.is_connected()
-
-    def __is_playing(self):
-        return self.__voice_client is not None and self.__voice_client.is_playing()
-
-    def __is_paused(self):
-        return self.__voice_client is not None and self.__voice_client.is_paused()
 
     def __check_not_in_voice_channel(self):
         self.__logger.debug(f"Checking if the bot is currently connected to a voice channel in the guild {self.__guild.id}")
@@ -126,6 +113,18 @@ class PlayerService:
             raise PlayerException("I can't do that with no track in the history.")
         self.__logger.debug(f"History not empty in guild {self.__guild.id}")
 
+    def __is_active(self):
+        return self.__is_playing() or self.__is_paused()
+
+    def __is_connected(self):
+        return self.__voice_client is not None and self.__voice_client.is_connected()
+
+    def __is_playing(self):
+        return self.__voice_client is not None and self.__voice_client.is_playing()
+
+    def __is_paused(self):
+        return self.__voice_client is not None and self.__voice_client.is_paused()
+
     async def join(self, member: nextcord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to join him in a voice channel of guild {self.__guild.id}")
         async with self.__condition:
@@ -136,14 +135,26 @@ class PlayerService:
     async def __safe_join(self, channel: nextcord.VoiceChannel):
         self.__logger.debug(f"Got request to join voice channel {channel.id} of guild {self.__guild.id}")
         self.__logger.debug(f"Checking if the bot was recently kicked from a voice channel in guild {self.__guild.id}")
-        if not self.__graceful_leave and self.__last_leave is not None and time.time() < self.__last_leave + 60:
+        if not self.__graceful_leave and time.time() < self.__last_leave + 60:
             self.__logger.debug(f"The bot was kicked recently and must wait {math.ceil(self.__last_leave + 60 - time.time())} seconds before joining a voice channel in guild {self.__guild.id}")
-            raise PlayerException(f"Clearly someone didn't want me here, ask me again in {math.ceil(self.__last_leave + 60 - time.time())} second(s)")
+            raise PlayerException(f"I got abruptly disconnected, ask me again in {math.ceil(self.__last_leave + 60 - time.time())} second(s)")
         self.__logger.debug(f"The bot wasn't kicked recently, connecting to channel {channel.id} of guild {self.__guild.id}")
-        await channel.connect()
-        self.__graceful_leave = False
+        await channel.connect(cls=TonearmVoiceClient)
+        self.__voice_client.add_listener("disconnect", self.__on_disconnect)
         await self.__queue.loop(LoopMode.OFF)
         self.__player_loop_task = asyncio.create_task(self.__player_loop())
+
+    async def __on_disconnect(self, force: bool):
+        self.__logger.debug(f"Voice client disconnected in guild {self.__guild.id}")
+        self.__last_leave = time.time()
+        if force:
+            self.__logger.warning(f"Forced to disconnect from voice channel in guild {self.__guild.id}, this can cause some issues")
+            self.__graceful_leave = False
+        else:
+            self.__logger.debug(f"Gracefully disconnected from voice channel in guild {self.__guild.id}")
+            self.__graceful_leave = True
+        await self.__safe_stop(full_clear=True)
+        self.__safe_cancel_loop()
 
     async def __player_loop(self):
         self.__logger.debug(f"Starting player loop for guild {self.__guild.id}")
@@ -229,7 +240,6 @@ class PlayerService:
     async def __safe_stop(self, full_clear=False):
         self.__logger.debug(f"Got request to stop playing any track in guild {self.__guild.id}")
         self.__queue.clear(full=full_clear)
-        self.__logger.debug(f"Stopping current track in guild {self.__guild.id}")
         await self.__queue.loop(LoopMode.OFF)
         self.__safe_stop_current_track()
         self.__logger.debug(f"Clearing previous tracks in guild {self.__guild.id}")
@@ -243,10 +253,6 @@ class PlayerService:
 
     async def __safe_leave(self):
         self.__logger.debug(f"Got request to leave voice channel in guild {self.__guild.id}")
-        self.__graceful_leave = True
-        self.__logger.debug(f"Stopping audio playback first in guild {self.__guild.id}")
-        await self.__safe_stop(full_clear=True)
-        self.__safe_cancel_loop()
         if self.__voice_client is None:
             self.__logger.debug(f"No current voice channel for guild {self.__guild.id}, no need to disconnect")
         else:
@@ -264,10 +270,7 @@ class PlayerService:
                 if member.id != self.__bot.user.id:
                     self.__logger.debug(f"Detected that a user moved from (or left) a voice channel in guild {self.__guild.id}")
                     await self.__on_user_moved(before.channel)
-                elif after.channel is None:
-                    self.__logger.debug(f"Detected that the bot disconnected from its voice channel in guild {self.__guild.id}")
-                    await self.__on_bot_disconnected()
-                else:
+                elif after.channel is not None:
                     self.__logger.debug(f"Detected that the bot was moved to a different voice channel in guild {self.__guild.id}")
                     await self.__on_bot_moved()
 
@@ -275,14 +278,6 @@ class PlayerService:
         others = [m for m in channel.members if m.id != self.__bot.user.id]
         self.__logger.debug(f"Checking if the bot is alone in voice chanel {channel.id} in guild {self.__guild.id} : {len(others) == 0}")
         return len(others) == 0
-
-    async def __on_bot_disconnected(self):
-        async with self.__condition:
-            if not self.__graceful_leave and self.__voice_client is None:
-                self.__logger.warning(f"The bot was kicked from its voice channel in guild {self.__guild.id}, this might cause issues")
-                await self.__safe_stop(full_clear=True)
-                self.__safe_cancel_loop()
-            self.__last_leave = time.time()
 
     async def __on_bot_moved(self):
         async with self.__condition:
