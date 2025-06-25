@@ -104,3 +104,9 @@ class StorageService:
 
     def set_anarchy(self, anarchy: bool):
         self.__set("anarchy", anarchy)
+
+    def get_announcements(self) -> bool:
+        return self.__get("announcements", default=False)
+
+    def set_announcements(self, announcements: bool):
+        self.__set("announcements", announcements)

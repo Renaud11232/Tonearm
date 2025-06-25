@@ -48,14 +48,14 @@ class SettingCommand(CommandCogBase):
     async def set_channel(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `setting set channel` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        self.__storage_manager.get(interaction.guild).set_channel(interaction.channel)
+        self.__storage_manager.get(interaction.guild).set_channel(interaction.channel) # type: ignore
         await interaction.followup.send(
             embed=self.__embed_service.setting_set("channel", interaction.channel)
         )
         self.__logger.debug(f"Successfully handled `setting set channel` command (interaction:{interaction.id})")
 
     @set.subcommand(
-        description="Disables DJ enforcement if enabled, allowing everyone to use most commands",
+        description="Disables DJ enforcement if set to true, allowing everyone to use DJ commands",
         name="anarchy"
     )
     async def set_anarchy(self, interaction: nextcord.Interaction, value: bool):
@@ -66,6 +66,19 @@ class SettingCommand(CommandCogBase):
             embed=self.__embed_service.setting_set("anarchy", value)
         )
         self.__logger.debug(f"Successfully handled `setting set channel` command (interaction:{interaction.id})")
+
+    @set.subcommand(
+        description="Enables automatic track announcements",
+        name="announcements"
+    )
+    async def set_announcements(self, interaction: nextcord.Interaction, value: bool):
+        self.__logger.debug(f"Handling `setting set announcements` command (interaction:{interaction.id})")
+        await interaction.response.defer()
+        self.__storage_manager.get(interaction.guild).set_announcements(value)
+        await interaction.followup.send(
+            embed=self.__embed_service.setting_set("announcements", value)
+        )
+        self.__logger.debug(f"Successfully handled `setting set announcements` command (interaction:{interaction.id})")
 
     @setting.subcommand(
         description="Resets a setting to its default value"
@@ -98,3 +111,16 @@ class SettingCommand(CommandCogBase):
             embed=self.__embed_service.setting_reset("anarchy", False)
         )
         self.__logger.debug(f"Successfully handled `setting reset channel` command (interaction:{interaction.id})")
+
+    @reset.subcommand(
+        description="Resets automatic track announcements, disabling them",
+        name="announcements"
+    )
+    async def reset_announcements(self, interaction: nextcord.Interaction):
+        self.__logger.debug(f"Handling `setting reset announcements` command (interaction:{interaction.id})")
+        await interaction.response.defer()
+        self.__storage_manager.get(interaction.guild).set_announcements(False)
+        await interaction.followup.send(
+            embed=self.__embed_service.setting_set("announcements", False)
+        )
+        self.__logger.debug(f"Successfully handled `setting reset announcements` command (interaction:{interaction.id})")

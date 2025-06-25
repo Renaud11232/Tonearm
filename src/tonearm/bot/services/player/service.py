@@ -47,8 +47,7 @@ class PlayerService:
         self.__condition = asyncio.Condition()
         self.__audio_source: ControllableFFmpegPCMAudio | None = None
         self.__player_loop_task: asyncio.Task | None = None
-        self.__graceful_leave = True
-        self.__last_leave = None
+        self.__last_forced_leave: float | None = None
 
     @property
     def __voice_client(self) -> TonearmVoiceClient | None:
@@ -135,9 +134,9 @@ class PlayerService:
     async def __safe_join(self, channel: nextcord.VoiceChannel):
         self.__logger.debug(f"Got request to join voice channel {channel.id} of guild {self.__guild.id}")
         self.__logger.debug(f"Checking if the bot was recently kicked from a voice channel in guild {self.__guild.id}")
-        if not self.__graceful_leave and time.time() < self.__last_leave + 60:
-            self.__logger.debug(f"The bot was kicked recently and must wait {math.ceil(self.__last_leave + 60 - time.time())} seconds before joining a voice channel in guild {self.__guild.id}")
-            raise PlayerException(f"I got abruptly disconnected, ask me again in {math.ceil(self.__last_leave + 60 - time.time())} second(s)")
+        if self.__last_forced_leave is not None and time.time() < self.__last_forced_leave + 60:
+            self.__logger.debug(f"The bot was kicked recently and must wait {math.ceil(self.__last_forced_leave + 60 - time.time())} seconds before joining a voice channel in guild {self.__guild.id}")
+            raise PlayerException(f"I got abruptly disconnected, ask me again in {math.ceil(self.__last_forced_leave + 60 - time.time())} second(s)")
         self.__logger.debug(f"The bot wasn't kicked recently, connecting to channel {channel.id} of guild {self.__guild.id}")
         await channel.connect(cls=TonearmVoiceClient)
         self.__voice_client.add_listener("disconnect", self.__on_disconnect)
@@ -146,13 +145,12 @@ class PlayerService:
 
     async def __on_disconnect(self, force: bool):
         self.__logger.debug(f"Voice client disconnected in guild {self.__guild.id}")
-        self.__last_leave = time.time()
         if force:
             self.__logger.warning(f"Forced to disconnect from voice channel in guild {self.__guild.id}, this can cause some issues")
-            self.__graceful_leave = False
+            self.__last_forced_leave = time.time()
         else:
             self.__logger.debug(f"Gracefully disconnected from voice channel in guild {self.__guild.id}")
-            self.__graceful_leave = True
+            self.__last_forced_leave = None
         await self.__safe_stop(full_clear=True)
         self.__safe_cancel_loop()
 
@@ -176,23 +174,25 @@ class PlayerService:
                                 self.__audio_source,
                                 after=self.__on_audio_source_ended
                             )
+                            if self.__storage_service.get_announcements():
+                                await self.__send_to_channel(self.__embed_service.now(self.__get_status()))
                     except asyncio.CancelledError as e:
                         raise e
                     except MediaFetchingException as e:
                         self.__logger.warning(f"Failed to fetch media url in guild {self.__guild.id} : {repr(e)}")
-                        await self.__send_to_channel(f"Ouch, I could not fetch the stream URL for the next track : {str(e)}")
+                        await self.__send_to_channel(self.__embed_service.error(f"Ouch, I could not fetch the stream URL for the next track : {str(e)}"))
                     except:
                         self.__logger.exception("An unexpected error was raised in the player loop :")
-                        await self.__send_to_channel(f"An unexpected error was raised in the player loop, please contact {(await self.__bot.application_info()).owner.mention}.")
+                        await self.__send_to_channel(self.__embed_service.error(f"An unexpected error was raised in the player loop, please contact {(await self.__bot.application_info()).owner.mention}."))
         except asyncio.CancelledError:
             self.__logger.debug(f"Cancelled player loop for guild {self.__guild.id}")
 
-    async def __send_to_channel(self, message: str):
+    async def __send_to_channel(self, embed: nextcord.Embed):
         channel = self.__storage_service.get_channel()
         self.__logger.debug(f"Sending message to the configured bot channel ({channel.id}) : in guild {self.__guild.id}")
         if channel is not None:
             await channel.send(
-                embed=self.__embed_service.error(message)
+                embed=embed
             )
         else:
             self.__logger.debug(f"No channel configured for guild {self.__guild.id}")
