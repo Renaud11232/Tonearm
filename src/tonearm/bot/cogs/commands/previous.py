@@ -46,7 +46,7 @@ class PreviousCommand(CommandCogBase):
     async def __previous(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `previous` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        await self.__player_manager.get(interaction.guild).back(interaction.user, 1)
+        await self.__player_manager.get(interaction.guild).back(interaction.user, 0)
         await interaction.followup.send(
             embed=self.__embed_service.previous()
         )

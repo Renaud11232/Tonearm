@@ -7,6 +7,7 @@ from nextcord.ext import application_checks
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import IsCorrectChannel
+from tonearm.bot.cogs.converters import ZeroIndexConverter
 from tonearm.bot.managers import PlayerManager
 from tonearm.bot.services import EmbedService
 
@@ -35,11 +36,11 @@ class HistoryCommand(CommandCogBase):
     )
     async def history(self,
                       interaction: nextcord.Interaction,
-                      page: int = SlashOption(required=False, default=1, min_value=1)):
+                      page: ZeroIndexConverter = SlashOption(required=False, default=0, min_value=1)):
         self.__logger.debug(f"Handling `history` command (interaction:{interaction.id})")
         await interaction.response.defer()
         previous_tracks = self.__player_manager.get(interaction.guild).history(interaction.user)
         await interaction.followup.send(
-            embed=self.__embed_service.history(previous_tracks, page)
+            embed=self.__embed_service.history(previous_tracks, page) # type: ignore
         )
         self.__logger.debug(f"Successfully handled `history` command (interaction:{interaction.id}, with previous tracks : {repr(previous_tracks)}")

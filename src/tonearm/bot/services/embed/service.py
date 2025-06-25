@@ -29,7 +29,7 @@ class EmbedService:
         if track == 1:
             return EmbedService.previous()
         return nextcord.Embed(
-            description=f":track_previous: Rewinding to track {track}. Let’s bring those back!",
+            description=f":track_previous: Rewinding to track {track + 1}. Let’s bring it back!",
             colour=nextcord.Colour.dark_purple()
         )
 
@@ -87,10 +87,10 @@ class EmbedService:
 
     @staticmethod
     def jump(track: int):
-        if track == 1:
+        if track == 0:
             return EmbedService.next()
         return nextcord.Embed(
-            description=f":track_next: Boom. Skipped straight to track {track}. Enjoy !",
+            description=f":track_next: Boom. Skipped straight to track {track + 1}. Enjoy !",
             colour=nextcord.Colour.dark_purple()
         )
 
@@ -117,7 +117,7 @@ class EmbedService:
     @staticmethod
     def move(track: QueuedTrack, fr0m: int, to: int):
         return nextcord.Embed(
-            description=f":ninja: Shifted {bold(escape_markdown(track.title))} like a playlist ninja. Moved from {fr0m} to {to}.",
+            description=f":ninja: Shifted {bold(escape_markdown(track.title))} like a playlist ninja. Moved from {fr0m + 1} to {to + 1}.",
             colour=nextcord.Colour.dark_purple()
         )
 
@@ -225,16 +225,16 @@ class EmbedService:
             max_pages = 1
         else:
             max_pages = math.ceil(len(tracks) / 10)
-        if page > max_pages:
-            raise EmbedException(f"I can't show you page {page} out of {max_pages}")
+        if page >= max_pages:
+            raise EmbedException(f"I can't show you page {page + 1} out of {max_pages}")
         if len(tracks) == 0:
             track_list = [
                 italic("Nothing to show here")
             ]
         else:
-            tracks_chunk = tracks[(page - 1) * 10: (page - 1) * 10 + 10]
+            tracks_chunk = tracks[page * 10: page * 10 + 10]
             track_list = [
-                f"{bold(f'{(page - 1) * 10 + track + 1}.')} {link(escape_link_text(truncate(tracks_chunk[track].title, 25)), escape_link_url(tracks_chunk[track].url))}"
+                f"{bold(f'{page * 10 + track + 1}.')} {link(escape_link_text(truncate(tracks_chunk[track].title, 25)), escape_link_url(tracks_chunk[track].url))}"
                 for track in range(len(tracks_chunk))
             ]
         embed.add_field(
@@ -249,7 +249,7 @@ class EmbedService:
         )
         embed.add_field(
             name="Page",
-            value=f"{page} out of {max_pages}",
+            value=f"{page + 1} out of {max_pages}",
             inline=True
         )
 

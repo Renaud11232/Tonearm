@@ -7,6 +7,7 @@ from nextcord.ext import application_checks
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
+from tonearm.bot.cogs.converters import ZeroIndexConverter
 from tonearm.bot.managers import PlayerManager
 from tonearm.bot.services import EmbedService
 
@@ -37,12 +38,12 @@ class MoveCommand(CommandCogBase):
     )
     async def move(self,
                    interaction: nextcord.Interaction,
-                   fr0m: int = SlashOption(name="from", required=True, min_value=1),
-                   to: int = SlashOption(required=True, min_value=1)):
+                   fr0m: ZeroIndexConverter = SlashOption(name="from", required=True, min_value=1),
+                   to: ZeroIndexConverter = SlashOption(required=True, min_value=1)):
         self.__logger.debug(f"Handling `move` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        moved_track = await self.__player_manager.get(interaction.guild).move(interaction.user, fr0m, to)
+        moved_track = await self.__player_manager.get(interaction.guild).move(interaction.user, fr0m, to) # type: ignore
         await interaction.followup.send(
-            embed=self.__embed_service.move(moved_track, fr0m, to)
+            embed=self.__embed_service.move(moved_track, fr0m, to) # type: ignore
         )
         self.__logger.debug(f"Successfully handled `move` command (interaction:{interaction.id})")

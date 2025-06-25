@@ -23,7 +23,6 @@ from .loop import LoopMode
 from .voice_client import TonearmVoiceClient
 
 
-#TODO: Convert parameters in command cogs and not here (index + 1 / -1)
 class PlayerService:
 
     @inject
@@ -299,7 +298,7 @@ class PlayerService:
         self.__check_same_voice_channel(member)
         self.__queue.clear()
 
-    def seek(self, member: nextcord.Member, duration):
+    def seek(self, member: nextcord.Member, duration: int):
         self.__logger.debug(f"Member {member.id} asked the bot to seek to {duration}ms in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
@@ -313,14 +312,14 @@ class PlayerService:
         else:
             self.__logger.debug(f"Bot is not currently playing, not seeking in guild {self.__guild.id}")
 
-    def forward(self, member: nextcord.Member, duration):
+    def forward(self, member: nextcord.Member, duration: int):
         self.__logger.debug(f"Member {member.id} asked the bot to seek forward {duration}ms in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
         self.__check_active_audio_source()
         self.__safe_seek(self.__audio_source.elapsed + duration)
 
-    def rewind(self, member: nextcord.Member, duration):
+    def rewind(self, member: nextcord.Member, duration: int):
         self.__logger.debug(f"Member {member.id} asked the bot to rewind {duration}ms in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
@@ -397,7 +396,7 @@ class PlayerService:
             self.__check_member_in_voice_channel(member)
             self.__check_same_voice_channel(member)
             self.__check_history_not_empty()
-            await self.__queue.back(track - 1)
+            await self.__queue.back(track)
             self.__safe_stop_current_track()
 
     async def jump(self, member: nextcord.Member, track: int):
@@ -406,7 +405,7 @@ class PlayerService:
             self.__check_member_in_voice_channel(member)
             self.__check_same_voice_channel(member)
             self.__check_active_audio_source()
-            await self.__queue.jump(track - 1)
+            await self.__queue.jump(track)
             self.__safe_stop_current_track()
 
     async def remove(self, member: nextcord.Member, track: int) -> QueuedTrack:
@@ -415,7 +414,7 @@ class PlayerService:
             self.__check_member_in_voice_channel(member)
             self.__check_same_voice_channel(member)
             self.__check_queue_not_empty()
-            return await self.__queue.remove(track - 1)
+            return await self.__queue.remove(track)
 
     async def move(self, member: nextcord.Member, fr0m: int, to: int) -> QueuedTrack:
         self.__logger.debug(f"Member {member.id} asked the bot to move track {fr0m} to {to} in in guild {self.__guild.id}")
@@ -423,7 +422,7 @@ class PlayerService:
             self.__check_member_in_voice_channel(member)
             self.__check_same_voice_channel(member)
             self.__check_queue_not_empty()
-            return await self.__queue.move(fr0m - 1, to - 1)
+            return await self.__queue.move(fr0m, to)
 
     async def loop(self, member: nextcord.Member, mode: LoopMode):
         self.__logger.debug(f"Member {member.id} asked the bot to change the loop mode to {mode} in in guild {self.__guild.id}")

@@ -7,6 +7,7 @@ from nextcord.ext import application_checks
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
+from tonearm.bot.cogs.converters import ZeroIndexConverter
 from tonearm.bot.managers import PlayerManager
 from tonearm.bot.services import EmbedService
 
@@ -37,10 +38,10 @@ class RemoveCommand(CommandCogBase):
     )
     async def remove(self,
                      interaction: nextcord.Interaction,
-                     track: int = SlashOption(required=True, min_value=0)):
+                     track: ZeroIndexConverter = SlashOption(required=True, min_value=0)):
         self.__logger.debug(f"Handling `remove` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        removed_track = await self.__player_manager.get(interaction.guild).remove(interaction.user, track)
+        removed_track = await self.__player_manager.get(interaction.guild).remove(interaction.user, track) # type: ignore
         await interaction.followup.send(
             embed=self.__embed_service.remove(removed_track)
         )

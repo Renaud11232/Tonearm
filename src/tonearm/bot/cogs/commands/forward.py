@@ -38,7 +38,7 @@ class ForwardCommand(CommandCogBase):
     async def forward(self, interaction: nextcord.Interaction, duration: DurationConverter):
         self.__logger.debug(f"Handling `forward` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        self.__player_manager.get(interaction.guild).forward(interaction.user, duration)
+        self.__player_manager.get(interaction.guild).forward(interaction.user, duration) # type: ignore
         await interaction.followup.send(
             embed=self.__embed_service.forward()
         )

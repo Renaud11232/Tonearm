@@ -7,6 +7,7 @@ from nextcord.ext import application_checks
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import IsCorrectChannel
+from tonearm.bot.cogs.converters import ZeroIndexConverter
 from tonearm.bot.managers import PlayerManager
 from tonearm.bot.services import EmbedService
 
@@ -35,11 +36,11 @@ class QueueCommand(CommandCogBase):
     )
     async def queue(self,
                     interaction: nextcord.Interaction,
-                    page: int = SlashOption(required=False, default=1, min_value=1)):
+                    page: ZeroIndexConverter = SlashOption(required=False, default=0, min_value=1)):
         self.__logger.debug(f"Handling `queue` command (interaction:{interaction.id})")
         await interaction.response.defer()
         status = self.__player_manager.get(interaction.guild).queue(interaction.user)
         await interaction.followup.send(
-            embed=self.__embed_service.queue(status, page)
+            embed=self.__embed_service.queue(status, page) # type: ignore
         )
         self.__logger.debug(f"Successfully handled `queue` command (interaction:{interaction.id}, with status : {repr(status)}")

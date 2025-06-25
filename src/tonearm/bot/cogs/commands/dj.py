@@ -21,7 +21,7 @@ class DjCommand(CommandCogBase):
         self.__dj_manager = dj_manager
         self.__embed_service = embed_service
         self.__logger = logging.getLogger("tonearm.commands")
-        self._add_checks(self.add_role, self.add_member, self.remove_role, self.remove_member, checks=[
+        self._add_checks(self.add, self.remove, checks=[
             application_checks.guild_only(),
             is_guild_administrator()
         ])
@@ -35,63 +35,23 @@ class DjCommand(CommandCogBase):
     @dj.subcommand(
         description="Adds a role or member to the DJs"
     )
-    async def add(self, interaction: nextcord.Interaction):
-        pass
-
-    @add.subcommand(
-        description="Adds a role to the DJs",
-        name="role"
-    )
-    async def add_role(self, interaction: nextcord.Interaction, role: nextcord.Role):
-        self.__logger.debug(f"Handling `dj add role` command (interaction:{interaction.id})")
+    async def add(self, interaction: nextcord.Interaction, dj: nextcord.Mentionable):
+        self.__logger.debug(f"Handling `dj add` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        self.__dj_manager.get(interaction.guild).add_role(role)
+        self.__dj_manager.get(interaction.guild).add(dj) # type: ignore
         await interaction.followup.send(
-            embed=self.__embed_service.dj_add(role)
+            embed=self.__embed_service.dj_add(dj) # type: ignore
         )
-        self.__logger.debug(f"Successfully handled `dj add role` command (interaction:{interaction.id})")
-
-    @add.subcommand(
-        description="Adds a member to the DJs",
-        name="member"
-    )
-    async def add_member(self, interaction: nextcord.Interaction, member: nextcord.Member):
-        self.__logger.debug(f"Handling `dj add member` command (interaction:{interaction.id})")
-        await interaction.response.defer()
-        self.__dj_manager.get(interaction.guild).add(member)
-        await interaction.followup.send(
-            embed=self.__embed_service.dj_add(member)
-        )
-        self.__logger.debug(f"Successfully handled `dj add member` command (interaction:{interaction.id})")
+        self.__logger.debug(f"Successfully handled `dj add` command (interaction:{interaction.id})")
 
     @dj.subcommand(
         description="Removes a role or member from the DJs"
     )
-    async def remove(self, interaction: nextcord.Interaction):
-        pass
-
-    @remove.subcommand(
-        description="Removes a role from the DJs",
-        name="role"
-    )
-    async def remove_role(self, interaction: nextcord.Interaction, role: nextcord.Role):
-        self.__logger.debug(f"Handling `dj remove role` command (interaction:{interaction.id})")
+    async def remove(self, interaction: nextcord.Interaction, dj: nextcord.Mentionable):
+        self.__logger.debug(f"Handling `dj remove` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        self.__dj_manager.get(interaction.guild).remove_role(role)
+        self.__dj_manager.get(interaction.guild).remove(dj) # type: ignore
         await interaction.followup.send(
-            embed=self.__embed_service.dj_remove(role)
+            embed=self.__embed_service.dj_remove(dj) # type: ignore
         )
-        self.__logger.debug(f"Successfully handled `dj remove role` command (interaction:{interaction.id})")
-
-    @remove.subcommand(
-        description="Removes a member from the DJs",
-        name="member"
-    )
-    async def remove_member(self, interaction: nextcord.Interaction, member: nextcord.Member):
-        self.__logger.debug(f"Handling `dj remove member` command (interaction:{interaction.id})")
-        await interaction.response.defer()
-        self.__dj_manager.get(interaction.guild).remove(member)
-        await interaction.followup.send(
-            embed=self.__embed_service.dj_remove(member)
-        )
-        self.__logger.debug(f"Successfully handled `dj remove member` command (interaction:{interaction.id})")
+        self.__logger.debug(f"Successfully handled `dj remove` command (interaction:{interaction.id})")

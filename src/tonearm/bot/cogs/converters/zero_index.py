@@ -2,7 +2,7 @@ import nextcord
 from nextcord import Interaction
 
 
-class MachineIndexConverter(nextcord.OptionConverter):
+class ZeroIndexConverter(nextcord.OptionConverter):
 
     def __init__(self):
         super().__init__(int)

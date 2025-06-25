@@ -40,7 +40,7 @@ class LoopCommand(CommandCogBase):
     async def loop(self,
                    interaction: nextcord.Interaction,
                    mode: LoopModeConverter = SlashOption(choices=["off", "track", "queue"])):
-        await self.__loop(interaction, mode)
+        await self.__loop(interaction, mode) # type: ignore
 
     @nextcord.slash_command(
         description="Sets the loop mode of the current playback queue"
@@ -48,7 +48,7 @@ class LoopCommand(CommandCogBase):
     async def repeat(self,
                      interaction: nextcord.Interaction,
                      mode: LoopModeConverter = SlashOption(choices=["off", "track", "queue"])):
-        await self.__loop(interaction, mode)
+        await self.__loop(interaction, mode) # type: ignore
 
     async def __loop(self, interaction: nextcord.Interaction, mode: LoopMode):
         self.__logger.debug(f"Handling `loop` command (interaction:{interaction.id})")

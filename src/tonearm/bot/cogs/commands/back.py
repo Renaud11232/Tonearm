@@ -7,6 +7,7 @@ from nextcord.ext import application_checks
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
+from tonearm.bot.cogs.converters import ZeroIndexConverter
 from tonearm.bot.managers import PlayerManager
 from tonearm.bot.services import EmbedService
 
@@ -37,16 +38,16 @@ class BackCommand(CommandCogBase):
     )
     async def back(self,
                    interaction: nextcord.Interaction,
-                   track: int = SlashOption(required=True, min_value=1)):
-        await self.__back(interaction, track)
+                   track: ZeroIndexConverter = SlashOption(required=True, min_value=1)):
+        await self.__back(interaction, track) # type: ignore
 
     @nextcord.slash_command(
         description="Jumps back to a specific track in the history"
     )
     async def unskipto(self,
                        interaction: nextcord.Interaction,
-                       track: int = SlashOption(required=True, min_value=1)):
-        await self.__back(interaction, track)
+                       track: ZeroIndexConverter = SlashOption(required=True, min_value=1)):
+        await self.__back(interaction, track) # type: ignore
 
     async def __back(self, interaction: nextcord.Interaction, track: int):
         self.__logger.debug(f"Handling `back` command (interaction:{interaction.id})")

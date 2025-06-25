@@ -46,7 +46,7 @@ class NextCommand(CommandCogBase):
     async def __next(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `next` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        await self.__player_manager.get(interaction.guild).jump(interaction.user, 1)
+        await self.__player_manager.get(interaction.guild).jump(interaction.user, 0)
         await interaction.followup.send(
             embed=self.__embed_service.next()
         )

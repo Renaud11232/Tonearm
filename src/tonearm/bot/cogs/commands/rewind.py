@@ -38,7 +38,7 @@ class RewindCommand(CommandCogBase):
     async def rewind(self, interaction: nextcord.Interaction, duration: DurationConverter):
         self.__logger.debug(f"Handling `rewind` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        self.__player_manager.get(interaction.guild).rewind(interaction.user, duration)
+        self.__player_manager.get(interaction.guild).rewind(interaction.user, duration) # type: ignore
         await interaction.followup.send(
             embed=self.__embed_service.rewind()
         )

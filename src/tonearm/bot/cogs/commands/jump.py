@@ -7,6 +7,7 @@ from nextcord.ext import application_checks
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
+from tonearm.bot.cogs.converters import ZeroIndexConverter
 from tonearm.bot.managers import PlayerManager
 from tonearm.bot.services import EmbedService
 
@@ -37,16 +38,16 @@ class JumpCommand(CommandCogBase):
     )
     async def jump(self,
                    interaction: nextcord.Interaction,
-                   track: int = SlashOption(required=False, min_value=1)):
-        await self.__jump(interaction, track)
+                   track: ZeroIndexConverter = SlashOption(required=False, min_value=1)):
+        await self.__jump(interaction, track) # type: ignore
 
     @nextcord.slash_command(
         description="Jumps to a specific track in the queue"
     )
     async def skipto(self,
                      interaction: nextcord.Interaction,
-                     track: int = SlashOption(required=False, min_value=1)):
-        await self.__jump(interaction, track)
+                     track: ZeroIndexConverter = SlashOption(required=False, min_value=1)):
+        await self.__jump(interaction, track) # type: ignore
 
     async def __jump(self, interaction: nextcord.Interaction, track: int):
         self.__logger.debug(f"Handling `jump` command (interaction:{interaction.id})")

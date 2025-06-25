@@ -38,7 +38,7 @@ class SeekCommand(CommandCogBase):
     async def seek(self, interaction: nextcord.Interaction, duration: DurationConverter):
         self.__logger.debug(f"Handling `seek` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        self.__player_manager.get(interaction.guild).seek(interaction.user, duration)
+        self.__player_manager.get(interaction.guild).seek(interaction.user, duration) # type: ignore
         await interaction.followup.send(
             embed=self.__embed_service.seek()
         )
