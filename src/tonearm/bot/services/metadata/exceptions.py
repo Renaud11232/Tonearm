@@ -1,5 +1,5 @@
-from tonearm.bot.exceptions import TonearmInvokeException
+from tonearm.bot.exceptions import TonearmCommandException
 
 
-class MetadataFetchingException(TonearmInvokeException):
+class MetadataFetchingException(TonearmCommandException):
     pass

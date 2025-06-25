@@ -1,12 +1,11 @@
-class TonearmException(Exception):
+from nextcord.errors import ApplicationCheckFailure
+
+
+class TonearmCheckException(ApplicationCheckFailure):
     pass
 
-class TonearmCheckException(TonearmException):
+class TonearmConverterException(Exception):
     pass
 
-class TonearmConverterException(TonearmException):
+class TonearmCommandException(Exception):
     pass
-
-class TonearmInvokeException(TonearmException):
-    pass
-#TODO: Check if best to use nextcord Exception super classes

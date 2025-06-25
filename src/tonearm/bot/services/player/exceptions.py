@@ -1,7 +1,7 @@
-from tonearm.bot.exceptions import TonearmInvokeException
+from tonearm.bot.exceptions import TonearmCommandException
 
 
-class PlayerException(TonearmInvokeException):
+class PlayerException(TonearmCommandException):
     pass
 
 class QueueException(PlayerException):

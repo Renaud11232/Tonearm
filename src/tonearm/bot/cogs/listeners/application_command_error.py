@@ -3,8 +3,9 @@ import logging
 import nextcord
 from injector import inject, singleton
 from nextcord.ext import commands
+from nextcord.errors import ApplicationCheckFailure
 
-from tonearm.bot.exceptions import TonearmInvokeException
+from tonearm.bot.exceptions import TonearmCommandException
 from tonearm.bot.services import EmbedService
 
 
@@ -19,9 +20,14 @@ class ApplicationCommandErrorListener(commands.Cog):
 
     async def on_application_command_error(self, interaction: nextcord.Interaction, error):
         self.__logger.debug(f"Failed to handle command (interaction:{interaction.id}) due to exception : {repr(error)}")
-        if isinstance(error, nextcord.ApplicationInvokeError):
+        if isinstance(error, ApplicationCheckFailure):
+            await interaction.send(
+                ephemeral=True,
+                embed=self.__embed_service.error(error)
+            )
+        elif isinstance(error, nextcord.ApplicationInvokeError):
             exception = error.original
-            if isinstance(exception, TonearmInvokeException):
+            if isinstance(exception, TonearmCommandException):
                 await interaction.followup.send(
                     embed=self.__embed_service.error(exception)
                 )
