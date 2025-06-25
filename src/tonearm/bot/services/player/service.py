@@ -111,6 +111,13 @@ class PlayerService:
             raise PlayerException("I can't do that with no track in the history.")
         self.__logger.debug(f"History not empty in guild {self.__guild.id}")
 
+    def __check_not_kicked_recently(self):
+        self.__logger.debug(f"Checking if the bot was recently kicked from a voice channel in guild {self.__guild.id}")
+        if self.__last_forced_leave is not None and time.time() < self.__last_forced_leave + 60:
+            self.__logger.debug(f"The bot was kicked recently and must wait {math.ceil(self.__last_forced_leave + 60 - time.time())} seconds before joining a voice channel in guild {self.__guild.id}")
+            raise PlayerException(f"I got abruptly disconnected, ask me again in {math.ceil(self.__last_forced_leave + 60 - time.time())} second(s)")
+        self.__logger.debug(f"The bot wasn't kicked recently")
+
     def __is_active(self):
         return self.__is_playing() or self.__is_paused()
 
@@ -132,11 +139,7 @@ class PlayerService:
 
     async def __safe_join(self, channel: nextcord.VoiceChannel):
         self.__logger.debug(f"Got request to join voice channel {channel.id} of guild {self.__guild.id}")
-        self.__logger.debug(f"Checking if the bot was recently kicked from a voice channel in guild {self.__guild.id}")
-        if self.__last_forced_leave is not None and time.time() < self.__last_forced_leave + 60:
-            self.__logger.debug(f"The bot was kicked recently and must wait {math.ceil(self.__last_forced_leave + 60 - time.time())} seconds before joining a voice channel in guild {self.__guild.id}")
-            raise PlayerException(f"I got abruptly disconnected, ask me again in {math.ceil(self.__last_forced_leave + 60 - time.time())} second(s)")
-        self.__logger.debug(f"The bot wasn't kicked recently, connecting to channel {channel.id} of guild {self.__guild.id}")
+        self.__check_not_kicked_recently()
         await channel.connect(cls=TonearmVoiceClient)
         self.__voice_client.add_listener("disconnect", self.__on_disconnect)
         await self.__queue.loop(LoopMode.OFF)
@@ -355,8 +358,6 @@ class PlayerService:
         self.__logger.debug(f"Member {member.id} asked the bot to change the volume to {volume}% in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
-        if volume < 0 or volume > 200:
-            raise PlayerException("Volume must be between 0 and 200")
         self.__storage_service.set_volume(volume)
         if self.__is_active():
             self.__audio_source.volume = volume / 100

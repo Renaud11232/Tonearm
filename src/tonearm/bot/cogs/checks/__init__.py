@@ -7,4 +7,3 @@ from .is_dj_member import IsDjMember
 from .is_guild_administrator import IsGuildAdministrator
 from .is_guild_owner import IsGuildOwner
 from .is_not_anarchy import IsNotAnarchy
-#TODO: Idea : Make all (or maybe most) exceptions checks into actual application_checks
