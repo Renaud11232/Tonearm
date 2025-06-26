@@ -32,6 +32,7 @@ class PauseCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="pause",
         description="Pauses the currently playing track"
     )
     async def pause(self, interaction: nextcord.Interaction):

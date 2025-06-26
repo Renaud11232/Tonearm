@@ -32,6 +32,7 @@ class ResumeCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="resume",
         description="Resumes the currently paused track"
     )
     async def resume(self, interaction: nextcord.Interaction):

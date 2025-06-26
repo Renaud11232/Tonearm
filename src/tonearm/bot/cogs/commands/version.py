@@ -29,6 +29,7 @@ class VersionCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="version",
         description="Shows nerdy details about the bot"
     )
     async def version(self, interaction: nextcord.Interaction):

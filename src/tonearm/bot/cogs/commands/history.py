@@ -32,11 +32,18 @@ class HistoryCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="history",
         description="Show the previously played tracks"
     )
     async def history(self,
                       interaction: nextcord.Interaction,
-                      page: ZeroIndexConverter = SlashOption(required=False, default=0, min_value=1)):
+                      page: ZeroIndexConverter = SlashOption(
+                          name="page",
+                          description="Page to show",
+                          required=False,
+                          default=0,
+                          min_value=1
+                      )):
         self.__logger.debug(f"Handling `history` command (interaction:{interaction.id})")
         await interaction.response.defer()
         previous_tracks = self.__player_manager.get(interaction.guild).history(interaction.user)

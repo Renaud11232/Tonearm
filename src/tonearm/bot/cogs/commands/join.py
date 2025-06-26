@@ -31,6 +31,7 @@ class JoinCommand(CommandCogBase):
 
 
     @nextcord.slash_command(
+        name="join",
         description="Joins your current voice channel"
     )
     async def join(self, interaction: nextcord.Interaction):

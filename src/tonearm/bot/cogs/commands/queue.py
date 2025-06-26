@@ -32,11 +32,18 @@ class QueueCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="queue",
         description="show the current queue"
     )
     async def queue(self,
                     interaction: nextcord.Interaction,
-                    page: ZeroIndexConverter = SlashOption(required=False, default=0, min_value=1)):
+                    page: ZeroIndexConverter = SlashOption(
+                        name="page",
+                        description="Page to show",
+                        required=False,
+                        default=0,
+                        min_value=1
+                    )):
         self.__logger.debug(f"Handling `queue` command (interaction:{interaction.id})")
         await interaction.response.defer()
         status = self.__player_manager.get(interaction.guild).queue(interaction.user)

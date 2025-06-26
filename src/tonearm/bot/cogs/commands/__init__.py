@@ -27,4 +27,3 @@ from .version import VersionCommand
 from .volume import VolumeCommand
 from .votenext import VotenextCommand
 #TODO: Translate commands
-#TODO: Add option description

@@ -1,6 +1,7 @@
 import logging
 
 import nextcord
+from nextcord import SlashOption
 from nextcord.ext import application_checks
 
 from injector import inject, singleton
@@ -30,9 +31,16 @@ class PlayCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="play",
         description="Play a track or playlist in your voice channel. You can provide link, or search for a track"
     )
-    async def play(self, interaction: nextcord.Interaction, query: str):
+    async def play(self,
+                   interaction: nextcord.Interaction,
+                   query: str = SlashOption(
+                       name="query",
+                       description="Track or playlist to play. You can provide a link, or search for a track",
+                       required=True
+                   )):
         self.__logger.debug(f"Handling `play` command (interaction:{interaction.id})")
         await interaction.response.defer()
         tracks = await self.__player_manager.get(interaction.guild).play(interaction.user, query)

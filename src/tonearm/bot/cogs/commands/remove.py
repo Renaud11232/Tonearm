@@ -34,11 +34,17 @@ class RemoveCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="remove",
         description="Removes a track from the queue"
     )
     async def remove(self,
                      interaction: nextcord.Interaction,
-                     track: ZeroIndexConverter = SlashOption(required=True, min_value=0)):
+                     track: ZeroIndexConverter = SlashOption(
+                         name="track",
+                         description="Track number to remove",
+                         required=True,
+                         min_value=0
+                     )):
         self.__logger.debug(f"Handling `remove` command (interaction:{interaction.id})")
         await interaction.response.defer()
         removed_track = await self.__player_manager.get(interaction.guild).remove(interaction.user, track) # type: ignore

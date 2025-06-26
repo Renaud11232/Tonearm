@@ -24,6 +24,7 @@ class ShutdownCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="shutdown",
         description="Shuts the bot down"
     )
     async def shutdown(self, interaction: nextcord.Interaction):

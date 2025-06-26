@@ -32,6 +32,7 @@ class StopCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="stop",
         description="Stops the current playback"
     )
     async def stop(self, interaction: nextcord.Interaction):

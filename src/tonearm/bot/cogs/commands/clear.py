@@ -32,6 +32,7 @@ class ClearCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="clear",
         description="Clears all songs in the queue"
     )
     async def clear(self, interaction: nextcord.Interaction):

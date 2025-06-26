@@ -32,12 +32,14 @@ class NextCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="next",
         description="Skips the current playing track to the next one"
     )
     async def next(self, interaction: nextcord.Interaction):
         await self.__next(interaction)
 
     @nextcord.slash_command(
+        name="skip",
         description="Skips the current playing track to the next one"
     )
     async def skip(self, interaction: nextcord.Interaction):

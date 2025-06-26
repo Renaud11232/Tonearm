@@ -31,11 +31,18 @@ class CleanCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="clean",
         description="Deletes bot messages in the channel (up to 100 at once)"
     )
     async def clean(self,
                     interaction: nextcord.Interaction,
-                    limit: int = SlashOption(required=True, min_value=1, max_value=100)):
+                    limit: int = SlashOption(
+                        name="limit",
+                        description="Maximum number of messages to delete in one run",
+                        required=True,
+                        min_value=1,
+                        max_value=100
+                    )):
         self.__logger.debug(f"Handling `clean` command (interaction:{interaction.id})")
         await interaction.response.defer(ephemeral=True)
         messages = await self.__chat_manager.get(interaction.channel).clean(limit) # type: ignore

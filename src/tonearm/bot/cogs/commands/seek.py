@@ -1,6 +1,7 @@
 import logging
 
 import nextcord
+from nextcord import SlashOption
 from nextcord.ext import application_checks
 
 from injector import inject, singleton
@@ -33,9 +34,16 @@ class SeekCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="seek",
         description="Seeks to a specific time in the track"
     )
-    async def seek(self, interaction: nextcord.Interaction, duration: DurationConverter):
+    async def seek(self,
+                   interaction: nextcord.Interaction,
+                   duration: DurationConverter = SlashOption(
+                       name="duration",
+                       description="Where to seek in the track",
+                       required=True
+                   )):
         self.__logger.debug(f"Handling `seek` command (interaction:{interaction.id})")
         await interaction.response.defer()
         self.__player_manager.get(interaction.guild).seek(interaction.user, duration) # type: ignore

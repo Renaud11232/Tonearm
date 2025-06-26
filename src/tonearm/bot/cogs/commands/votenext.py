@@ -21,12 +21,14 @@ class VotenextCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="votenext",
         description="Votes to skip the current track"
     )
     async def votenext(self, interaction: nextcord.Interaction):
         await self.__votenext(interaction)
 
     @nextcord.slash_command(
+        name="voteskip",
         description="Votes to skip the current track"
     )
     async def voteskip(self, interaction: nextcord.Interaction):

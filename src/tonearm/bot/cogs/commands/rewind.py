@@ -1,6 +1,7 @@
 import logging
 
 import nextcord
+from nextcord import SlashOption
 from nextcord.ext import application_checks
 
 from injector import inject, singleton
@@ -33,9 +34,16 @@ class RewindCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="rewind",
         description="Rewinds a specific amount of time into the track"
     )
-    async def rewind(self, interaction: nextcord.Interaction, duration: DurationConverter):
+    async def rewind(self,
+                     interaction: nextcord.Interaction,
+                     duration: DurationConverter = SlashOption(
+                         name="duration",
+                         description="How far to rewind back into the track",
+                         required=True
+                     )):
         self.__logger.debug(f"Handling `rewind` command (interaction:{interaction.id})")
         await interaction.response.defer()
         self.__player_manager.get(interaction.guild).rewind(interaction.user, duration) # type: ignore

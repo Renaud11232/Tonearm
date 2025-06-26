@@ -34,12 +34,23 @@ class MoveCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="move",
         description="Moves the position of a track in the queue"
     )
     async def move(self,
                    interaction: nextcord.Interaction,
-                   fr0m: ZeroIndexConverter = SlashOption(name="from", required=True, min_value=1),
-                   to: ZeroIndexConverter = SlashOption(required=True, min_value=1)):
+                   fr0m: ZeroIndexConverter = SlashOption(
+                       name="from",
+                       description="Initial track position",
+                       required=True,
+                       min_value=1
+                   ),
+                   to: ZeroIndexConverter = SlashOption(
+                       name="to",
+                       description="Target track position",
+                       required=True,
+                       min_value=1
+                   )):
         self.__logger.debug(f"Handling `move` command (interaction:{interaction.id})")
         await interaction.response.defer()
         moved_track = await self.__player_manager.get(interaction.guild).move(interaction.user, fr0m, to) # type: ignore

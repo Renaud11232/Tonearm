@@ -32,6 +32,7 @@ class ShuffleCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="shuffle",
         description="Shuffles tracks in the queue"
     )
     async def shuffle(self, interaction: nextcord.Interaction):

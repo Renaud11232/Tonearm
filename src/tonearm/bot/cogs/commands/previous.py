@@ -32,12 +32,14 @@ class PreviousCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="previous",
         description="Play the previous track from the queue"
     )
     async def previous(self, interaction: nextcord.Interaction):
         await self.__previous(interaction)
 
     @nextcord.slash_command(
+        name="unskip",
         description="Play the previous track from the queue"
     )
     async def unskip(self, interaction: nextcord.Interaction):

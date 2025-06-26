@@ -32,6 +32,7 @@ class LeaveCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="leave",
         description="Leaves the current voice channel"
     )
     async def leave(self, interaction: nextcord.Interaction):

@@ -34,19 +34,31 @@ class BackCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="back",
         description="Jumps back to a specific track in the history"
     )
     async def back(self,
                    interaction: nextcord.Interaction,
-                   track: ZeroIndexConverter = SlashOption(required=True, min_value=1)):
+                   track: ZeroIndexConverter = SlashOption(
+                       name="track",
+                       description="Track number to jump back to",
+                       required=True,
+                       min_value=1
+                   )):
         await self.__back(interaction, track) # type: ignore
 
     @nextcord.slash_command(
+        name="unskipto",
         description="Jumps back to a specific track in the history"
     )
     async def unskipto(self,
                        interaction: nextcord.Interaction,
-                       track: ZeroIndexConverter = SlashOption(required=True, min_value=1)):
+                       track: ZeroIndexConverter = SlashOption(
+                           name="track",
+                           description="Track number to jump back to",
+                           required=True,
+                           min_value=1
+                       )):
         await self.__back(interaction, track) # type: ignore
 
     async def __back(self, interaction: nextcord.Interaction, track: int):

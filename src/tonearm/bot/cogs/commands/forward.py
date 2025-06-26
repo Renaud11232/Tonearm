@@ -1,6 +1,7 @@
 import logging
 
 import nextcord
+from nextcord import SlashOption
 from nextcord.ext import application_checks
 
 from injector import inject, singleton
@@ -33,9 +34,16 @@ class ForwardCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="forward",
         description="Forwards a specific amount of time into the track"
     )
-    async def forward(self, interaction: nextcord.Interaction, duration: DurationConverter):
+    async def forward(self,
+                      interaction: nextcord.Interaction,
+                      duration: DurationConverter = SlashOption(
+                          name="duration",
+                          description="How far to fast forward into the track",
+                          required=True
+                      )):
         self.__logger.debug(f"Handling `forward` command (interaction:{interaction.id})")
         await interaction.response.defer()
         self.__player_manager.get(interaction.guild).forward(interaction.user, duration) # type: ignore

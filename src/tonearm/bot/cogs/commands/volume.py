@@ -34,11 +34,18 @@ class VolumeCommand(CommandCogBase):
 
 
     @nextcord.slash_command(
+        name="volume",
         description="Changes the volume of the playing tracks"
     )
     async def volume(self,
                      interaction: nextcord.Interaction,
-                     volume: int = SlashOption(required=True, min_value=0, max_value=200)):
+                     volume: int = SlashOption(
+                         name="volume",
+                         description="Playback volume (between 0 and 200)",
+                         required=True,
+                         min_value=0,
+                         max_value=200
+                     )):
         self.__logger.debug(f"Handling `volume` command (interaction:{interaction.id})")
         await interaction.response.defer()
         self.__player_manager.get(interaction.guild).volume(interaction.user, volume)

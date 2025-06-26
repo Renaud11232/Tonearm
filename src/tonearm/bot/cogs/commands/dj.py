@@ -1,6 +1,7 @@
 import logging
 
 import nextcord
+from nextcord import SlashOption
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
@@ -21,21 +22,29 @@ class DjCommand(CommandCogBase):
         self.__dj_manager = dj_manager
         self.__embed_service = embed_service
         self.__logger = logging.getLogger("tonearm.commands")
-        self._add_checks(self.add, self.remove, checks=[
+        self._add_checks(self.dj_add, self.dj_remove, checks=[
             application_checks.guild_only(),
             is_guild_administrator()
         ])
 
     @nextcord.slash_command(
+        name="dj",
         description="Manages the DJ roles and members"
     )
     async def dj(self, interaction: nextcord.Interaction):
         pass
 
     @dj.subcommand(
+        name="add",
         description="Adds a role or member to the DJs"
     )
-    async def add(self, interaction: nextcord.Interaction, dj: nextcord.Mentionable):
+    async def dj_add(self,
+                     interaction: nextcord.Interaction,
+                     dj: nextcord.Mentionable = SlashOption(
+                         name="dj",
+                         description="Role or member to add to the DJs",
+                         required=True
+                     )):
         self.__logger.debug(f"Handling `dj add` command (interaction:{interaction.id})")
         await interaction.response.defer()
         self.__dj_manager.get(interaction.guild).add(dj) # type: ignore
@@ -45,9 +54,16 @@ class DjCommand(CommandCogBase):
         self.__logger.debug(f"Successfully handled `dj add` command (interaction:{interaction.id})")
 
     @dj.subcommand(
+        name="remove",
         description="Removes a role or member from the DJs"
     )
-    async def remove(self, interaction: nextcord.Interaction, dj: nextcord.Mentionable):
+    async def dj_remove(self,
+                        interaction: nextcord.Interaction,
+                        dj: nextcord.Mentionable = SlashOption(
+                            name="dj",
+                            description="Role or member to remove from the DJs",
+                            required=True
+                        )):
         self.__logger.debug(f"Handling `dj remove` command (interaction:{interaction.id})")
         await interaction.response.defer()
         self.__dj_manager.get(interaction.guild).remove(dj) # type: ignore

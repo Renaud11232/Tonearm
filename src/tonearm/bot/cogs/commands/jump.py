@@ -34,19 +34,31 @@ class JumpCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
+        name="jump",
         description="Jumps to a specific track in the queue"
     )
     async def jump(self,
                    interaction: nextcord.Interaction,
-                   track: ZeroIndexConverter = SlashOption(required=False, min_value=1)):
+                   track: ZeroIndexConverter = SlashOption(
+                       name="track",
+                       description="Track number to jump to",
+                       required=False,
+                       min_value=1
+                   )):
         await self.__jump(interaction, track) # type: ignore
 
     @nextcord.slash_command(
+        name="skipto",
         description="Jumps to a specific track in the queue"
     )
     async def skipto(self,
                      interaction: nextcord.Interaction,
-                     track: ZeroIndexConverter = SlashOption(required=False, min_value=1)):
+                     track: ZeroIndexConverter = SlashOption(
+                         name="track",
+                         description="Track number to jump to",
+                         required=False,
+                         min_value=1
+                     )):
         await self.__jump(interaction, track) # type: ignore
 
     async def __jump(self, interaction: nextcord.Interaction, track: int):
