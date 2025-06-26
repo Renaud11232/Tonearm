@@ -23,7 +23,7 @@ class ApplicationCommandErrorListener(commands.Cog):
         if isinstance(error, ApplicationCheckFailure):
             await interaction.send(
                 ephemeral=True,
-                embed=self.__embed_service.error(error)
+                embed=self.__embed_service.error("You don't have permission to use this command.")
             )
         elif isinstance(error, nextcord.ApplicationInvokeError):
             exception = error.original
