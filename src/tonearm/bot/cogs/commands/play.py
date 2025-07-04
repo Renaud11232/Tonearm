@@ -1,13 +1,13 @@
 import logging
 
 import nextcord
-from nextcord import SlashOption
+from nextcord import SlashOption, Locale
 from nextcord.ext import application_checks
 
 from injector import inject, singleton
 
 from tonearm.bot.cogs.checks import IsCorrectChannel
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -32,13 +32,25 @@ class PlayCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="play",
-        description="Play a track or playlist in your voice channel. You can provide link, or search for a track"
+        description=I18nManager.get(Locale.en_US).gettext("Play a track or playlist in your voice channel. You can provide link, or search for a track"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Play a track or playlist in your voice channel. You can provide link, or search for a track"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Play a track or playlist in your voice channel. You can provide link, or search for a track"),
+        }
     )
     async def play(self,
                    interaction: nextcord.Interaction,
                    query: str = SlashOption(
-                       name="query",
-                       description="Track or playlist to play. You can provide a link, or search for a track",
+                       name=I18nManager.get(Locale.en_US).gettext("query"),
+                       name_localizations={
+                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("query"),
+                           Locale.fr: I18nManager.get(Locale.fr).gettext("query"),
+                       },
+                       description=I18nManager.get(Locale.en_US).gettext("Track or playlist to play. You can provide a link, or search for a track"),
+                       description_localizations={
+                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("Track or playlist to play. You can provide a link, or search for a track"),
+                           Locale.fr: I18nManager.get(Locale.fr).gettext("Track or playlist to play. You can provide a link, or search for a track"),
+                       },
                        required=True
                    )):
         self.__logger.debug(f"Handling `play` command (interaction:{interaction.id})")

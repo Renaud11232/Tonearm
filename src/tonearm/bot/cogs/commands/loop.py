@@ -1,13 +1,13 @@
 import logging
 
 import nextcord
-from nextcord import SlashOption
+from nextcord import SlashOption, Locale
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 from tonearm.bot.cogs.converters import LoopModeConverter
 from tonearm.bot.services.player import LoopMode
@@ -36,31 +36,91 @@ class LoopCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="loop",
-        description="Sets the loop mode of the current playback queue"
+        description=I18nManager.get(Locale.en_US).gettext("Set the loop mode of the current playback queue"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Set the loop mode of the current playback queue"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Set the loop mode of the current playback queue"),
+        }
     )
     async def loop(self,
                    interaction: nextcord.Interaction,
                    mode: LoopModeConverter = SlashOption(
-                       name="mode",
-                       description="Loop mode to use",
-                       required=True,
-                       choices=["off", "track", "queue"]
+                       name=I18nManager.get(Locale.en_US).gettext("mode"),
+                       name_localizations={
+                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("mode"),
+                           Locale.fr: I18nManager.get(Locale.fr).gettext("mode"),
+                       },
+                       description=I18nManager.get(Locale.en_US).gettext("Loop mode to use"),
+                       description_localizations={
+                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("Loop mode to use"),
+                           Locale.fr: I18nManager.get(Locale.fr).gettext("Loop mode to use"),
+                       },
+                       choices={
+                           I18nManager.get(Locale.en_US).gettext("off"): "off",
+                           I18nManager.get(Locale.en_US).gettext("track"): "track",
+                           I18nManager.get(Locale.en_US).gettext("queue"): "queue",
+                       },
+                       choice_localizations={
+                           I18nManager.get(Locale.en_US).gettext("off"): {
+                               Locale.en_US: I18nManager.get(Locale.en_US).gettext("off"),
+                               Locale.fr: I18nManager.get(Locale.fr).gettext("off")
+                           },
+                           I18nManager.get(Locale.en_US).gettext("track"): {
+                               Locale.en_US: I18nManager.get(Locale.en_US).gettext("track"),
+                               Locale.fr: I18nManager.get(Locale.fr).gettext("track")
+                           },
+                           I18nManager.get(Locale.en_US).gettext("queue"): {
+                               Locale.en_US: I18nManager.get(Locale.en_US).gettext("queue"),
+                               Locale.fr: I18nManager.get(Locale.fr).gettext("queue")
+                           }
+                       },
+                       required=True
                    )):
-        await self.__loop(interaction, mode) # type: ignore
+        await self.__loop(interaction, mode)  # type: ignore
 
     @nextcord.slash_command(
         name="repeat",
-        description="Sets the loop mode of the current playback queue"
+        description=I18nManager.get(Locale.en_US).gettext("Set the loop mode of the current playback queue"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Set the loop mode of the current playback queue"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Set the loop mode of the current playback queue"),
+        }
     )
     async def repeat(self,
                      interaction: nextcord.Interaction,
                      mode: LoopModeConverter = SlashOption(
-                         name="mode",
-                         description="Loop mode to use",
-                         required=True,
-                         choices=["off", "track", "queue"]
+                         name=I18nManager.get(Locale.en_US).gettext("mode"),
+                         name_localizations={
+                             Locale.en_US: I18nManager.get(Locale.en_US).gettext("mode"),
+                             Locale.fr: I18nManager.get(Locale.fr).gettext("mode"),
+                         },
+                         description=I18nManager.get(Locale.en_US).gettext("Loop mode to use"),
+                         description_localizations={
+                             Locale.en_US: I18nManager.get(Locale.en_US).gettext("Loop mode to use"),
+                             Locale.fr: I18nManager.get(Locale.fr).gettext("Loop mode to use"),
+                         },
+                         choices={
+                             I18nManager.get(Locale.en_US).gettext("off"): "off",
+                             I18nManager.get(Locale.en_US).gettext("track"): "track",
+                             I18nManager.get(Locale.en_US).gettext("queue"): "queue",
+                         },
+                         choice_localizations={
+                             I18nManager.get(Locale.en_US).gettext("off"): {
+                                 Locale.en_US: I18nManager.get(Locale.en_US).gettext("off"),
+                                 Locale.fr: I18nManager.get(Locale.fr).gettext("off")
+                             },
+                             I18nManager.get(Locale.en_US).gettext("track"): {
+                                 Locale.en_US: I18nManager.get(Locale.en_US).gettext("track"),
+                                 Locale.fr: I18nManager.get(Locale.fr).gettext("track")
+                             },
+                             I18nManager.get(Locale.en_US).gettext("queue"): {
+                                 Locale.en_US: I18nManager.get(Locale.en_US).gettext("queue"),
+                                 Locale.fr: I18nManager.get(Locale.fr).gettext("queue")
+                             }
+                         },
+                         required=True
                      )):
-        await self.__loop(interaction, mode) # type: ignore
+        await self.__loop(interaction, mode)  # type: ignore
 
     async def __loop(self, interaction: nextcord.Interaction, mode: LoopMode):
         self.__logger.debug(f"Handling `loop` command (interaction:{interaction.id})")

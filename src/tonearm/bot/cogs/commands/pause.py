@@ -1,12 +1,13 @@
 import logging
 
 import nextcord
+from nextcord import Locale
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -33,7 +34,11 @@ class PauseCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="pause",
-        description="Pauses the currently playing track"
+        description=I18nManager.get(Locale.en_US).gettext("Pause the currently playing track"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Pause the currently playing track"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Pause the currently playing track"),
+        }
     )
     async def pause(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `pause` command (interaction:{interaction.id})")

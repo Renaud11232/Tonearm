@@ -1,12 +1,12 @@
 import logging
 
 import nextcord
-from nextcord import SlashOption
+from nextcord import SlashOption, Locale
 from nextcord.ext import application_checks
 
 from injector import inject, singleton
 
-from tonearm.bot.managers import ChatManager
+from tonearm.bot.managers import ChatManager, I18nManager
 from tonearm.bot.services import EmbedService
 from tonearm.bot.cogs.checks import IsGuildAdministrator
 
@@ -32,20 +32,32 @@ class CleanCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="clean",
-        description="Deletes bot messages in the channel (up to 100 at once)"
+        description=I18nManager.get(Locale.en_US).gettext("Delete bot messages in the channel (up to 100 at once)"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Delete bot messages in the channel (up to 100 at once)"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Delete bot messages in the channel (up to 100 at once)")
+        }
     )
     async def clean(self,
                     interaction: nextcord.Interaction,
                     limit: int = SlashOption(
-                        name="limit",
-                        description="Maximum number of messages to delete in one run",
+                        name=I18nManager.get(Locale.en_US).gettext("limit"),
+                        name_localizations={
+                            Locale.en_US: I18nManager.get(Locale.en_US).gettext("limit"),
+                            Locale.fr: I18nManager.get(Locale.fr).gettext("limit")
+                        },
+                        description=I18nManager.get(Locale.en_US).gettext("Maximum number of messages to delete in one run"),
+                        description_localizations={
+                            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Maximum number of messages to delete in one run"),
+                            Locale.fr: I18nManager.get(Locale.fr).gettext("Maximum number of messages to delete in one run")
+                        },
                         required=True,
                         min_value=1,
                         max_value=100
                     )):
         self.__logger.debug(f"Handling `clean` command (interaction:{interaction.id})")
         await interaction.response.defer(ephemeral=True)
-        messages = await self.__chat_manager.get(interaction.channel).clean(limit) # type: ignore
+        messages = await self.__chat_manager.get(interaction.channel).clean(limit)  # type: ignore
         await interaction.followup.send(
             embed=self.__embed_service.clean(messages)
         )

@@ -1,14 +1,14 @@
 import logging
 
 import nextcord
-from nextcord import SlashOption
+from nextcord import SlashOption, Locale
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
 from tonearm.bot.cogs.converters import ZeroIndexConverter
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -35,19 +35,39 @@ class MoveCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="move",
-        description="Moves the position of a track in the queue"
+        description=I18nManager.get(Locale.en_US).gettext("Move the position of a track in the queue"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Move the position of a track in the queue"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Move the position of a track in the queue")
+        }
     )
     async def move(self,
                    interaction: nextcord.Interaction,
                    fr0m: ZeroIndexConverter = SlashOption(
-                       name="from",
-                       description="Initial track position",
+                       name=I18nManager.get(Locale.en_US).gettext("from"),
+                       name_localizations={
+                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("from"),
+                           Locale.fr: I18nManager.get(Locale.en_US).gettext("from")
+                       },
+                       description=I18nManager.get(Locale.en_US).gettext("Initial track position"),
+                       description_localizations={
+                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("Initial track position"),
+                           Locale.fr: I18nManager.get(Locale.fr).gettext("Initial track position"),
+                       },
                        required=True,
                        min_value=1
                    ),
                    to: ZeroIndexConverter = SlashOption(
-                       name="to",
-                       description="Target track position",
+                       name=I18nManager.get(Locale.en_US).gettext("to"),
+                       name_localizations={
+                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("to"),
+                           Locale.fr: I18nManager.get(Locale.en_US).gettext("to")
+                       },
+                       description=I18nManager.get(Locale.en_US).gettext("Target track position"),
+                       description_localizations={
+                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("Target track position"),
+                           Locale.fr: I18nManager.get(Locale.fr).gettext("Target track position"),
+                       },
                        required=True,
                        min_value=1
                    )):

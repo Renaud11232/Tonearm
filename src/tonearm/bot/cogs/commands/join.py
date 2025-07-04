@@ -1,12 +1,13 @@
 import logging
 
 import nextcord
+from nextcord import Locale
 from nextcord.ext import application_checks
 
 from injector import inject, singleton
 
 from tonearm.bot.cogs.checks import IsCorrectChannel
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -32,7 +33,11 @@ class JoinCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="join",
-        description="Joins your current voice channel"
+        description=I18nManager.get(Locale.en_US).gettext("Join your current voice channel"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Join your current voice channel"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Join your current voice channel")
+        }
     )
     async def join(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `join` command (interaction:{interaction.id})")

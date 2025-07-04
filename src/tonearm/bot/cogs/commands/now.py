@@ -1,12 +1,13 @@
 import logging
 
 import nextcord
+from nextcord import Locale
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import IsCorrectChannel
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -31,14 +32,22 @@ class NowCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="now",
-        description="Shows the current playing track"
+        description=I18nManager.get(Locale.en_US).gettext("Show the current playing track"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Show the current playing track"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Show the current playing track"),
+        }
     )
     async def now(self, interaction: nextcord.Interaction):
         await self.__now(interaction)
 
     @nextcord.slash_command(
         name="now-playing",
-        description="Shows the current playing track"
+        description=I18nManager.get(Locale.en_US).gettext("Show the current playing track"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Show the current playing track"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Show the current playing track"),
+        }
     )
     async def now_playing(self, interaction: nextcord.Interaction):
         await self.__now(interaction)

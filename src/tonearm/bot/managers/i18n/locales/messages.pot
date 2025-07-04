@@ -1,0 +1,197 @@
+msgid "Jump back to a specific track in the history"
+msgstr ""
+
+msgid "track"
+msgstr ""
+
+msgid "Track number to jump back to"
+msgstr ""
+
+msgid "Delete bot messages in the channel (up to 100 at once)"
+msgstr ""
+
+msgid "limit"
+msgstr ""
+
+msgid "Maximum number of messages to delete in one run"
+msgstr ""
+
+msgid "Clear all songs in the queue"
+msgstr ""
+
+msgid "Add a role or member to the DJs"
+msgstr ""
+
+msgid "dj"
+msgstr ""
+
+msgid "Role or member to add to the DJs"
+msgstr ""
+
+msgid "Remove a role or member from the DJs"
+msgstr ""
+
+msgid "Role or member to remove from the DJs"
+msgstr ""
+
+msgid "Forward a specific amount of time into the track"
+msgstr ""
+
+msgid "duration"
+msgstr ""
+
+msgid "How far to fast forward into the track"
+msgstr ""
+
+msgid "Show the previously played tracks"
+msgstr ""
+
+msgid "page"
+msgstr ""
+
+msgid "Page to display"
+msgstr ""
+
+msgid "Join your current voice channel"
+msgstr ""
+
+msgid "Jump to a specific track in the queue"
+msgstr ""
+
+msgid "Track number to jump to"
+msgstr ""
+
+msgid "Leave the current voice channel"
+msgstr ""
+
+msgid "Set the loop mode of the current playback queue"
+msgstr ""
+
+msgid "mode"
+msgstr ""
+
+msgid "Loop mode to use"
+msgstr ""
+
+msgid "off"
+msgstr ""
+
+msgid "queue"
+msgstr ""
+
+msgid "Move the position of a track in the queue"
+msgstr ""
+
+msgid "from"
+msgstr ""
+
+msgid "Initial track position"
+msgstr ""
+
+msgid "to"
+msgstr ""
+
+msgid "Target track position"
+msgstr ""
+
+msgid "Skip the current playing track to the next one"
+msgstr ""
+
+msgid "Show the current playing track"
+msgstr ""
+
+msgid "Pause the currently playing track"
+msgstr ""
+
+msgid "Play a track or playlist in your voice channel. You can provide link, or search for a track"
+msgstr ""
+
+msgid "query"
+msgstr ""
+
+msgid "Track or playlist to play. You can provide a link, or search for a track"
+msgstr ""
+
+msgid "Play the previous track from the queue"
+msgstr ""
+
+msgid "Show the current queue"
+msgstr ""
+
+msgid "Remove a track from the queue"
+msgstr ""
+
+msgid "Track number to remove"
+msgstr ""
+
+msgid "Resume the currently paused track"
+msgstr ""
+
+msgid "Rewind a specific amount of time into the track"
+msgstr ""
+
+msgid "How far to rewind back into the track"
+msgstr ""
+
+msgid "Seek to a specific time in the track"
+msgstr ""
+
+msgid "Where to seek in the track"
+msgstr ""
+
+msgid "Set the text channel where this bot should be used"
+msgstr ""
+
+msgid "value"
+msgstr ""
+
+msgid "Text channel where this bot should be used"
+msgstr ""
+
+msgid "Enable anarchy mode, allowing everyone to use DJ commands"
+msgstr ""
+
+msgid "True to enable anarchy mode, False to disable it"
+msgstr ""
+
+msgid "True"
+msgstr ""
+
+msgid "False"
+msgstr ""
+
+msgid "Enable automatic track announcements"
+msgstr ""
+
+msgid "True to enable automatic track announcements, False to disable them"
+msgstr ""
+
+msgid "Reset the text channel where this bot should be used"
+msgstr ""
+
+msgid "Reset anarchy mode, enabling back DJ enforcement"
+msgstr ""
+
+msgid "Reset automatic track announcements, disabling them"
+msgstr ""
+
+msgid "Shuffle tracks in the queue"
+msgstr ""
+
+msgid "Shut the bot down"
+msgstr ""
+
+msgid "Stop the current playback"
+msgstr ""
+
+msgid "Show nerdy details about the bot"
+msgstr ""
+
+msgid "Change the volume of the playing tracks"
+msgstr ""
+
+msgid "Playback volume (between 0 and 200)"
+msgstr ""
+
+msgid "Vote to skip the current track"
+msgstr ""

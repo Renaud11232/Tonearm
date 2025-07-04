@@ -1,12 +1,13 @@
 import logging
 
 import nextcord
+from nextcord import Locale
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -33,14 +34,22 @@ class PreviousCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="previous",
-        description="Play the previous track from the queue"
+        description=I18nManager.get(Locale.en_US).gettext("Play the previous track from the queue"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Play the previous track from the queue"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Play the previous track from the queue"),
+        }
     )
     async def previous(self, interaction: nextcord.Interaction):
         await self.__previous(interaction)
 
     @nextcord.slash_command(
         name="unskip",
-        description="Play the previous track from the queue"
+        description=I18nManager.get(Locale.en_US).gettext("Play the previous track from the queue"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Play the previous track from the queue"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Play the previous track from the queue"),
+        }
     )
     async def unskip(self, interaction: nextcord.Interaction):
         await self.__previous(interaction)

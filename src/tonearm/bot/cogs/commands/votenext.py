@@ -1,9 +1,11 @@
 import nextcord
+from nextcord import Locale
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import IsCorrectChannel, IsNotAnarchy
+from tonearm.bot.managers import I18nManager
 
 from .base import CommandCogBase
 
@@ -22,14 +24,22 @@ class VotenextCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="votenext",
-        description="Votes to skip the current track"
+        description=I18nManager.get(Locale.en_US).gettext("Vote to skip the current track"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Vote to skip the current track"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Vote to skip the current track"),
+        }
     )
     async def votenext(self, interaction: nextcord.Interaction):
         await self.__votenext(interaction)
 
     @nextcord.slash_command(
         name="voteskip",
-        description="Votes to skip the current track"
+        description=I18nManager.get(Locale.en_US).gettext("Vote to skip the current track"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Vote to skip the current track"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Vote to skip the current track"),
+        }
     )
     async def voteskip(self, interaction: nextcord.Interaction):
         await self.__votenext(interaction)

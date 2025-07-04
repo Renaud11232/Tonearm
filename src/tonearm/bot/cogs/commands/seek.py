@@ -1,14 +1,14 @@
 import logging
 
 import nextcord
-from nextcord import SlashOption
+from nextcord import SlashOption, Locale
 from nextcord.ext import application_checks
 
 from injector import inject, singleton
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
 from tonearm.bot.cogs.converters import DurationConverter
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -35,13 +35,25 @@ class SeekCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="seek",
-        description="Seeks to a specific time in the track"
+        description=I18nManager.get(Locale.en_US).gettext("Seek to a specific time in the track"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Seek to a specific time in the track"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Seek to a specific time in the track"),
+        }
     )
     async def seek(self,
                    interaction: nextcord.Interaction,
                    duration: DurationConverter = SlashOption(
-                       name="duration",
-                       description="Where to seek in the track",
+                       name=I18nManager.get(Locale.en_US).gettext("duration"),
+                       name_localizations={
+                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("duration"),
+                           Locale.fr: I18nManager.get(Locale.fr).gettext("duration"),
+                       },
+                       description=I18nManager.get(Locale.en_US).gettext("Where to seek in the track"),
+                       description_localizations={
+                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("Where to seek in the track"),
+                           Locale.fr: I18nManager.get(Locale.fr).gettext("Where to seek in the track"),
+                       },
                        required=True
                    )):
         self.__logger.debug(f"Handling `seek` command (interaction:{interaction.id})")

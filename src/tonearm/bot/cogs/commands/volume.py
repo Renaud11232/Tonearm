@@ -1,13 +1,13 @@
 import logging
 
 import nextcord
-from nextcord import SlashOption
+from nextcord import SlashOption, Locale
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -35,21 +35,33 @@ class VolumeCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="volume",
-        description="Changes the volume of the playing tracks"
+        description=I18nManager.get(Locale.en_US).gettext("Change the volume of the playing tracks"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Change the volume of the playing tracks"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Change the volume of the playing tracks"),
+        }
     )
     async def volume(self,
                      interaction: nextcord.Interaction,
-                     volume: int = SlashOption(
-                         name="volume",
-                         description="Playback volume (between 0 and 200)",
+                     value: int = SlashOption(
+                         name=I18nManager.get(Locale.en_US).gettext("value"),
+                         name_localizations={
+                             Locale.en_US: I18nManager.get(Locale.en_US).gettext("value"),
+                             Locale.fr: I18nManager.get(Locale.fr).gettext("value"),
+                         },
+                         description=I18nManager.get(Locale.en_US).gettext("Playback volume (between 0 and 200)"),
+                         description_localizations={
+                             Locale.en_US: I18nManager.get(Locale.en_US).gettext("Playback volume (between 0 and 200)"),
+                             Locale.fr: I18nManager.get(Locale.fr).gettext("Playback volume (between 0 and 200)"),
+                         },
                          required=True,
                          min_value=0,
                          max_value=200
                      )):
         self.__logger.debug(f"Handling `volume` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        self.__player_manager.get(interaction.guild).volume(interaction.user, volume)
+        self.__player_manager.get(interaction.guild).volume(interaction.user, value)
         await interaction.followup.send(
-            embed=self.__embed_service.volume(volume)
+            embed=self.__embed_service.volume(value)
         )
-        self.__logger.debug(f"Successfully handled `volume` command (interaction:{interaction.id}, setting volume to : {repr(volume)}")
+        self.__logger.debug(f"Successfully handled `volume` command (interaction:{interaction.id}, setting volume to : {repr(value)}")

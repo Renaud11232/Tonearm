@@ -1,12 +1,13 @@
 import logging
 
 import nextcord
+from nextcord import Locale
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -33,7 +34,11 @@ class ResumeCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="resume",
-        description="Resumes the currently paused track"
+        description=I18nManager.get(Locale.en_US).gettext("Resume the currently paused track"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Resume the currently paused track"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Resume the currently paused track"),
+        }
     )
     async def resume(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `resume` command (interaction:{interaction.id})")

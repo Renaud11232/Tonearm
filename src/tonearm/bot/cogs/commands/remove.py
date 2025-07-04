@@ -1,14 +1,14 @@
 import logging
 
 import nextcord
-from nextcord import SlashOption
+from nextcord import SlashOption, Locale
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
 from tonearm.bot.cogs.converters import ZeroIndexConverter
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -35,13 +35,25 @@ class RemoveCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="remove",
-        description="Removes a track from the queue"
+        description=I18nManager.get(Locale.en_US).gettext("Remove a track from the queue"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Remove a track from the queue"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Remove a track from the queue"),
+        }
     )
     async def remove(self,
                      interaction: nextcord.Interaction,
                      track: ZeroIndexConverter = SlashOption(
-                         name="track",
-                         description="Track number to remove",
+                         name=I18nManager.get(Locale.en_US).gettext("track"),
+                         name_localizations={
+                             Locale.en_US: I18nManager.get(Locale.en_US).gettext("track"),
+                             Locale.fr: I18nManager.get(Locale.fr).gettext("track")
+                         },
+                         description=I18nManager.get(Locale.en_US).gettext("Track number to remove"),
+                         description_localizations={
+                             Locale.en_US: I18nManager.get(Locale.en_US).gettext("Track number to remove"),
+                             Locale.fr: I18nManager.get(Locale.fr).gettext("Track number to remove"),
+                         },
                          required=True,
                          min_value=0
                      )):

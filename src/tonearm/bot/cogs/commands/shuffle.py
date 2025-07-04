@@ -1,12 +1,13 @@
 import logging
 
 import nextcord
+from nextcord import Locale
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -33,7 +34,11 @@ class ShuffleCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="shuffle",
-        description="Shuffles tracks in the queue"
+        description=I18nManager.get(Locale.en_US).gettext("Shuffle tracks in the queue"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Shuffle tracks in the queue"),
+            Locale.fr: I18nManager.get(Locale.en_US).gettext("Shuffle tracks in the queue"),
+        }
     )
     async def shuffle(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `shuffle` command (interaction:{interaction.id})")

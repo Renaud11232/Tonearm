@@ -1,14 +1,14 @@
 import logging
 
 import nextcord
-from nextcord import SlashOption
+from nextcord import SlashOption, Locale
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
 from tonearm.bot.cogs.converters import ZeroIndexConverter
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -35,13 +35,25 @@ class JumpCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="jump",
-        description="Jumps to a specific track in the queue"
+        description=I18nManager.get(Locale.en_US).gettext("Jump to a specific track in the queue"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Jump to a specific track in the queue"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Jump to a specific track in the queue")
+        }
     )
     async def jump(self,
                    interaction: nextcord.Interaction,
                    track: ZeroIndexConverter = SlashOption(
-                       name="track",
-                       description="Track number to jump to",
+                       name=I18nManager.get(Locale.en_US).gettext("track"),
+                       name_localizations={
+                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("track"),
+                           Locale.fr: I18nManager.get(Locale.fr).gettext("track")
+                       },
+                       description=I18nManager.get(Locale.en_US).gettext("Track number to jump to"),
+                       description_localizations={
+                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("Track number to jump to"),
+                           Locale.fr: I18nManager.get(Locale.fr).gettext("Track number to jump to")
+                       },
                        required=False,
                        min_value=1
                    )):
@@ -49,13 +61,25 @@ class JumpCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="skipto",
-        description="Jumps to a specific track in the queue"
+        description=I18nManager.get(Locale.en_US).gettext("Jump to a specific track in the queue"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Jump to a specific track in the queue"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Jump to a specific track in the queue")
+        }
     )
     async def skipto(self,
                      interaction: nextcord.Interaction,
                      track: ZeroIndexConverter = SlashOption(
-                         name="track",
-                         description="Track number to jump to",
+                         name=I18nManager.get(Locale.en_US).gettext("track"),
+                         name_localizations={
+                             Locale.en_US: I18nManager.get(Locale.en_US).gettext("track"),
+                             Locale.fr: I18nManager.get(Locale.fr).gettext("track")
+                         },
+                         description=I18nManager.get(Locale.en_US).gettext("Track number to jump to"),
+                         description_localizations={
+                             Locale.en_US: I18nManager.get(Locale.en_US).gettext("Track number to jump to"),
+                             Locale.fr: I18nManager.get(Locale.fr).gettext("Track number to jump to")
+                         },
                          required=False,
                          min_value=1
                      )):

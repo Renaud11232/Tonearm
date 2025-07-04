@@ -1,12 +1,13 @@
 import logging
 
 import nextcord
+from nextcord import Locale
 from nextcord.ext import application_checks
 
 from injector import inject, singleton
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -33,7 +34,11 @@ class LeaveCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="leave",
-        description="Leaves the current voice channel"
+        description=I18nManager.get(Locale.en_US).gettext("Leave the current voice channel"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Leave the current voice channel"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Leave the current voice channel")
+        }
     )
     async def leave(self, interaction: nextcord.Interaction):
         self.__logger.debug(f"Handling `leave` command (interaction:{interaction.id})")

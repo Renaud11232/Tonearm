@@ -1,12 +1,13 @@
 import logging
 
 import nextcord
+from nextcord import Locale
 from nextcord.ext import application_checks
 
 from injector import inject, singleton
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -33,14 +34,22 @@ class NextCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="next",
-        description="Skips the current playing track to the next one"
+        description=I18nManager.get(Locale.en_US).gettext("Skip the current playing track to the next one"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Skip the current playing track to the next one"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Skip the current playing track to the next one")
+        }
     )
     async def next(self, interaction: nextcord.Interaction):
         await self.__next(interaction)
 
     @nextcord.slash_command(
         name="skip",
-        description="Skips the current playing track to the next one"
+        description=I18nManager.get(Locale.en_US).gettext("Skip the current playing track to the next one"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Skip the current playing track to the next one"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Skip the current playing track to the next one")
+        }
     )
     async def skip(self, interaction: nextcord.Interaction):
         await self.__next(interaction)

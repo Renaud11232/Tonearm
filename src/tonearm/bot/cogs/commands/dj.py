@@ -1,12 +1,12 @@
 import logging
 
 import nextcord
-from nextcord import SlashOption
+from nextcord import SlashOption, Locale
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
-from tonearm.bot.managers import DjManager
+from tonearm.bot.managers import DjManager, I18nManager
 from tonearm.bot.services import EmbedService
 from tonearm.bot.cogs.checks import IsGuildAdministrator
 
@@ -28,21 +28,32 @@ class DjCommand(CommandCogBase):
         ])
 
     @nextcord.slash_command(
-        name="dj",
-        description="Manages the DJ roles and members"
+        name="dj"
     )
     async def dj(self, interaction: nextcord.Interaction):
         pass
 
     @dj.subcommand(
         name="add",
-        description="Adds a role or member to the DJs"
+        description=I18nManager.get(Locale.en_US).gettext("Add a role or member to the DJs"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Add a role or member to the DJs"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Add a role or member to the DJs")
+        }
     )
     async def dj_add(self,
                      interaction: nextcord.Interaction,
                      dj: nextcord.Mentionable = SlashOption(
-                         name="dj",
-                         description="Role or member to add to the DJs",
+                         name=I18nManager.get(Locale.en_US).gettext("dj"),
+                         name_localizations={
+                             Locale.en_US: I18nManager.get(Locale.en_US).gettext("dj"),
+                             Locale.fr: I18nManager.get(Locale.fr).gettext("dj")
+                         },
+                         description=I18nManager.get(Locale.en_US).gettext("Role or member to add to the DJs"),
+                         description_localizations={
+                             Locale.en_US: I18nManager.get(Locale.en_US).gettext("Role or member to add to the DJs"),
+                             Locale.fr: I18nManager.get(Locale.fr).gettext("Role or member to add to the DJs")
+                         },
                          required=True
                      )):
         self.__logger.debug(f"Handling `dj add` command (interaction:{interaction.id})")
@@ -55,13 +66,25 @@ class DjCommand(CommandCogBase):
 
     @dj.subcommand(
         name="remove",
-        description="Removes a role or member from the DJs"
+        description=I18nManager.get(Locale.en_US).gettext("Remove a role or member from the DJs"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Remove a role or member from the DJs"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Remove a role or member from the DJs")
+        }
     )
     async def dj_remove(self,
                         interaction: nextcord.Interaction,
                         dj: nextcord.Mentionable = SlashOption(
-                            name="dj",
-                            description="Role or member to remove from the DJs",
+                            name=I18nManager.get(Locale.en_US).gettext("dj"),
+                            name_localizations={
+                                Locale.en_US: I18nManager.get(Locale.en_US).gettext("dj"),
+                                Locale.fr: I18nManager.get(Locale.fr).gettext("dj")
+                            },
+                            description=I18nManager.get(Locale.en_US).gettext("Role or member to remove from the DJs"),
+                            description_localizations={
+                                Locale.en_US: I18nManager.get(Locale.en_US).gettext("Role or member to remove from the DJs"),
+                                Locale.fr: I18nManager.get(Locale.fr).gettext("Role or member to remove from the DJs")
+                            },
                             required=True
                         )):
         self.__logger.debug(f"Handling `dj remove` command (interaction:{interaction.id})")

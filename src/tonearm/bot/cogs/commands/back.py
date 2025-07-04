@@ -1,14 +1,14 @@
 import logging
 
 import nextcord
-from nextcord import SlashOption
+from nextcord import SlashOption, Locale
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
 from tonearm.bot.cogs.converters import ZeroIndexConverter
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -35,31 +35,55 @@ class BackCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="back",
-        description="Jumps back to a specific track in the history"
+        description=I18nManager.get(Locale.en_US).gettext("Jump back to a specific track in the history"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Jump back to a specific track in the history"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Jump back to a specific track in the history")
+        }
     )
     async def back(self,
                    interaction: nextcord.Interaction,
                    track: ZeroIndexConverter = SlashOption(
-                       name="track",
-                       description="Track number to jump back to",
+                       name=I18nManager.get(Locale.en_US).gettext("track"),
+                       name_localizations={
+                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("track"),
+                           Locale.fr: I18nManager.get(Locale.fr).gettext("track")
+                       },
+                       description=I18nManager.get(Locale.en_US).gettext("Track number to jump back to"),
+                       description_localizations={
+                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("Track number to jump back to"),
+                           Locale.fr: I18nManager.get(Locale.fr).gettext("Track number to jump back to")
+                       },
                        required=True,
                        min_value=1
                    )):
-        await self.__back(interaction, track) # type: ignore
+        await self.__back(interaction, track)  # type: ignore
 
     @nextcord.slash_command(
         name="unskipto",
-        description="Jumps back to a specific track in the history"
+        description=I18nManager.get(Locale.en_US).gettext("Jump back to a specific track in the history"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Jump back to a specific track in the history"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Jump back to a specific track in the history")
+        }
     )
     async def unskipto(self,
                        interaction: nextcord.Interaction,
                        track: ZeroIndexConverter = SlashOption(
-                           name="track",
-                           description="Track number to jump back to",
+                           name=I18nManager.get(Locale.en_US).gettext("track"),
+                           name_localizations={
+                               Locale.en_US: I18nManager.get(Locale.en_US).gettext("track"),
+                               Locale.fr: I18nManager.get(Locale.fr).gettext("track")
+                           },
+                           description=I18nManager.get(Locale.en_US).gettext("Track number to jump back to"),
+                           description_localizations={
+                               Locale.en_US: I18nManager.get(Locale.en_US).gettext("Track number to jump back to"),
+                               Locale.fr: I18nManager.get(Locale.fr).gettext("Track number to jump back to")
+                           },
                            required=True,
                            min_value=1
                        )):
-        await self.__back(interaction, track) # type: ignore
+        await self.__back(interaction, track)  # type: ignore
 
     async def __back(self, interaction: nextcord.Interaction, track: int):
         self.__logger.debug(f"Handling `back` command (interaction:{interaction.id})")

@@ -2,25 +2,25 @@ import gettext
 import os
 from typing import Union
 
-from injector import singleton, inject
+from nextcord import Locale
 
 from tonearm.bot.managers.base import ManagerBase
+from tonearm.utils.static_singleton import static_singleton
 
 
-@singleton
-class I18nManager(ManagerBase[str, Union[gettext.GNUTranslations, gettext.NullTranslations]]):
+@static_singleton
+class I18nManager(ManagerBase[Locale, Union[gettext.GNUTranslations, gettext.NullTranslations]]):
 
-    @inject
     def __init__(self):
         super().__init__()
 
-    def _get_id(self, key: str) -> str:
-        return key
+    def _get_id(self, key: Locale) -> str:
+        return str(key)
 
-    def _create(self, key: str) -> Union[gettext.GNUTranslations, gettext.NullTranslations]:
+    def _create(self, key: Locale) -> Union[gettext.GNUTranslations, gettext.NullTranslations]:
         return gettext.translation(
             domain="messages",
             localedir=os.path.join(os.path.dirname(__file__), "locales"),
-            languages=[key],
+            languages=[self._get_id(key)],
             fallback=True
         )

@@ -1,14 +1,14 @@
 import logging
 
 import nextcord
-from nextcord import SlashOption
+from nextcord import SlashOption, Locale
 from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import IsCorrectChannel
 from tonearm.bot.cogs.converters import ZeroIndexConverter
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -33,13 +33,25 @@ class QueueCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="queue",
-        description="show the current queue"
+        description=I18nManager.get(Locale.en_US).gettext("Show the current queue"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Show the current queue"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Show the current queue"),
+        }
     )
     async def queue(self,
                     interaction: nextcord.Interaction,
                     page: ZeroIndexConverter = SlashOption(
-                        name="page",
-                        description="Page to show",
+                        name=I18nManager.get(Locale.en_US).gettext("page"),
+                        name_localizations={
+                            Locale.en_US: I18nManager.get(Locale.en_US).gettext("page"),
+                            Locale.fr: I18nManager.get(Locale.fr).gettext("page")
+                        },
+                        description=I18nManager.get(Locale.en_US).gettext("Page to display"),
+                        description_localizations={
+                            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Page to display"),
+                            Locale.fr: I18nManager.get(Locale.fr).gettext("Page to display")
+                        },
                         required=False,
                         default=0,
                         min_value=1

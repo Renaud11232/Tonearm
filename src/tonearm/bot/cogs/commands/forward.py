@@ -1,14 +1,14 @@
 import logging
 
 import nextcord
-from nextcord import SlashOption
+from nextcord import SlashOption, Locale
 from nextcord.ext import application_checks
 
 from injector import inject, singleton
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
 from tonearm.bot.cogs.converters import DurationConverter
-from tonearm.bot.managers import PlayerManager
+from tonearm.bot.managers import PlayerManager, I18nManager
 from tonearm.bot.services import EmbedService
 
 from .base import CommandCogBase
@@ -35,13 +35,25 @@ class ForwardCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="forward",
-        description="Forwards a specific amount of time into the track"
+        description=I18nManager.get(Locale.en_US).gettext("Forward a specific amount of time into the track"),
+        description_localizations={
+            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Forward a specific amount of time into the track"),
+            Locale.fr: I18nManager.get(Locale.fr).gettext("Forward a specific amount of time into the track")
+        }
     )
     async def forward(self,
                       interaction: nextcord.Interaction,
                       duration: DurationConverter = SlashOption(
-                          name="duration",
-                          description="How far to fast forward into the track",
+                          name=I18nManager.get(Locale.en_US).gettext("duration"),
+                          name_localizations={
+                              Locale.en_US: I18nManager.get(Locale.en_US).gettext("duration"),
+                              Locale.fr: I18nManager.get(Locale.fr).gettext("duration")
+                          },
+                          description=I18nManager.get(Locale.en_US).gettext("How far to fast forward into the track"),
+                          description_localizations={
+                              Locale.en_US: I18nManager.get(Locale.en_US).gettext("How far to fast forward into the track"),
+                              Locale.fr: I18nManager.get(Locale.fr).gettext("How far to fast forward into the track")
+                          },
                           required=True
                       )):
         self.__logger.debug(f"Handling `forward` command (interaction:{interaction.id})")
