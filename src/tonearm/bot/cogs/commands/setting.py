@@ -102,20 +102,8 @@ class SettingCommand(CommandCogBase):
                                           Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("True to enable anarchy mode, False to disable it"),
                                           Locale.fr: TranslationsManager().get(Locale.fr).gettext("True to enable anarchy mode, False to disable it")
                                       },
-                                      choices={
-                                          TranslationsManager().get(Locale.en_US).gettext("True"): "True",
-                                          TranslationsManager().get(Locale.en_US).gettext("False"): "False"
-                                      },
-                                      choice_localizations={
-                                          TranslationsManager().get(Locale.en_US).gettext("True"): {
-                                              Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("True"),
-                                              Locale.fr: TranslationsManager().get(Locale.fr).gettext("True"),
-                                          },
-                                          TranslationsManager().get(Locale.en_US).gettext("False"): {
-                                              Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("False"),
-                                              Locale.fr: TranslationsManager().get(Locale.fr).gettext("False"),
-                                          }
-                                      },
+                                      choices=BooleanConverter.get_choices(),
+                                      choice_localizations=BooleanConverter.get_choice_localizations(),
                                       required=True
                                   )):
         self.__logger.debug(f"Handling `setting set anarchy` command (interaction:{interaction.id})")
@@ -147,20 +135,8 @@ class SettingCommand(CommandCogBase):
                                                 Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("True to enable automatic track announcements, False to disable them"),
                                                 Locale.fr: TranslationsManager().get(Locale.fr).gettext("True to enable automatic track announcements, False to disable them")
                                             },
-                                            choices={
-                                                TranslationsManager().get(Locale.en_US).gettext("True"): "True",
-                                                TranslationsManager().get(Locale.en_US).gettext("False"): "False"
-                                            },
-                                            choice_localizations={
-                                                TranslationsManager().get(Locale.en_US).gettext("True"): {
-                                                    Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("True"),
-                                                    Locale.fr: TranslationsManager().get(Locale.fr).gettext("True"),
-                                                },
-                                                TranslationsManager().get(Locale.en_US).gettext("False"): {
-                                                    Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("False"),
-                                                    Locale.fr: TranslationsManager().get(Locale.fr).gettext("False"),
-                                                }
-                                            },
+                                            choices=BooleanConverter.get_choices(),
+                                            choice_localizations=BooleanConverter.get_choice_localizations(),
                                             required=True
                                   )):
         self.__logger.debug(f"Handling `setting set announcements` command (interaction:{interaction.id})")

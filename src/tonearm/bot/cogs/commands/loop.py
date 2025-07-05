@@ -54,25 +54,8 @@ class LoopCommand(CommandCogBase):
                            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Loop mode to use"),
                            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Loop mode to use"),
                        },
-                       choices={
-                           TranslationsManager().get(Locale.en_US).gettext("off"): "off",
-                           TranslationsManager().get(Locale.en_US).gettext("track"): "track",
-                           TranslationsManager().get(Locale.en_US).gettext("queue"): "queue",
-                       },
-                       choice_localizations={
-                           TranslationsManager().get(Locale.en_US).gettext("off"): {
-                               Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("off"),
-                               Locale.fr: TranslationsManager().get(Locale.fr).gettext("off")
-                           },
-                           TranslationsManager().get(Locale.en_US).gettext("track"): {
-                               Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("track"),
-                               Locale.fr: TranslationsManager().get(Locale.fr).gettext("track")
-                           },
-                           TranslationsManager().get(Locale.en_US).gettext("queue"): {
-                               Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("queue"),
-                               Locale.fr: TranslationsManager().get(Locale.fr).gettext("queue")
-                           }
-                       },
+                       choices=LoopModeConverter.get_choices(),
+                       choice_localizations=LoopModeConverter.get_choice_localizations(),
                        required=True
                    )):
         await self.__loop(interaction, mode)  # type: ignore
@@ -98,25 +81,8 @@ class LoopCommand(CommandCogBase):
                              Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Loop mode to use"),
                              Locale.fr: TranslationsManager().get(Locale.fr).gettext("Loop mode to use"),
                          },
-                         choices={
-                             TranslationsManager().get(Locale.en_US).gettext("off"): "off",
-                             TranslationsManager().get(Locale.en_US).gettext("track"): "track",
-                             TranslationsManager().get(Locale.en_US).gettext("queue"): "queue",
-                         },
-                         choice_localizations={
-                             TranslationsManager().get(Locale.en_US).gettext("off"): {
-                                 Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("off"),
-                                 Locale.fr: TranslationsManager().get(Locale.fr).gettext("off")
-                             },
-                             TranslationsManager().get(Locale.en_US).gettext("track"): {
-                                 Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("track"),
-                                 Locale.fr: TranslationsManager().get(Locale.fr).gettext("track")
-                             },
-                             TranslationsManager().get(Locale.en_US).gettext("queue"): {
-                                 Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("queue"),
-                                 Locale.fr: TranslationsManager().get(Locale.fr).gettext("queue")
-                             }
-                         },
+                         choices=LoopModeConverter.get_choices(),
+                         choice_localizations=LoopModeConverter.get_choice_localizations(),
                          required=True
                      )):
         await self.__loop(interaction, mode)  # type: ignore
