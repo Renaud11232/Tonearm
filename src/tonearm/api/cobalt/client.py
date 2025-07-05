@@ -17,7 +17,8 @@ class CobaltClient:
     def process(self, url: str, *, audio_bitrate: str | None = None, audio_format: str | None = None,
                 download_mode: str | None = None, filename_style: str | None = None, video_quality: str | None = None,
                 disable_metadata: bool | None = None, always_proxy: bool | None = None,
-                local_processing: bool | None = None, youtube_video_codec: str | None = None,
+                local_processing: bool | None = None, subtitle_lang: str | None = None,
+                youtube_video_codec: str | None = None, youtube_video_container: str | None = None,
                 youtube_dub_lang: str | None = None, convert_gif: bool | None = None, allow_h265: bool | None = None,
                 tiktok_full_audio: bool | None = None, youtube_better_audio: bool | None = None,
                 youtube_hls: bool | None = None):
@@ -46,8 +47,12 @@ class CobaltClient:
             data["alwaysProxy"] = always_proxy
         if local_processing is not None:
             data["localProcessing"] = local_processing
+        if subtitle_lang is not None:
+            data["subtitleLang"] = subtitle_lang
         if youtube_video_codec is not None:
             data["youtubeVideoCodec"] = youtube_video_codec
+        if youtube_video_container is not None:
+            data["youtubeVideoContainer"] = youtube_video_container
         if youtube_dub_lang is not None:
             data["youtubeDubLang"] = youtube_dub_lang
         if convert_gif is not None:
