@@ -1,5 +1,6 @@
 import math
 from typing import List, Any
+from enum import Enum
 
 import nextcord
 from nextcord import Locale
@@ -353,6 +354,8 @@ class EmbedService:
             return value.mention
         if isinstance(value, bool):
             return inline_code(TranslationsManager().get(self.__locale).gettext(repr(value)))
+        if isinstance(value, Enum):
+            return inline_code(value.name)
         return inline_code(escape_markdown(repr(value)))
 
     def setting_set(self, name: str, value: Any):

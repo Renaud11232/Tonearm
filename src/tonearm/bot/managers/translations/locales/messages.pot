@@ -336,3 +336,15 @@ msgstr ""
 
 msgid "`{value}` is not a valid loop mode."
 msgstr ""
+
+msgid "`{value}` is not a valid locale."
+msgstr ""
+
+msgid "Set the language to use on this server"
+msgstr ""
+
+msgid "Language to use on this server"
+msgstr ""
+
+msgid "Reset the language to use on this server"
+msgstr ""

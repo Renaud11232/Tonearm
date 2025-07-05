@@ -8,6 +8,8 @@ from tonearm.bot.services.player import LoopMode
 
 class LoopModeConverter(nextcord.OptionConverter):
 
+    __LOOP_MODE_NAMES = [loop_mode.name for loop_mode in LoopMode]
+
     def __init__(self):
         super().__init__(str)
 
@@ -15,7 +17,7 @@ class LoopModeConverter(nextcord.OptionConverter):
         if not value:
             return None
         value_upper = value.upper()
-        if value_upper not in LoopMode._member_names_:
+        if value_upper not in LoopModeConverter.__LOOP_MODE_NAMES:
             raise TonearmConverterException(
                 "`{value}` is not a valid loop mode.",
                 value=value

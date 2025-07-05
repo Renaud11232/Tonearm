@@ -8,7 +8,7 @@ from injector import singleton, inject
 
 from tonearm.bot.managers import StorageManager, TranslationsManager, EmbedManager
 from tonearm.bot.cogs.checks import IsGuildAdministrator
-from tonearm.bot.cogs.converters import BooleanConverter
+from tonearm.bot.cogs.converters import BooleanConverter, LocaleConverter
 
 from .base import CommandCogBase
 
@@ -29,9 +29,11 @@ class SettingCommand(CommandCogBase):
             self.setting_set_channel,
             self.setting_set_anarchy,
             self.setting_set_announcements,
+            self.setting_set_locale,
             self.setting_reset_channel,
             self.setting_reset_anarchy,
             self.setting_reset_announcements,
+            self.setting_reset_locale,
             checks=[
                 application_checks.guild_only(),
                 is_guild_administrator()
@@ -147,6 +149,38 @@ class SettingCommand(CommandCogBase):
         )
         self.__logger.debug(f"Successfully handled `setting set announcements` command (interaction:{interaction.id})")
 
+    @setting_set.subcommand(
+        name="locale",
+        description=TranslationsManager().get(Locale.en_US).gettext("Set the language to use on this server"),
+        description_localizations={
+            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Set the language to use on this server"),
+            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Set the language to use on this server"),
+        }
+    )
+    async def setting_set_locale(self,
+                                 interaction: nextcord.Interaction,
+                                 value: LocaleConverter = SlashOption(
+                                     name=TranslationsManager().get(Locale.en_US).gettext("value"),
+                                     name_localizations={
+                                         Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("value"),
+                                         Locale.fr: TranslationsManager().get(Locale.fr).gettext("value"),
+                                     },
+                                     description=TranslationsManager().get(Locale.en_US).gettext("Language to use on this server"),
+                                     description_localizations={
+                                         Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Language to use on this server"),
+                                         Locale.fr: TranslationsManager().get(Locale.fr).gettext("Language to use on this server")
+                                     },
+                                     choices=LocaleConverter.get_choices(),
+                                     required=True
+                                 )):
+        self.__logger.debug(f"Handling `setting set locale` command (interaction:{interaction.id})")
+        await interaction.response.defer()
+        self.__storage_manager.get(interaction.guild).set_locale(value)  # type: ignore
+        await interaction.followup.send(
+            embed=self.__embed_manager.get(interaction.guild).setting_set("locale", value)
+        )
+        self.__logger.debug(f"Successfully handled `setting set locale` command (interaction:{interaction.id})")
+
     @setting.subcommand(
         name="reset"
     )
@@ -203,3 +237,20 @@ class SettingCommand(CommandCogBase):
             embed=self.__embed_manager.get(interaction.guild).setting_set("announcements", False)
         )
         self.__logger.debug(f"Successfully handled `setting reset announcements` command (interaction:{interaction.id})")
+
+    @setting_reset.subcommand(
+        name="locale",
+        description=TranslationsManager().get(Locale.en_US).gettext("Reset the language to use on this server"),
+        description_localizations={
+            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Reset the language to use on this server"),
+            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Reset the language to use on this server"),
+        }
+    )
+    async def setting_reset_locale(self, interaction: nextcord.Interaction):
+        self.__logger.debug(f"Handling `setting reset locale` command (interaction:{interaction.id})")
+        await interaction.response.defer()
+        self.__storage_manager.get(interaction.guild).set_locale(nextcord.Locale.en_US)
+        await interaction.followup.send(
+            embed=self.__embed_manager.get(interaction.guild).setting_set("locale", nextcord.Locale.en_US)
+        )
+        self.__logger.debug(f"Successfully handled `setting reset locale` command (interaction:{interaction.id})")
