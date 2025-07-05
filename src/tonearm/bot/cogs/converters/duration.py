@@ -12,12 +12,15 @@ class DurationConverter(nextcord.OptionConverter):
     def __init__(self):
         super().__init__(str)
 
-    async def convert(self, interaction: nextcord.Interaction, argument: str) -> int | None:
-        if not argument:
+    async def convert(self, interaction: nextcord.Interaction, value: str) -> int | None:
+        if value is None:
             return None
-        match = DurationConverter.__REGEX.search(argument)
+        match = DurationConverter.__REGEX.search(value)
         if not match:
-            raise TonearmConverterException(f"`{argument}` is not a valid duration.")
+            raise TonearmConverterException(
+                "`{value}` is not a valid duration.",
+                value=value
+            )
         groups = match.groups("0")
         days = int(groups[0])
         hours = int(groups[1])

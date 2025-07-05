@@ -15,5 +15,8 @@ class LoopModeConverter(nextcord.OptionConverter):
             return None
         value_upper = value.upper()
         if value_upper not in LoopMode._member_names_:
-            raise TonearmConverterException(f"`{value}` is not a valid loop mode.")
+            raise TonearmConverterException(
+                "`{value}` is not a valid loop mode.",
+                value=value
+            )
         return LoopMode[value_upper]

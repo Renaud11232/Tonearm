@@ -327,3 +327,12 @@ msgstr ""
 
 msgid "Volume’s now {volume}%. Don’t blame me if it’s too loud !"
 msgstr ""
+
+msgid "`{value}` is not a valid boolean value."
+msgstr ""
+
+msgid "`{value}` is not a valid duration."
+msgstr ""
+
+msgid "`{value}` is not a valid loop mode."
+msgstr ""

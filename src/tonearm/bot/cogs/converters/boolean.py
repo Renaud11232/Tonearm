@@ -16,4 +16,7 @@ class BooleanConverter(nextcord.OptionConverter):
             return True
         if value.upper() == "FALSE":
             return False
-        raise TonearmConverterException(f"`{value}` is not a valid boolean value.")
+        raise TonearmConverterException(
+            "`{value}` is not a valid boolean value.",
+            value=value
+        )
