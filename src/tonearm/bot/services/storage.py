@@ -125,6 +125,5 @@ class StorageService:
         str_locale = locale.name
         self.__set("locale", str_locale)
 
-    #TODO: Add command to set locale
     def set_locale(self, locale: nextcord.Locale):
         self.__set_locale(locale)
