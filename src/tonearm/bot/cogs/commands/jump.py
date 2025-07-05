@@ -8,8 +8,7 @@ from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
 from tonearm.bot.cogs.converters import ZeroIndexConverter
-from tonearm.bot.managers import PlayerManager, I18nManager
-from tonearm.bot.services import EmbedService
+from tonearm.bot.managers import PlayerManager, TranslationsManager, EmbedManager
 
 from .base import CommandCogBase
 
@@ -20,12 +19,12 @@ class JumpCommand(CommandCogBase):
     @inject
     def __init__(self,
                  player_manager: PlayerManager,
-                 embed_service: EmbedService,
+                 embed_manager: EmbedManager,
                  is_correct_channel: IsCorrectChannel,
                  can_use_dj_command: CanUseDjCommand):
         super().__init__()
         self.__player_manager = player_manager
-        self.__embed_service = embed_service
+        self.__embed_manager = embed_manager
         self.__logger = logging.getLogger("tonearm.commands")
         self._add_checks(self.jump, self.skipto, checks=[
             application_checks.guild_only(),
@@ -35,24 +34,24 @@ class JumpCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="jump",
-        description=I18nManager.get(Locale.en_US).gettext("Jump to a specific track in the queue"),
+        description=TranslationsManager().get(Locale.en_US).gettext("Jump to a specific track in the queue"),
         description_localizations={
-            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Jump to a specific track in the queue"),
-            Locale.fr: I18nManager.get(Locale.fr).gettext("Jump to a specific track in the queue")
+            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Jump to a specific track in the queue"),
+            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Jump to a specific track in the queue")
         }
     )
     async def jump(self,
                    interaction: nextcord.Interaction,
                    track: ZeroIndexConverter = SlashOption(
-                       name=I18nManager.get(Locale.en_US).gettext("track"),
+                       name=TranslationsManager().get(Locale.en_US).gettext("track"),
                        name_localizations={
-                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("track"),
-                           Locale.fr: I18nManager.get(Locale.fr).gettext("track")
+                           Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("track"),
+                           Locale.fr: TranslationsManager().get(Locale.fr).gettext("track")
                        },
-                       description=I18nManager.get(Locale.en_US).gettext("Track number to jump to"),
+                       description=TranslationsManager().get(Locale.en_US).gettext("Track number to jump to"),
                        description_localizations={
-                           Locale.en_US: I18nManager.get(Locale.en_US).gettext("Track number to jump to"),
-                           Locale.fr: I18nManager.get(Locale.fr).gettext("Track number to jump to")
+                           Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Track number to jump to"),
+                           Locale.fr: TranslationsManager().get(Locale.fr).gettext("Track number to jump to")
                        },
                        required=False,
                        min_value=1
@@ -61,24 +60,24 @@ class JumpCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="skipto",
-        description=I18nManager.get(Locale.en_US).gettext("Jump to a specific track in the queue"),
+        description=TranslationsManager().get(Locale.en_US).gettext("Jump to a specific track in the queue"),
         description_localizations={
-            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Jump to a specific track in the queue"),
-            Locale.fr: I18nManager.get(Locale.fr).gettext("Jump to a specific track in the queue")
+            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Jump to a specific track in the queue"),
+            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Jump to a specific track in the queue")
         }
     )
     async def skipto(self,
                      interaction: nextcord.Interaction,
                      track: ZeroIndexConverter = SlashOption(
-                         name=I18nManager.get(Locale.en_US).gettext("track"),
+                         name=TranslationsManager().get(Locale.en_US).gettext("track"),
                          name_localizations={
-                             Locale.en_US: I18nManager.get(Locale.en_US).gettext("track"),
-                             Locale.fr: I18nManager.get(Locale.fr).gettext("track")
+                             Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("track"),
+                             Locale.fr: TranslationsManager().get(Locale.fr).gettext("track")
                          },
-                         description=I18nManager.get(Locale.en_US).gettext("Track number to jump to"),
+                         description=TranslationsManager().get(Locale.en_US).gettext("Track number to jump to"),
                          description_localizations={
-                             Locale.en_US: I18nManager.get(Locale.en_US).gettext("Track number to jump to"),
-                             Locale.fr: I18nManager.get(Locale.fr).gettext("Track number to jump to")
+                             Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Track number to jump to"),
+                             Locale.fr: TranslationsManager().get(Locale.fr).gettext("Track number to jump to")
                          },
                          required=False,
                          min_value=1
@@ -90,6 +89,6 @@ class JumpCommand(CommandCogBase):
         await interaction.response.defer()
         await self.__player_manager.get(interaction.guild).jump(interaction.user, track)
         await interaction.followup.send(
-            embed=self.__embed_service.jump(track)
+            embed=self.__embed_manager.get(interaction.guild).jump(track)
         )
         self.__logger.debug(f"Successfully handled `jump` command (interaction:{interaction.id})")

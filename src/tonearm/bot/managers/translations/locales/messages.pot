@@ -195,3 +195,135 @@ msgstr ""
 
 msgid "Vote to skip the current track"
 msgstr ""
+
+msgid "Rewinding to track {track}. Let’s bring it back !"
+msgstr ""
+
+msgid "My message is gone. It's like I was never here !"
+msgstr ""
+
+msgid "All my {len_messages} messages are gone. It's like I was never here !"
+msgstr ""
+
+msgid "Wiped the queue. Sometimes starting fresh hits different."
+msgstr ""
+
+msgid "Promoted {role_or_member} to DJ. Don’t scratch the vinyl !"
+msgstr ""
+
+msgid "Who needs intros anyway ?"
+msgstr ""
+
+msgid "History"
+msgstr ""
+
+msgid "Previous tracks"
+msgstr ""
+
+msgid "Played"
+msgstr ""
+
+msgid "Let's get this party started !"
+msgstr ""
+
+msgid "Boom. Skipped straight to track {track}. Enjoy !"
+msgstr ""
+
+msgid "Mic dropped. I'm gone."
+msgstr ""
+
+msgid "Looping turned off. One play, no reruns."
+msgstr ""
+
+msgid "You must really love this one. Looping it on repeat."
+msgstr ""
+
+msgid "Get ready for the encore. And the encore's encore. Looping the queue !"
+msgstr ""
+
+msgid "Shifted {track_title} like a playlist ninja. Moved from {from_} to {to}."
+msgstr ""
+
+msgid "Skipping the current track, I didn't like this one either."
+msgstr ""
+
+msgid "Now Playing"
+msgstr ""
+
+msgid "Queued by"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+msgid "Playback paused. Take your time !"
+msgstr ""
+
+msgid "Added {track_title} to the queue ! This one’s gonna slap."
+msgstr ""
+
+msgid "Added {len_tracks} tracks to the queue ! Now that’s what I call a playlist."
+msgstr ""
+
+msgid "Because one listen wasn’t enough..."
+msgstr ""
+
+msgid "I can't show you page {page} out of {max_pages}."
+msgstr ""
+
+msgid "Nothing to show here"
+msgstr ""
+
+msgid "{len_tracks} track"
+msgstr ""
+
+msgid "{len_tracks} tracks"
+msgstr ""
+
+msgid "Page"
+msgstr ""
+
+msgid "{page} our of {max_pages}"
+msgstr ""
+
+msgid "Up next :"
+msgstr ""
+
+msgid "In queue"
+msgstr ""
+
+msgid "Say goodbye to {track_title}. It didn’t make the cut."
+msgstr ""
+
+msgid "Back in action ! Enjoy the tracks."
+msgstr ""
+
+msgid "That part was worth a second listen !"
+msgstr ""
+
+msgid "Dropping the needle, classic move."
+msgstr ""
+
+msgid "All set ! {setting_name} is now {setting_value}."
+msgstr ""
+
+msgid "Boom ! {setting_name} is back to default: {setting_value}."
+msgstr ""
+
+msgid "Shuffled the queue. I hope you like surprises !"
+msgstr ""
+
+msgid "Initiating shutdown sequence... it’s been an honor."
+msgstr ""
+
+msgid "Music stopped. The crowd goes silent."
+msgstr ""
+
+msgid "Version {version}, up and running !"
+msgstr ""
+
+msgid "Crafted with :heart: by {authors}."
+msgstr ""
+
+msgid "Volume’s now {volume}%. Don’t blame me if it’s too loud !"
+msgstr ""

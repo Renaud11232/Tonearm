@@ -5,11 +5,10 @@ from typing import Union
 from nextcord import Locale
 
 from tonearm.bot.managers.base import ManagerBase
-from tonearm.utils.static_singleton import static_singleton
+from tonearm.utils.singleton import Singleton
 
 
-@static_singleton
-class I18nManager(ManagerBase[Locale, Union[gettext.GNUTranslations, gettext.NullTranslations]]):
+class TranslationsManager(Singleton, ManagerBase[Locale, Union[gettext.GNUTranslations, gettext.NullTranslations]]):
 
     def __init__(self):
         super().__init__()

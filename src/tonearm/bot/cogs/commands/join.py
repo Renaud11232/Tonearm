@@ -7,8 +7,7 @@ from nextcord.ext import application_checks
 from injector import inject, singleton
 
 from tonearm.bot.cogs.checks import IsCorrectChannel
-from tonearm.bot.managers import PlayerManager, I18nManager
-from tonearm.bot.services import EmbedService
+from tonearm.bot.managers import PlayerManager, TranslationsManager, EmbedManager
 
 from .base import CommandCogBase
 
@@ -19,11 +18,11 @@ class JoinCommand(CommandCogBase):
     @inject
     def __init__(self,
                  player_manager: PlayerManager,
-                 embed_service: EmbedService,
+                 embed_manager: EmbedManager,
                  is_correct_channel: IsCorrectChannel):
         super().__init__()
         self.__player_manager = player_manager
-        self.__embed_service = embed_service
+        self.__embed_manager = embed_manager
         self.__logger = logging.getLogger("tonearm.commands")
         self._add_checks(self.join, checks=[
             application_checks.guild_only(),
@@ -33,10 +32,10 @@ class JoinCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="join",
-        description=I18nManager.get(Locale.en_US).gettext("Join your current voice channel"),
+        description=TranslationsManager().get(Locale.en_US).gettext("Join your current voice channel"),
         description_localizations={
-            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Join your current voice channel"),
-            Locale.fr: I18nManager.get(Locale.fr).gettext("Join your current voice channel")
+            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Join your current voice channel"),
+            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Join your current voice channel")
         }
     )
     async def join(self, interaction: nextcord.Interaction):
@@ -44,6 +43,6 @@ class JoinCommand(CommandCogBase):
         await interaction.response.defer()
         await self.__player_manager.get(interaction.guild).join(interaction.user)
         await interaction.followup.send(
-            embed=self.__embed_service.join()
+            embed=self.__embed_manager.get(interaction.guild).join()
         )
         self.__logger.debug(f"Successfully handled `join` command (interaction:{interaction.id})")

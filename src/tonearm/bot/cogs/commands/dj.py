@@ -6,8 +6,7 @@ from nextcord.ext import application_checks
 
 from injector import singleton, inject
 
-from tonearm.bot.managers import DjManager, I18nManager
-from tonearm.bot.services import EmbedService
+from tonearm.bot.managers import DjManager, TranslationsManager, EmbedManager
 from tonearm.bot.cogs.checks import IsGuildAdministrator
 
 from .base import CommandCogBase
@@ -17,10 +16,13 @@ from .base import CommandCogBase
 class DjCommand(CommandCogBase):
 
     @inject
-    def __init__(self, dj_manager: DjManager, embed_service: EmbedService, is_guild_administrator: IsGuildAdministrator):
+    def __init__(self,
+                 dj_manager: DjManager,
+                 embed_manager: EmbedManager,
+                 is_guild_administrator: IsGuildAdministrator):
         super().__init__()
         self.__dj_manager = dj_manager
-        self.__embed_service = embed_service
+        self.__embed_manager = embed_manager
         self.__logger = logging.getLogger("tonearm.commands")
         self._add_checks(self.dj_add, self.dj_remove, checks=[
             application_checks.guild_only(),
@@ -35,24 +37,24 @@ class DjCommand(CommandCogBase):
 
     @dj.subcommand(
         name="add",
-        description=I18nManager.get(Locale.en_US).gettext("Add a role or member to the DJs"),
+        description=TranslationsManager().get(Locale.en_US).gettext("Add a role or member to the DJs"),
         description_localizations={
-            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Add a role or member to the DJs"),
-            Locale.fr: I18nManager.get(Locale.fr).gettext("Add a role or member to the DJs")
+            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Add a role or member to the DJs"),
+            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Add a role or member to the DJs")
         }
     )
     async def dj_add(self,
                      interaction: nextcord.Interaction,
                      dj: nextcord.Mentionable = SlashOption(
-                         name=I18nManager.get(Locale.en_US).gettext("dj"),
+                         name=TranslationsManager().get(Locale.en_US).gettext("dj"),
                          name_localizations={
-                             Locale.en_US: I18nManager.get(Locale.en_US).gettext("dj"),
-                             Locale.fr: I18nManager.get(Locale.fr).gettext("dj")
+                             Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("dj"),
+                             Locale.fr: TranslationsManager().get(Locale.fr).gettext("dj")
                          },
-                         description=I18nManager.get(Locale.en_US).gettext("Role or member to add to the DJs"),
+                         description=TranslationsManager().get(Locale.en_US).gettext("Role or member to add to the DJs"),
                          description_localizations={
-                             Locale.en_US: I18nManager.get(Locale.en_US).gettext("Role or member to add to the DJs"),
-                             Locale.fr: I18nManager.get(Locale.fr).gettext("Role or member to add to the DJs")
+                             Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Role or member to add to the DJs"),
+                             Locale.fr: TranslationsManager().get(Locale.fr).gettext("Role or member to add to the DJs")
                          },
                          required=True
                      )):
@@ -60,30 +62,30 @@ class DjCommand(CommandCogBase):
         await interaction.response.defer()
         self.__dj_manager.get(interaction.guild).add(dj) # type: ignore
         await interaction.followup.send(
-            embed=self.__embed_service.dj_add(dj) # type: ignore
+            embed=self.__embed_manager.get(interaction.guild).dj_add(dj) # type: ignore
         )
         self.__logger.debug(f"Successfully handled `dj add` command (interaction:{interaction.id})")
 
     @dj.subcommand(
         name="remove",
-        description=I18nManager.get(Locale.en_US).gettext("Remove a role or member from the DJs"),
+        description=TranslationsManager().get(Locale.en_US).gettext("Remove a role or member from the DJs"),
         description_localizations={
-            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Remove a role or member from the DJs"),
-            Locale.fr: I18nManager.get(Locale.fr).gettext("Remove a role or member from the DJs")
+            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Remove a role or member from the DJs"),
+            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Remove a role or member from the DJs")
         }
     )
     async def dj_remove(self,
                         interaction: nextcord.Interaction,
                         dj: nextcord.Mentionable = SlashOption(
-                            name=I18nManager.get(Locale.en_US).gettext("dj"),
+                            name=TranslationsManager().get(Locale.en_US).gettext("dj"),
                             name_localizations={
-                                Locale.en_US: I18nManager.get(Locale.en_US).gettext("dj"),
-                                Locale.fr: I18nManager.get(Locale.fr).gettext("dj")
+                                Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("dj"),
+                                Locale.fr: TranslationsManager().get(Locale.fr).gettext("dj")
                             },
-                            description=I18nManager.get(Locale.en_US).gettext("Role or member to remove from the DJs"),
+                            description=TranslationsManager().get(Locale.en_US).gettext("Role or member to remove from the DJs"),
                             description_localizations={
-                                Locale.en_US: I18nManager.get(Locale.en_US).gettext("Role or member to remove from the DJs"),
-                                Locale.fr: I18nManager.get(Locale.fr).gettext("Role or member to remove from the DJs")
+                                Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Role or member to remove from the DJs"),
+                                Locale.fr: TranslationsManager().get(Locale.fr).gettext("Role or member to remove from the DJs")
                             },
                             required=True
                         )):
@@ -91,6 +93,6 @@ class DjCommand(CommandCogBase):
         await interaction.response.defer()
         self.__dj_manager.get(interaction.guild).remove(dj) # type: ignore
         await interaction.followup.send(
-            embed=self.__embed_service.dj_remove(dj) # type: ignore
+            embed=self.__embed_manager.get(interaction.guild).dj_remove(dj) # type: ignore
         )
         self.__logger.debug(f"Successfully handled `dj remove` command (interaction:{interaction.id})")

@@ -26,22 +26,22 @@ from .voice_client import TonearmVoiceClient
 class PlayerService:
 
     @inject
-    @noninjectable("guild", "storage_service")
+    @noninjectable("guild", "storage_service", "embed_service")
     def __init__(self,
                  guild: nextcord.Guild,
                  storage_service: StorageService,
+                 embed_service: EmbedService,
                  bot: commands.Bot,
                  queue: Queue,
                  media_service: MediaService,
-                 configuration: Configuration,
-                 embed_service: EmbedService):
+                 configuration: Configuration):
         self.__guild = guild
         self.__storage_service = storage_service
+        self.__embed_service = embed_service
         self.__bot = bot
         self.__queue = queue
         self.__media_service = media_service
         self.__configuration = configuration
-        self.__embed_service = embed_service
         self.__logger = logging.getLogger("tonearm.player")
         self.__condition = asyncio.Condition()
         self.__audio_source: ControllableFFmpegPCMAudio | None = None
@@ -417,13 +417,13 @@ class PlayerService:
             self.__check_queue_not_empty()
             return await self.__queue.remove(track)
 
-    async def move(self, member: nextcord.Member, fr0m: int, to: int) -> QueuedTrack:
-        self.__logger.debug(f"Member {member.id} asked the bot to move track {fr0m} to {to} in in guild {self.__guild.id}")
+    async def move(self, member: nextcord.Member, from_: int, to: int) -> QueuedTrack:
+        self.__logger.debug(f"Member {member.id} asked the bot to move track {from_} to {to} in in guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)
             self.__check_same_voice_channel(member)
             self.__check_queue_not_empty()
-            return await self.__queue.move(fr0m, to)
+            return await self.__queue.move(from_, to)
 
     async def loop(self, member: nextcord.Member, mode: LoopMode):
         self.__logger.debug(f"Member {member.id} asked the bot to change the loop mode to {mode} in in guild {self.__guild.id}")

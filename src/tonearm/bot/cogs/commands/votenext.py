@@ -5,7 +5,7 @@ from nextcord.ext import application_checks
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import IsCorrectChannel, IsNotAnarchy
-from tonearm.bot.managers import I18nManager
+from tonearm.bot.managers import TranslationsManager
 
 from .base import CommandCogBase
 
@@ -24,10 +24,10 @@ class VotenextCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="votenext",
-        description=I18nManager.get(Locale.en_US).gettext("Vote to skip the current track"),
+        description=TranslationsManager().get(Locale.en_US).gettext("Vote to skip the current track"),
         description_localizations={
-            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Vote to skip the current track"),
-            Locale.fr: I18nManager.get(Locale.fr).gettext("Vote to skip the current track"),
+            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Vote to skip the current track"),
+            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Vote to skip the current track"),
         }
     )
     async def votenext(self, interaction: nextcord.Interaction):
@@ -35,10 +35,10 @@ class VotenextCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="voteskip",
-        description=I18nManager.get(Locale.en_US).gettext("Vote to skip the current track"),
+        description=TranslationsManager().get(Locale.en_US).gettext("Vote to skip the current track"),
         description_localizations={
-            Locale.en_US: I18nManager.get(Locale.en_US).gettext("Vote to skip the current track"),
-            Locale.fr: I18nManager.get(Locale.fr).gettext("Vote to skip the current track"),
+            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Vote to skip the current track"),
+            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Vote to skip the current track"),
         }
     )
     async def voteskip(self, interaction: nextcord.Interaction):
