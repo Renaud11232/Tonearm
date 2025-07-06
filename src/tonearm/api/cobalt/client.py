@@ -68,5 +68,5 @@ class CobaltClient:
         with requests.post(self.__base_url, json=data, headers=headers) as r:
             response = r.json()
             if response["status"] == "error":
-                raise CobaltException(response["error"]["code"])
+                raise CobaltException(response["error"]["code"], response["error"].get("context"))
             return response
