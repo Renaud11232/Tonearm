@@ -348,3 +348,105 @@ msgstr ""
 
 msgid "Reset the language to use on this server"
 msgstr ""
+
+msgid "I could not fetch the track, it looks like the URL you provided doesn't include a YouTube video ID."
+msgstr ""
+
+msgid "I could not fetch the track, YouTube videos API returned error status : {error}"
+msgstr ""
+
+msgid "I could not fetch the playlist, YouTube playlistItems API returned error status : {error}"
+msgstr ""
+
+msgid "I could not load the track, it's hosted on a service I don't support."
+msgstr ""
+
+msgid "I could not load the track, I was unable to connect to the Cobalt API."
+msgstr ""
+
+msgid "I could not load the track, Cobalt API returned error : {error}"
+msgstr ""
+
+msgid "I faced an unexpected error, please contact {owner}. I feel weird."
+msgstr ""
+
+msgid "Members of {role} are already DJs !"
+msgstr ""
+
+msgid "Members of {role} aren't DJs !"
+msgstr ""
+
+msgid "{member} is already a DJ !"
+msgstr ""
+
+msgid "{member} isn't a DJ !"
+msgstr ""
+
+msgid "I could not fetch the track, the provided URL does not point to an audio file."
+msgstr ""
+
+msgid "I could not fetch the track, it's hosted on a service I don't support."
+msgstr ""
+
+msgid "I could not fetch the track, YouTube search API returned error status : {error}"
+msgstr ""
+
+msgid "That’s too far back ! Even my buffer’s got limits."
+msgstr ""
+
+msgid "I’d love to seek there, but the track isn't that long."
+msgstr ""
+
+msgid "I’d love to seek there, but it’s still downloading... patience, friend."
+msgstr ""
+
+msgid "Jump failed. That’s outside the queue’s bounds."
+msgstr ""
+
+msgid "That’s further back than my memory goes. Try a smaller number."
+msgstr ""
+
+msgid "Oops ! Nothing to remove at that spot !"
+msgstr ""
+
+msgid "I couldn’t move anything. The queue only has {len_next_tracks} track(s)."
+msgstr ""
+
+msgid "You must join a voice channel first."
+msgstr ""
+
+msgid "I'm not in the same voice channel !"
+msgstr ""
+
+msgid "I'm not currently playing any track."
+msgstr ""
+
+msgid "I've already joined a voice channel."
+msgstr ""
+
+msgid "Already paused. No need to rush."
+msgstr ""
+
+msgid "The music never really stopped."
+msgstr ""
+
+msgid "The queue is empty, what can I do ?"
+msgstr ""
+
+msgid "I can't do that with no track in the history."
+msgstr ""
+
+msgid "I got abruptly disconnected, ask me again in {remaining_seconds} second(s)."
+msgstr ""
+
+msgid "No playable track were found !"
+msgstr ""
+
+msgid "You don't have the permission to use this command."
+msgstr ""
+
+msgid "Anarchy rules here, votes are disabled !"
+msgstr ""
+
+msgid "I'm only accepting commands in the {channel} channel."
+msgstr ""

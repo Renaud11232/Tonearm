@@ -1,6 +1,6 @@
 import nextcord
 
-from tonearm.bot.exceptions import TonearmConverterException
+from .exceptions import LocaleConverterException
 
 
 class LocaleConverter(nextcord.OptionConverter):
@@ -18,7 +18,7 @@ class LocaleConverter(nextcord.OptionConverter):
         if value is None:
             return None
         if value not in LocaleConverter.__LOCALE_NAMES:
-            raise TonearmConverterException(
+            raise LocaleConverterException(
                 "`{value}` is not a valid locale.",
                 value=value
             )

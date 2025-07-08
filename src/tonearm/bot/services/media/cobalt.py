@@ -27,7 +27,12 @@ class CobaltMediaService(MediaServiceBase):
             )["url"]
         except ConnectionError as e:
             self._logger.warning(f"Unable to connect to the Cobalt API : {repr(e)}")
-            raise MediaFetchingException(f"Unable to connect to the Cobalt API")
+            raise MediaFetchingException(
+                "I could not load the track, I was unable to connect to the Cobalt API."
+            )
         except CobaltException as e:
             self._logger.warning(f"Cobalt API returned error : {repr(e)}")
-            raise MediaFetchingException(f"Cobalt API returned error : `{str(e)}`")
+            raise MediaFetchingException(
+                "I could not load the track, Cobalt API returned error : {error}",
+                error=e.code
+            )

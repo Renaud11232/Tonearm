@@ -28,7 +28,9 @@ class DirectUrlMetadataService(MetadataServiceBase):
         with requests.get(query, headers=headers, stream=True) as response:
             content_type = response.headers.get("Content-Type")
             if content_type is None or not content_type.startswith("audio/"):
-                raise MetadataFetchingException("The provided url does not point to an audio file.")
+                raise MetadataFetchingException(
+                    "I could not fetch the track, the provided URL does not point to an audio file."
+                )
             filename, domain = self.__parse_info(query, response.headers)
             return [
                 TrackMetadata(

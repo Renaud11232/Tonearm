@@ -17,7 +17,10 @@ class DjService:
     def add_role(self, role: nextcord.Role):
         roles = self.__storage_service.get_dj_roles()
         if role in roles:
-            raise DjException(f"Members of {role.mention} are already DJs !")
+            raise DjException(
+                "Members of {role} are already DJs !",
+                role=role.mention
+            )
         roles.append(role)
         self.__storage_service.set_dj_roles(roles)
 
@@ -27,12 +30,18 @@ class DjService:
             roles.remove(role)
             self.__storage_service.set_dj_roles(roles)
         except ValueError:
-            raise DjException(f"Members of {role.mention} aren't DJs !")
+            raise DjException(
+                "Members of {role} aren't DJs !",
+                role=role.mention
+            )
 
     def add_member(self, member: nextcord.Member):
         djs = self.__storage_service.get_dj_members()
         if member in djs:
-            raise DjException(f"{member.mention} is already a DJ !")
+            raise DjException(
+                "{member} is already a DJ !",
+                member=member.mention
+            )
         djs.append(member)
         self.__storage_service.set_dj_members(djs)
 
@@ -42,7 +51,10 @@ class DjService:
             djs.remove(member)
             self.__storage_service.set_dj_members(djs)
         except ValueError:
-            raise DjException(f"{member.mention} isn't a DJ !")
+            raise DjException(
+                "{member} isn't a DJ !",
+                member=member.mention
+            )
 
     def add(self, member_or_role: nextcord.Member | nextcord.Role):
         if isinstance(member_or_role, nextcord.Member):

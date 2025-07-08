@@ -80,13 +80,19 @@ class SeekableFFmpegPCMAudio(nextcord.FFmpegPCMAudio):
         with self.__condition:
             if next_chunk - self.__offset < 0:
                 self.__logger.debug("Provided elapsed time is before the start of the buffer")
-                raise PlayerException("That’s too far back ! Even my buffer’s got limits.")
+                raise PlayerException(
+                    "That’s too far back ! Even my buffer’s got limits."
+                )
             if next_chunk - self.__offset >= len(self.__chunks):
                 self.__logger.debug(f"Chunk {next_chunk} does not exist in buffer of {len(self.__chunks)} with offset {self.__offset}")
                 if self.__is_finished_buffering():
-                    raise PlayerException("I’d love to seek there, but the track isn't that long.")
+                    raise PlayerException(
+                        "I’d love to seek there, but the track isn't that long."
+                    )
                 else:
-                    raise PlayerException("I’d love to seek there, but it’s still downloading... patience, friend")
+                    raise PlayerException(
+                        "I’d love to seek there, but it’s still downloading... patience, friend."
+                    )
             self.__next_chunk = next_chunk
             self.__condition.notify()
 
@@ -104,7 +110,7 @@ class ControllableFFmpegPCMAudio(nextcord.PCMVolumeTransformer):
             source,
             executable=executable,
             pipe=pipe,
-            stderr=stderr,
+            stderr=stderr,  # type: ignore
             before_options=before_options,
             options=options,
             buffer_length=buffer_length

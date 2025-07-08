@@ -37,4 +37,7 @@ class YoutubeSearchMetadataService(YoutubeMetadataService):
             ]
         except googleapiclient.errors.HttpError as e:
             self._logger.warning(f"YouTube search API returned error : {repr(e)}")
-            raise MetadataFetchingException(f"YouTube search API returned status `{e.status_code}` : `{e.reason}`")
+            raise MetadataFetchingException(
+                "I could not fetch the track, YouTube search API returned error status : {error}",
+                error=f"`{e.status_code}` : `{e.reason}`"
+            )

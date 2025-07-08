@@ -1,5 +1,5 @@
 from tonearm.bot.exceptions import TonearmCommandException
 
 
-class PlayerException(TonearmCommandException):
+class EmbedException(TonearmCommandException):
     pass

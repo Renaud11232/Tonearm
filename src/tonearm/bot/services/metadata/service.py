@@ -40,4 +40,6 @@ class MetadataService(MetadataServiceBase):
             if re.search(entry.pattern, query):
                 return entry.service.fetch(query)
         self._logger.debug(f"No metadata service matched {query}")
-        raise MetadataFetchingException("I'm unable to fetch this track, it's hosted on a service I don't support.")
+        raise MetadataFetchingException(
+            "I could not fetch the track, it's hosted on a service I don't support."
+        )

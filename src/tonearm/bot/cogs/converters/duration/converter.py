@@ -2,7 +2,7 @@ import re
 
 import nextcord
 
-from tonearm.bot.exceptions import TonearmConverterException
+from .exceptions import DurationConverterException
 
 
 class DurationConverter(nextcord.OptionConverter):
@@ -17,7 +17,7 @@ class DurationConverter(nextcord.OptionConverter):
             return None
         match = DurationConverter.__REGEX.search(value)
         if not match:
-            raise TonearmConverterException(
+            raise DurationConverterException(
                 "`{value}` is not a valid duration.",
                 value=value
             )

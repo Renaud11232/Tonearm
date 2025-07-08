@@ -7,7 +7,7 @@ from nextcord import Locale
 
 from injector import inject, noninjectable
 
-from tonearm.bot.exceptions import TranslatableException, TonearmCommandException
+from tonearm.bot.exceptions import TonearmException
 from tonearm.bot.services.player.status import PlayerStatus
 from tonearm.bot.services.player.track import QueuedTrack
 from tonearm.bot.services.player.loop import LoopMode
@@ -16,6 +16,8 @@ from tonearm.bot.services.storage import StorageService
 from tonearm.bot.managers.translations import TranslationsManager
 from tonearm.utils.markdown import *
 from tonearm.utils.strings import *
+
+from .exceptions import EmbedException
 
 
 class EmbedService:
@@ -29,8 +31,11 @@ class EmbedService:
     def __locale(self) -> Locale:
         return self.__storage_service.get_locale()
 
-    def error(self, error: TranslatableException):
-        message = TranslationsManager().get(self.__locale).gettext(error.template).format(**error.kwargs)
+    def error(self, error: TonearmException):
+        return self.error_message(error.template, **error.kwargs)
+
+    def error_message(self, template: str, **kwargs) -> nextcord.Embed:
+        message = TranslationsManager().get(self.__locale).gettext(template).format(**kwargs)
         return nextcord.Embed(
             description=f":x: {escape_markdown(message)}",
             colour=nextcord.Colour.red()
@@ -268,7 +273,7 @@ class EmbedService:
         else:
             max_pages = math.ceil(len_tracks / 10)
         if page >= max_pages:
-            raise TonearmCommandException(
+            raise EmbedException(
                 "I can't show you page {page} out of {max_pages}.",
                 page=page + 1,
                 max_pages=max_pages

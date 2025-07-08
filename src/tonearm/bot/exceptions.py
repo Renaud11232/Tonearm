@@ -1,7 +1,7 @@
-from nextcord.errors import ApplicationCheckFailure
+from nextcord.errors import ApplicationError
 
 
-class TranslatableException(Exception):
+class TonearmException(ApplicationError):
     def __init__(self, template: str, **kwargs):
         super().__init__(template.format(**kwargs))
         self.__template = template
@@ -15,11 +15,8 @@ class TranslatableException(Exception):
     def kwargs(self):
         return self.__kwargs
 
-class TonearmCheckException(ApplicationCheckFailure, TranslatableException):
+class TonearmConverterException(TonearmException):
     pass
 
-class TonearmConverterException(TranslatableException):
-    pass
-
-class TonearmCommandException(TranslatableException):
+class TonearmCommandException(TonearmException):
     pass

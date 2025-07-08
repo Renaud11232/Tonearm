@@ -32,4 +32,6 @@ class MediaService(MediaServiceBase):
             if re.search(entry.pattern, url):
                 return entry.service.fetch(url)
         self._logger.debug(f"No media service matched {url}")
-        raise MediaFetchingException(f"I'm unable to load this track, it's hosted on a service I don't support.")
+        raise MediaFetchingException(
+            "I could not load the track, it's hosted on a service I don't support."
+        )

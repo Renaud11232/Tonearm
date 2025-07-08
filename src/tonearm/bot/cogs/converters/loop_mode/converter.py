@@ -1,9 +1,10 @@
 import nextcord
 from nextcord import Interaction, Locale
 
-from tonearm.bot.exceptions import TonearmConverterException
 from tonearm.bot.managers import TranslationsManager
 from tonearm.bot.services.player import LoopMode
+
+from .exceptions import LoopModeConverterException
 
 
 class LoopModeConverter(nextcord.OptionConverter):
@@ -18,7 +19,7 @@ class LoopModeConverter(nextcord.OptionConverter):
             return None
         value_upper = value.upper()
         if value_upper not in LoopModeConverter.__LOOP_MODE_NAMES:
-            raise TonearmConverterException(
+            raise LoopModeConverterException(
                 "`{value}` is not a valid loop mode.",
                 value=value
             )

@@ -59,63 +59,83 @@ class PlayerService:
         self.__logger.debug(f"Checking if member {member.id} of guild {self.__guild.id} is in a voice channel")
         if member.voice is None or member.voice.channel is None:
             self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} was not in a voice channel")
-            raise PlayerException("You must join a voice channel first")
+            raise PlayerException(
+                "You must join a voice channel first."
+            )
         self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} is in a voice channel")
 
     def __check_same_voice_channel(self, member: nextcord.Member):
         self.__logger.debug(f"Checking if member {member.id} of guild {self.__guild.id} is in the same voice channel as the bot")
         if self.__voice_client is None or member.voice.channel != self.__voice_client.channel:
             self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} was not in the same voice channel as the bot")
-            raise PlayerException("I'm not in your voice channel")
+            raise PlayerException(
+                "I'm not in the same voice channel !"
+            )
         self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} is in the same voice channel as the bot")
 
     def __check_active_audio_source(self):
         self.__logger.debug(f"Checking if the bot is currently playing a track in the guild {self.__guild.id}")
         if not self.__is_active():
             self.__logger.debug(f"Bot is currently not playing any track in guild {self.__guild.id}")
-            raise PlayerException("I'm not currently playing any track")
+            raise PlayerException(
+                "I'm not currently playing any track."
+            )
         self.__logger.debug(f"Bot is currently playing a track in guild {self.__guild.id}")
 
     def __check_not_in_voice_channel(self):
         self.__logger.debug(f"Checking if the bot is currently connected to a voice channel in the guild {self.__guild.id}")
         if self.__is_connected():
             self.__logger.debug(f"Bot has already joined a voice channel in guild {self.__guild.id}")
-            raise PlayerException("I've already joined a voice channel")
+            raise PlayerException(
+                "I've already joined a voice channel."
+            )
         self.__logger.debug(f"Bot hasn't joined a voice channel in guild {self.__guild.id} yet")
 
     def __check_not_paused(self):
         self.__logger.debug(f"Checking if the audio is currently paused in guild {self.__guild.id}")
         if self.__is_paused():
             self.__logger.debug(f"Audio playback is already paused in guild {self.__guild.id}")
-            raise PlayerException("Already paused. No need to rush.")
+            raise PlayerException(
+                "Already paused. No need to rush."
+            )
         self.__logger.debug(f"Audio playback isn't paused in guild {self.__guild.id} yet")
 
     def __check_paused(self):
         self.__logger.debug(f"Checking if the audio is currently paused in guild {self.__guild.id}")
         if not self.__is_paused():
             self.__logger.debug(f"Audio playback is not paused in guild {self.__guild.id}")
-            raise PlayerException("The music never really stopped.")
+            raise PlayerException(
+                "The music never really stopped."
+            )
         self.__logger.debug(f"Audio playback is paused in guild {self.__guild.id}")
 
     def __check_queue_not_empty(self):
         self.__logger.debug(f"Checking if the queue is empty in guild {self.__guild.id}")
         if self.__queue.get_current_track() is None:
             self.__logger.debug(f"Queue is empty in guild {self.__guild.id}")
-            raise PlayerException("The queue is empty, what can I do ?")
+            raise PlayerException(
+                "The queue is empty, what can I do ?"
+            )
         self.__logger.debug(f"Queue not empty in guild {self.__guild.id}")
 
     def __check_history_not_empty(self):
         self.__logger.debug(f"Checking if the history is empty in guild {self.__guild.id}")
         if len(self.__queue.get_previous_tracks()) == 0:
             self.__logger.debug(f"History is empty in guild {self.__guild.id}")
-            raise PlayerException("I can't do that with no track in the history.")
+            raise PlayerException(
+                "I can't do that with no track in the history."
+            )
         self.__logger.debug(f"History not empty in guild {self.__guild.id}")
 
     def __check_not_kicked_recently(self):
         self.__logger.debug(f"Checking if the bot was recently kicked from a voice channel in guild {self.__guild.id}")
         if self.__last_forced_leave is not None and time.time() < self.__last_forced_leave + 60:
-            self.__logger.debug(f"The bot was kicked recently and must wait {math.ceil(self.__last_forced_leave + 60 - time.time())} seconds before joining a voice channel in guild {self.__guild.id}")
-            raise PlayerException(f"I got abruptly disconnected, ask me again in {math.ceil(self.__last_forced_leave + 60 - time.time())} second(s)")
+            remaining_seconds = math.ceil(self.__last_forced_leave + 60 - time.time())
+            self.__logger.debug(f"The bot was kicked recently and must wait {remaining_seconds} seconds before joining a voice channel in guild {self.__guild.id}")
+            raise PlayerException(
+                "I got abruptly disconnected, ask me again in {remaining_seconds} second(s).",
+                remaining_seconds=math.ceil(self.__last_forced_leave + 60 - time.time())
+            )
         self.__logger.debug(f"The bot wasn't kicked recently")
 
     def __is_active(self):
@@ -182,10 +202,13 @@ class PlayerService:
                         raise e
                     except MediaFetchingException as e:
                         self.__logger.warning(f"Failed to fetch media url in guild {self.__guild.id} : {repr(e)}")
-                        await self.__send_to_channel(self.__embed_service.error(f"Ouch, I could not fetch the stream URL for the next track : {str(e)}"))
+                        await self.__send_to_channel(self.__embed_service.error(e))
                     except:
                         self.__logger.exception("An unexpected error was raised in the player loop :")
-                        await self.__send_to_channel(self.__embed_service.error(f"An unexpected error was raised in the player loop, please contact {(await self.__bot.application_info()).owner.mention}."))
+                        await self.__send_to_channel(self.__embed_service.error_message(
+                            "I faced an unexpected error, please contact {owner}. I feel weird.",
+                            owner=(await self.__bot.application_info()).owner.mention
+                        ))
         except asyncio.CancelledError:
             self.__logger.debug(f"Cancelled player loop for guild {self.__guild.id}")
 
@@ -220,7 +243,9 @@ class PlayerService:
             tracks = await self.__queue.queue(member, query)
             if len(tracks) == 0:
                 self.__logger.debug(f"No tracks found for query {repr(query)} in guild {self.__guild.id}")
-                raise PlayerException("No playable track were found")
+                raise PlayerException(
+                    "No playable track were found !"
+                )
             return tracks
 
     def __safe_stop_current_track(self):

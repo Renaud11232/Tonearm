@@ -42,7 +42,9 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
         regex = re.compile(r"(?:v=|/)([0-9A-Za-z_-]{11}).*")
         results = regex.search(url)
         if not results:
-            raise MetadataFetchingException("It looks like the URL you provided doesn't include a YouTube video ID.")
+            raise MetadataFetchingException(
+                "I could not fetch the track, it looks like the URL you provided doesn't include a YouTube video ID."
+            )
         return results.group(1)
 
     def __fetch_video(self, url: str) -> List[TrackMetadata]:
@@ -64,7 +66,10 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
             ]
         except googleapiclient.errors.HttpError as e:
             self._logger.warning(f"YouTube videos API returned error : {repr(e)}")
-            raise MetadataFetchingException(f"YouTube videos API returned status `{e.status_code}` : `{e.reason}`")
+            raise MetadataFetchingException(
+                "I could not fetch the track, YouTube videos API returned error status : {error}",
+                error=f"{e.status_code}` : `{e.reason}`"
+            )
 
     def __fetch_playlist(self, url: str) -> List[TrackMetadata]:
         id = self.__get_playlist_id(url)
@@ -91,4 +96,7 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
             return items
         except googleapiclient.errors.HttpError as e:
             self._logger.warning(f"YouTube playlistItems API returned error : {repr(e)}")
-            raise MetadataFetchingException(f"YouTube playlistItems API returned status `{e.status_code}` : `{e.reason}`")
+            raise MetadataFetchingException(
+                "I could not fetch the playlist, YouTube playlistItems API returned error status : {error}",
+                error=f"`{e.status_code}` : `{e.reason}`"
+            )

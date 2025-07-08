@@ -1,8 +1,9 @@
 import nextcord
 from nextcord import Interaction, Locale
 
-from tonearm.bot.exceptions import TonearmConverterException
 from tonearm.bot.managers import TranslationsManager
+
+from .exceptions import BooleanConverterException
 
 
 class BooleanConverter(nextcord.OptionConverter):
@@ -17,7 +18,7 @@ class BooleanConverter(nextcord.OptionConverter):
             return True
         if value.upper() == "FALSE":
             return False
-        raise TonearmConverterException(
+        raise BooleanConverterException(
             "`{value}` is not a valid boolean value.",
             value=value
         )

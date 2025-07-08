@@ -12,7 +12,7 @@ from tonearm.bot.services.metadata import MetadataService
 
 from .track import QueuedTrack
 from .status import QueueStatus
-from .exceptions import QueueException
+from .exceptions import PlayerException
 from .loop import LoopMode
 
 
@@ -122,7 +122,9 @@ class Queue:
         async with self.__condition:
             if track > len(self.__next_tracks):
                 self.__logger.debug(f"Not enough tracks to jump to track {track} in queue {repr(self)}")
-                raise QueueException("Jump failed. That’s outside the queue’s bounds.")
+                raise PlayerException(
+                    "Jump failed. That’s outside the queue’s bounds."
+                )
             if self.__current_track is not None:
                 self.__previous_tracks.appendleft(self.__current_track)
                 self.__current_track = None
@@ -136,7 +138,9 @@ class Queue:
         async with self.__condition:
             if track >= len(self.__previous_tracks):
                 self.__logger.debug(f"Not enough tracks in history to go to previous track {track} in queue {repr(self)}")
-                raise QueueException(f"That’s further back than my memory goes. Try a smaller number.")
+                raise PlayerException(
+                    "That’s further back than my memory goes. Try a smaller number."
+                )
             if self.__current_track is not None:
                 self.__next_tracks.appendleft(self.__current_track)
                 self.__current_track = None
@@ -150,7 +154,9 @@ class Queue:
         async with self.__condition:
             if track >= len(self.__next_tracks):
                 self.__logger.debug(f"Not enough tracks to remove track {track} in queue {repr(self)}")
-                raise QueueException("Oops ! Nothing to remove at that spot !")
+                raise PlayerException(
+                    "Oops ! Nothing to remove at that spot !"
+                )
             removed_track = self.__next_tracks[track]
             del self.__next_tracks[track]
             self.__condition.notify()
@@ -161,7 +167,10 @@ class Queue:
         async with self.__condition:
             if from_position >= len(self.__next_tracks) or to_position >= len(self.__next_tracks):
                 self.__logger.debug(f"Not enough tracks to move track {from_position} to {to_position} in queue {repr(self)}")
-                raise QueueException(f"I couldn’t move anything. The queue only has {len(self.__next_tracks)} track(s).")
+                raise PlayerException(
+                    "I couldn’t move anything. The queue only has {len_next_tracks} track(s).",
+                    len_next_tracks=len(self.__next_tracks)
+                )
             moved_track = self.__next_tracks[from_position]
             del self.__next_tracks[from_position]
             self.__next_tracks.insert(to_position, moved_track)

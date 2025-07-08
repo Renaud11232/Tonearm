@@ -3,6 +3,7 @@ from injector import inject
 import nextcord
 from nextcord.ext import application_checks
 
+from tonearm.bot.cogs.checks.exceptions import NotCorrectChannel
 from tonearm.bot.managers import StorageManager
 
 class IsCorrectChannel:
@@ -14,5 +15,7 @@ class IsCorrectChannel:
     def __call__(self):
         def predicate(interaction: nextcord.Interaction) -> bool:
             channel = self.__storage_manager.get(interaction.guild).get_channel()
-            return channel is None or channel.id == interaction.channel.id
+            if channel is not None and channel.id != interaction.channel.id:
+                raise NotCorrectChannel()
+            return True
         return application_checks.check(predicate)
