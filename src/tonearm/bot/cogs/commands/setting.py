@@ -77,7 +77,7 @@ class SettingCommand(CommandCogBase):
                                   )):
         self.__logger.debug(f"Handling `setting set channel` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        self.__storage_manager.get(interaction.guild).set_channel(channel) # type: ignore
+        self.__storage_manager.get(interaction.guild).set_channel(value) # type: ignore
         await interaction.followup.send(
             embed=self.__embed_manager.get(interaction.guild).setting_set("channel", value)
         )
