@@ -1,3 +1,8 @@
-from collections import namedtuple
+from dataclasses import dataclass
 
-TonearmVersion = namedtuple("TonearmVersion", ["version", "authors", "homepage"])
+
+@dataclass
+class TonearmVersion:
+    version: str
+    authors: list[str]
+    homepage: str

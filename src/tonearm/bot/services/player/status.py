@@ -1,7 +1,24 @@
-from collections import namedtuple
+from dataclasses import dataclass
 
-QueueStatus = namedtuple("QueueStatus", ["previous_tracks", "current_track", "next_tracks", "loop_mode"])
+from tonearm.bot.services.player.track import QueuedTrack
+from tonearm.bot.services.player.loop import LoopMode
 
-AudioSourceStatus = namedtuple("AudioSourceStatus", ["elapsed", "total", "volume", "paused"])
 
-PlayerStatus = namedtuple("PlayerStatus", ["queue", "audio_source"])
+@dataclass
+class QueueStatus:
+    previous_tracks: list[QueuedTrack]
+    current_track: QueuedTrack | None
+    next_tracks: list[QueuedTrack]
+    loop_mode: LoopMode
+
+@dataclass
+class AudioSourceStatus:
+    elapsed: int
+    total: int | float
+    volume: int
+    paused: bool
+
+@dataclass
+class PlayerStatus:
+    queue: QueueStatus
+    audio_source: AudioSourceStatus

@@ -1,3 +1,9 @@
-from collections import namedtuple
+from dataclasses import dataclass
 
-TrackMetadata = namedtuple("TrackMetadata", ["url", "title", "source", "thumbnail"])
+
+@dataclass
+class TrackMetadata:
+    url: str
+    title: str
+    source: str
+    thumbnail: str | None

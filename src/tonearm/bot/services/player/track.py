@@ -1,3 +1,12 @@
-from collections import namedtuple
+from dataclasses import dataclass
 
-QueuedTrack = namedtuple("QueuedTrack", ["url", "title", "source", "thumbnail", "member"])
+import nextcord
+
+
+@dataclass
+class QueuedTrack:
+    url: str
+    title: str
+    source: str
+    thumbnail: str | None
+    member: nextcord.Member

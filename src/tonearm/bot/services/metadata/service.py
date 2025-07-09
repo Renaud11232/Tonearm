@@ -1,5 +1,5 @@
 import re
-from collections import namedtuple
+from dataclasses import dataclass
 from typing import List
 
 from injector import inject, singleton
@@ -12,7 +12,10 @@ from .youtube_url import YoutubeUrlMetadataService
 from .exceptions import MetadataFetchingException
 
 
-MetadataServiceEntry = namedtuple("MetadataServiceEntry", ["pattern", "service"])
+@dataclass
+class MetadataServiceEntry:
+    pattern: str
+    service: MetadataServiceBase
 
 
 @singleton

@@ -1,5 +1,5 @@
 import re
-from collections import namedtuple
+from dataclasses import dataclass
 
 from injector import inject, singleton
 
@@ -8,7 +8,11 @@ from .cobalt import CobaltMediaService
 from .direct_url import DirectUrlMediaService
 from .exceptions import MediaFetchingException
 
-MediaServiceEntry = namedtuple("MediaServiceEntry", ["pattern", "service"])
+
+@dataclass
+class MediaServiceEntry:
+    pattern: str
+    service: MediaServiceBase
 
 
 @singleton
