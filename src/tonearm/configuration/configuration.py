@@ -1,3 +1,5 @@
+import nextcord
+
 class Configuration:
 
     def __init__(self,
@@ -7,7 +9,8 @@ class Configuration:
                  cobalt_api_url: str,
                  cobalt_api_key: str | None,
                  data_path: str,
-                 buffer_length: int):
+                 buffer_length: int,
+                 colour: nextcord.Colour):
         self.__discord_token = discord_token
         self.__log_level = log_level
         self.__youtube_api_key = youtube_api_key
@@ -15,6 +18,7 @@ class Configuration:
         self.__cobalt_api_key = cobalt_api_key
         self.__data_path = data_path
         self.__buffer_length = buffer_length
+        self.__colour = colour
 
     @property
     def discord_token(self) -> str:
@@ -43,4 +47,8 @@ class Configuration:
     @property
     def buffer_length(self) -> int:
         return self.__buffer_length
+
+    @property
+    def colour(self) -> nextcord.Colour:
+        return self.__colour
     

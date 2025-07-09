@@ -14,6 +14,7 @@ from tonearm.bot.services.player.loop import LoopMode
 from tonearm.bot.services.bot import TonearmVersion
 from tonearm.bot.services.storage import StorageService
 from tonearm.bot.managers.translations import TranslationsManager
+from tonearm.configuration import Configuration
 from tonearm.utils.markdown import *
 from tonearm.utils.strings import *
 
@@ -24,8 +25,9 @@ class EmbedService:
 
     @inject
     @noninjectable("storage_service")
-    def __init__(self, storage_service: StorageService):
+    def __init__(self, storage_service: StorageService, configuration: Configuration):
         self.__storage_service = storage_service
+        self.__configuration = configuration
 
     @property
     def __locale(self) -> Locale:
@@ -49,7 +51,7 @@ class EmbedService:
         )
         return nextcord.Embed(
             description=f":track_previous: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
 
@@ -64,14 +66,14 @@ class EmbedService:
         )
         return nextcord.Embed(
             description=f":ghost: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def clear(self):
         message = TranslationsManager().get(self.__locale).gettext("Wiped the queue. Sometimes starting fresh hits different.")
         return nextcord.Embed(
             description=f":broom: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def dj_add(self, role_or_member: nextcord.Role | nextcord.Member):
@@ -80,7 +82,7 @@ class EmbedService:
         )
         return nextcord.Embed(
             description=f":white_check_mark: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def dj_remove(self, role_or_member: nextcord.Role | nextcord.Member):
@@ -89,20 +91,20 @@ class EmbedService:
         )
         return nextcord.Embed(
             description=f":white_check_mark: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def forward(self):
         message = TranslationsManager().get(self.__locale).gettext("Who needs intros anyway ?")
         return nextcord.Embed(
             description=f":fast_forward: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def history(self, previous_tracks: List[QueuedTrack], page: int):
         embed = nextcord.Embed(
             title=TranslationsManager().get(self.__locale).gettext("History"),
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
         self.__build_track_list(
             embed,
@@ -117,7 +119,7 @@ class EmbedService:
         message = TranslationsManager().get(self.__locale).gettext("Let's get this party started !")
         return nextcord.Embed(
             description=f":party_popper: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def jump(self, track: int):
@@ -128,19 +130,19 @@ class EmbedService:
         )
         return nextcord.Embed(
             description=f":track_next: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def leave(self):
         message = TranslationsManager().get(self.__locale).gettext("Mic dropped. I'm gone.")
         return nextcord.Embed(
             description=f":microphone: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def loop(self, mode: LoopMode):
         embed = nextcord.Embed(
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
         if mode == LoopMode.OFF:
             message = TranslationsManager().get(self.__locale).gettext("Looping turned off. One play, no reruns.")
@@ -161,14 +163,14 @@ class EmbedService:
         )
         return nextcord.Embed(
             description=f":ninja: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def next(self):
         message = TranslationsManager().get(self.__locale).gettext("Skipping the current track, I didn't like this one either.")
         return nextcord.Embed(
             description=f":track_next: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     @staticmethod
@@ -228,7 +230,7 @@ class EmbedService:
                 f"\n"
                 f"{status_icon} {bar_progress} {inline_code(f'[{elapsed_time}/{total_time}]')} {loop_icon} :sound: {round(player_status.audio_source.volume)}%"
             ),
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
         embed.set_thumbnail(url=player_status.queue.current_track.thumbnail)
         embed.set_footer(
@@ -240,7 +242,7 @@ class EmbedService:
         message = TranslationsManager().get(self.__locale).gettext("Playback paused. Take your time !")
         return nextcord.Embed(
             description=f":pause_button: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def play(self, tracks: List[QueuedTrack]):
@@ -255,7 +257,7 @@ class EmbedService:
         )
         embed = nextcord.Embed(
             description=f":cd: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
         return embed
 
@@ -263,7 +265,7 @@ class EmbedService:
         message = TranslationsManager().get(self.__locale).gettext("Because one listen wasn’t enough...")
         return nextcord.Embed(
             description=f":track_previous: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def __build_track_list(self, embed: nextcord.Embed, tracks: List[QueuedTrack], page: int, title: str, title2: str):
@@ -330,28 +332,28 @@ class EmbedService:
         )
         return nextcord.Embed(
             description=f":scissors: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def resume(self):
         message = TranslationsManager().get(self.__locale).gettext("Back in action ! Enjoy the tracks.")
         return nextcord.Embed(
             description=f":play_pause: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def rewind(self):
         message = TranslationsManager().get(self.__locale).gettext("That part was worth a second listen !")
         return nextcord.Embed(
             description=f":rewind: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def seek(self):
         message = TranslationsManager().get(self.__locale).gettext("Dropping the needle, classic move.")
         return nextcord.Embed(
             description=f":dart: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def __setting_repr(self, value: Any) -> str:
@@ -372,7 +374,7 @@ class EmbedService:
         )
         return nextcord.Embed(
             description=f":tools: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def setting_reset(self, name: str, value: Any):
@@ -384,28 +386,28 @@ class EmbedService:
         )
         return nextcord.Embed(
             description=f":tools: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def shuffle(self):
         message = TranslationsManager().get(self.__locale).gettext("Shuffled the queue. I hope you like surprises !")
         return nextcord.Embed(
             description=f":twisted_rightwards_arrows: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def shutdown(self):
         message = TranslationsManager().get(self.__locale).gettext("Initiating shutdown sequence... it’s been an honor.")
         return nextcord.Embed(
             description=f":saluting_face: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def stop(self):
         message = TranslationsManager().get(self.__locale).gettext("Music stopped. The crowd goes silent.")
         return nextcord.Embed(
             description=f":stop_button: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )
 
     def version(self, version: TonearmVersion):
@@ -422,7 +424,7 @@ class EmbedService:
                 f"{version_message}\n"
                 f"{created_by_message}"
             ),
-            colour=nextcord.Colour.dark_purple(),
+            colour=self.__configuration.colour,
         )
 
     def volume(self, volume: int):
@@ -431,5 +433,5 @@ class EmbedService:
         )
         return nextcord.Embed(
             description=f":sound: {message}",
-            colour=nextcord.Colour.dark_purple()
+            colour=self.__configuration.colour
         )

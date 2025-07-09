@@ -5,6 +5,7 @@ from injector import Module, singleton, provider
 
 from .configuration import Configuration
 from .action import EnvDefault
+from .converter import color
 
 
 class ConfigurationModule(Module):
@@ -75,6 +76,15 @@ class ConfigurationModule(Module):
             env_var="BUFFER_LENGTH",
             help="Buffer length in seconds. This will be used to control how much memory will be used by players, as a tradeoff, setting smaller buffer sizes means you won't be able to seek far into long tracks. Defaults to 7200 seconds (2 hours)."
         )
+        parser.add_argument(
+            "--embed-color",
+            action=EnvDefault,
+            type=color,
+            required=True,
+            default="#71368A",
+            env_var="EMBED_COLOR",
+            help="Embed color. Defaults to #71368A (dark purple)"
+        )
         args = parser.parse_args()
         return Configuration(
             discord_token=args.discord_token,
@@ -84,4 +94,5 @@ class ConfigurationModule(Module):
             cobalt_api_url=args.cobalt_api_url,
             data_path=args.data_path,
             buffer_length=args.buffer_length,
+            colour=args.embed_color,
         )
