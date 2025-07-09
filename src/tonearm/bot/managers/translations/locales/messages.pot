@@ -16,7 +16,7 @@ msgstr ""
 msgid "Maximum number of messages to delete in one run"
 msgstr ""
 
-msgid "Clear all songs in the queue"
+msgid "Clear all tracks in the queue"
 msgstr ""
 
 msgid "Add a role or member to the DJs"
@@ -79,7 +79,7 @@ msgstr ""
 msgid "queue"
 msgstr ""
 
-msgid "Move the position of a track in the queue"
+msgid "Change the position of a track in the queue"
 msgstr ""
 
 msgid "from"

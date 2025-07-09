@@ -34,10 +34,10 @@ class MoveCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="move",
-        description=TranslationsManager().get(Locale.en_US).gettext("Move the position of a track in the queue"),
+        description=TranslationsManager().get(Locale.en_US).gettext("Change the position of a track in the queue"),
         description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Move the position of a track in the queue"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Move the position of a track in the queue")
+            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Change the position of a track in the queue"),
+            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Change the position of a track in the queue")
         }
     )
     async def move(self,

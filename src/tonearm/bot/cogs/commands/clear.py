@@ -33,10 +33,10 @@ class ClearCommand(CommandCogBase):
 
     @nextcord.slash_command(
         name="clear",
-        description=TranslationsManager().get(Locale.en_US).gettext("Clear all songs in the queue"),
+        description=TranslationsManager().get(Locale.en_US).gettext("Clear all tracks in the queue"),
         description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Clear all songs in the queue"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Clear all songs in the queue"),
+            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Clear all tracks in the queue"),
+            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Clear all tracks in the queue"),
         }
     )
     async def clear(self, interaction: nextcord.Interaction):
