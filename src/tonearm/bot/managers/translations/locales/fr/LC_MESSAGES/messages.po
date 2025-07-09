@@ -1,3 +1,7 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
 msgid "Jump back to a specific track in the history"
 msgstr "Revenir à une piste précise de l'historique"
 
@@ -8,7 +12,7 @@ msgid "Track number to jump back to"
 msgstr "Numéro de piste à laquelle revenir"
 
 msgid "Delete bot messages in the channel (up to 100 at once)"
-msgstr "Supprimer les messages du bot de ce canal (jusque 100 en une fois)"
+msgstr "Supprimer les messages du bot de ce salon (jusque 100 en une fois)"
 
 msgid "limit"
 msgstr "limite"
@@ -17,7 +21,7 @@ msgid "Maximum number of messages to delete in one run"
 msgstr "Nombre maximum de messages à supprimer en une fois"
 
 msgid "Clear all tracks in the queue"
-msgstr "Enlever toutes les pistes de la file d'attente"
+msgstr "Enlever toutes les pistes de la file"
 
 msgid "Add a role or member to the DJs"
 msgstr "Ajouter un rôle ou membre aux DJs"
@@ -53,19 +57,19 @@ msgid "Page to display"
 msgstr "Page à afficher"
 
 msgid "Join your current voice channel"
-msgstr "Rejoindre le canal vocal dans lequel tu te trouves"
+msgstr "Rejoindre le salon vocal dans lequel tu te trouves"
 
 msgid "Jump to a specific track in the queue"
-msgstr "Sauter jusqu'à une certaine piste de la file d'attente"
+msgstr "Sauter jusqu'à une certaine piste de la file"
 
 msgid "Track number to jump to"
 msgstr "Numéro de piste jusqu'où sauter"
 
 msgid "Leave the current voice channel"
-msgstr "Quitter le canal vocal actuel"
+msgstr "Quitter le salon vocal actuel"
 
 msgid "Set the loop mode of the current playback queue"
-msgstr "Définir le mode de boucle de la file d'attente actuelle"
+msgstr "Définir le mode de boucle de la file actuelle"
 
 msgid "mode"
 msgstr "mode"
@@ -77,10 +81,10 @@ msgid "off"
 msgstr "désactivé"
 
 msgid "queue"
-msgstr "file d'attente"
+msgstr "file"
 
 msgid "Change the position of a track in the queue"
-msgstr "Modifier la position d'une piste dans la file d'attente"
+msgstr "Modifier la position d'une piste dans la file"
 
 msgid "from"
 msgstr "de"
@@ -104,22 +108,22 @@ msgid "Pause the currently playing track"
 msgstr "Mettre la piste en cours de lecture en pause"
 
 msgid "Play a track or playlist in your voice channel. You can provide link, or search for a track"
-msgstr "Jouer une piste ou une liste de lecture dans ton canal vocal. Tu peux utiliser un lien, ou chercher une piste"
+msgstr "Jouer une piste ou une playlist dans ton salon vocal. Tu peux utiliser un lien, ou rechercher"
 
 msgid "query"
 msgstr "requête"
 
 msgid "Track or playlist to play. You can provide a link, or search for a track"
-msgstr "Piste ou liste de lecture à jouer. Tu peux utiliser un lien, ou checher une piste"
+msgstr "Piste ou playlist à jouer. Tu peux utiliser un lien, ou rechercher"
 
 msgid "Play the previous track from the queue"
 msgstr "Rejouer la piste précédente"
 
 msgid "Show the current queue"
-msgstr "Montrer la file d'attente"
+msgstr "Montrer la file"
 
 msgid "Remove a track from the queue"
-msgstr "Retirer une piste de la file d'attente"
+msgstr "Retirer une piste de la file"
 
 msgid "Track number to remove"
 msgstr "Numéro de piste à retirer"
@@ -140,13 +144,13 @@ msgid "Where to seek in the track"
 msgstr "Où se déplacer dans la piste"
 
 msgid "Set the text channel where this bot should be used"
-msgstr "Définir le canal textuel où ce bot devrait être utilisé"
+msgstr "Définir le salon textuel où ce bot devrait être utilisé"
 
 msgid "value"
 msgstr "valeur"
 
 msgid "Text channel where this bot should be used"
-msgstr "Canal textuel où ce bot devrait être utilisé"
+msgstr "Salon textuel où ce bot devrait être utilisé"
 
 msgid "Enable anarchy mode, allowing everyone to use DJ commands"
 msgstr "Activer le mode anarchie, qui autorise n'importe qui à utiliser les commands de DJ"
@@ -167,7 +171,7 @@ msgid "True to enable automatic track announcements, False to disable them"
 msgstr "Vrai pour activer les annonces automatiques, Faux pour les désactiver"
 
 msgid "Reset the text channel where this bot should be used"
-msgstr "Réinitialiser le canal textuel où ce bot devait être utilisé"
+msgstr "Réinitialiser le salon textuel où ce bot devait être utilisé"
 
 msgid "Reset anarchy mode, enabling back DJ enforcement"
 msgstr "Réinitialiser le mode anarchie, réactivant la vérification des DJs"
@@ -176,7 +180,7 @@ msgid "Reset automatic track announcements, disabling them"
 msgstr "Réinitialiser les annonces de piste, les désactivant"
 
 msgid "Shuffle tracks in the queue"
-msgstr "Mélanger les pistes dans la file d'attente"
+msgstr "Mélanger les pistes dans la file"
 
 msgid "Shut the bot down"
 msgstr "Éteindre le bot"
@@ -197,256 +201,256 @@ msgid "Vote to skip the current track"
 msgstr "Voter pour passer la piste actuelle"
 
 msgid "Rewinding to track {track}. Let’s bring it back !"
-msgstr ""
+msgstr "Retour à la piste {track}. En arrière toute !"
 
 msgid "My message is gone. It's like I was never here !"
-msgstr ""
+msgstr "Plus de message. Plus de trace. Comme si je n’avais jamais existé."
 
 msgid "All my {len_messages} messages are gone. It's like I was never here !"
-msgstr ""
+msgstr "Mes {len_messages} messages se sont volatilisés. Comme si je n’avais jamais existé."
 
 msgid "Wiped the queue. Sometimes starting fresh hits different."
-msgstr ""
+msgstr "File vidée. Parfois, repartir de zéro, ça fait du bien."
 
 msgid "Promoted {role_or_member} to DJ. Don’t scratch the vinyl !"
-msgstr ""
+msgstr "{role_or_member} est maintenant DJ. Attention à ne pas rayer le vinyle !"
 
 msgid "Who needs intros anyway ?"
-msgstr ""
+msgstr "Qui a besoin d’intros, franchement ?"
 
 msgid "History"
-msgstr ""
+msgstr "Historique"
 
 msgid "Previous tracks"
-msgstr ""
+msgstr "Pistes précédentes"
 
 msgid "Played"
-msgstr ""
+msgstr "Jouées"
 
 msgid "Let's get this party started !"
-msgstr ""
+msgstr "Que la fête commence !"
 
 msgid "Boom. Skipped straight to track {track}. Enjoy !"
-msgstr ""
+msgstr "Boom. On passe direct à la piste {track}. Profite bien !"
 
 msgid "Mic dropped. I'm gone."
-msgstr ""
+msgstr "Micro posé. Je disparais."
 
 msgid "Looping turned off. One play, no reruns."
-msgstr ""
+msgstr "Boucle désactivée. Une seule écoute, pas de rediffusion."
 
 msgid "You must really love this one. Looping it on repeat."
-msgstr ""
+msgstr "Tu dois vraiment l’adorer, celle-là. Allez, on la met en boucle."
 
 msgid "Get ready for the encore. And the encore's encore. Looping the queue !"
-msgstr ""
+msgstr "Prépare-toi pour le rappel. Et le rappel du rappel. On boucle la file !"
 
 msgid "Shifted {track_title} like a playlist ninja. Moved from {from_} to {to}."
-msgstr ""
+msgstr "{track_title} a glissé comme un ninja de la position {from_} à {to}."
 
 msgid "Skipping the current track, I didn't like this one either."
-msgstr ""
+msgstr "On zappe cette piste. Je n'étais pas fan non plus."
 
 msgid "Now Playing"
-msgstr ""
+msgstr "En cours de lecture"
 
 msgid "Queued by"
-msgstr ""
+msgstr "Ajouté par"
 
 msgid "Source"
-msgstr ""
+msgstr "Source"
 
 msgid "Playback paused. Take your time !"
-msgstr ""
+msgstr "Lecture mise en pause. Prends ton temps !"
 
 msgid "Added {track_title} to the queue ! This one’s gonna slap."
-msgstr ""
+msgstr "{track_title} ajouté à la file ! Ça va envoyer du lourd."
 
 msgid "Added {len_tracks} tracks to the queue ! Now that’s what I call a playlist."
-msgstr ""
+msgstr "{len_tracks} morceaux ajoutés à la file ! Voilà ce que j’appelle une vraie playlist."
 
 msgid "Because one listen wasn’t enough..."
-msgstr ""
+msgstr "Parce qu’une écoute, ça ne suffisait pas..."
 
 msgid "I can't show you page {page} out of {max_pages}."
-msgstr ""
+msgstr "Je ne peux pas te montrer la page {page} sur {max_pages}."
 
 msgid "Nothing to show here"
-msgstr ""
+msgstr "Rien à montrer ici"
 
 msgid "{len_tracks} track"
-msgstr ""
+msgstr "{len_tracks} piste"
 
 msgid "{len_tracks} tracks"
-msgstr ""
+msgstr "{len_tracks} pistes"
 
 msgid "Page"
-msgstr ""
+msgstr "Page"
 
 msgid "{page} our of {max_pages}"
-msgstr ""
+msgstr "{page} sur {max_pages}"
 
 msgid "Up next :"
-msgstr ""
+msgstr "Ensuite :"
 
 msgid "In queue"
-msgstr ""
+msgstr "Dans la file"
 
 msgid "Say goodbye to {track_title}. It didn’t make the cut."
-msgstr ""
+msgstr "Dis adieu à {track_title}. Elle ne faisait pas le poids."
 
 msgid "Back in action ! Enjoy the tracks."
-msgstr ""
+msgstr "De retour aux platines ! Faites-vous plaisir."
 
 msgid "That part was worth a second listen !"
-msgstr ""
+msgstr "Cette partie valait bien une deuxième écoute !"
 
 msgid "Dropping the needle, classic move."
-msgstr ""
+msgstr "Déposer l’aiguille, un classique."
 
 msgid "All set ! {setting_name} is now {setting_value}."
-msgstr ""
+msgstr "C’est bon ! {setting_name} est maintenant {setting_value}."
 
 msgid "Boom ! {setting_name} is back to default: {setting_value}."
-msgstr ""
+msgstr "Boom ! {setting_name} est revenu à sa valeur par défaut : {setting_value}."
 
 msgid "Shuffled the queue. I hope you like surprises !"
-msgstr ""
+msgstr "File mélangée. J’espère que tu aimes les surprises !"
 
 msgid "Initiating shutdown sequence... it’s been an honor."
-msgstr ""
+msgstr "Lancement de la séquence d’arrêt... ce fut un honneur."
 
 msgid "Music stopped. The crowd goes silent."
-msgstr ""
+msgstr "La musique s’arrête. Le public retient son souffle."
 
 msgid "Version {version}, up and running !"
-msgstr ""
+msgstr "Version {version}, opérationnelle et prête !"
 
 msgid "Crafted with :heart: by {authors}."
-msgstr ""
+msgstr "Construit avec :heart: par {authors}"
 
 msgid "Volume’s now {volume}%. Don’t blame me if it’s too loud !"
-msgstr ""
+msgstr "Volume réglé à {volume}%. Si c’est trop fort, c’est pas ma faute !"
 
 msgid "`{value}` is not a valid boolean value."
-msgstr ""
+msgstr "`{value}` n'est pas une valeur booléenne valide."
 
 msgid "`{value}` is not a valid duration."
-msgstr ""
+msgstr "`{value}` n'est pas une durée valide."
 
 msgid "`{value}` is not a valid loop mode."
-msgstr ""
+msgstr "`{value}` n'est pas un mode de boucle valide."
 
 msgid "`{value}` is not a valid locale."
-msgstr ""
+msgstr "`{value}` n'est pas un langue valide."
 
 msgid "Set the language to use on this server"
-msgstr ""
+msgstr "Définir la langue à utiliser sur ce serveur"
 
 msgid "Language to use on this server"
-msgstr ""
+msgstr "Langue à utiliser sur ce serveur"
 
 msgid "Reset the language to use on this server"
-msgstr ""
+msgstr "Réinitialiser la langue à utiliser sur ce serveur"
 
 msgid "I could not fetch the track, it looks like the URL you provided doesn't include a YouTube video ID."
-msgstr ""
+msgstr "Je n'ai pas pu récupérer la piste, il semblerait que l'URL ne contient pas d'ID de vidéo YouTube."
 
 msgid "I could not fetch the track, YouTube videos API returned error status : {error}"
-msgstr ""
+msgstr "Je n'ai pas pu récupérer la piste, l'API videos de YouTube a retourné le statut d'erreur : {error}"
 
 msgid "I could not fetch the playlist, YouTube playlistItems API returned error status : {error}"
-msgstr ""
+msgstr "Je n'ai pas pu récupérer la playlist, l'API playlistItems de YouTube a retourné le statut d'erreur : {error}"
 
 msgid "I could not load the track, it's hosted on a service I don't support."
-msgstr ""
+msgstr "Je n'ai pas pu charger la piste, elle est hébergée sur un service que je ne supporte pas."
 
 msgid "I could not load the track, I was unable to connect to the Cobalt API."
-msgstr ""
+msgstr "Je n'ai pas pu charger la piste, je n'ai pas réussi à me connecter à l'API Cobalt."
 
 msgid "I could not load the track, Cobalt API returned error : {error}"
-msgstr ""
+msgstr "Je n'ai pas pu charger la piste, l'API Cobalt a retourné l'erreur : {error}"
 
 msgid "I faced an unexpected error, please contact {owner}. I feel weird."
-msgstr ""
+msgstr "J'ai rencontré une erreur inattendue, prenez contact avec {owner}. Je me sens bizarre."
 
 msgid "Members of {role} are already DJs !"
-msgstr ""
+msgstr "Les membres de {role} sont déjà des DJs !"
 
 msgid "Members of {role} aren't DJs !"
-msgstr ""
+msgstr "Les membres de {role} ne sont pas des DJs !"
 
 msgid "{member} is already a DJ !"
-msgstr ""
+msgstr "{member} est déjà un DJ !"
 
 msgid "{member} isn't a DJ !"
-msgstr ""
+msgstr "{member} n'est pas un DJ !"
 
 msgid "I could not fetch the track, the provided URL does not point to an audio file."
-msgstr ""
+msgstr "Je n'ai pas pu récupérer la piste, l'URL ne pointe pas vers un fichier audio."
 
 msgid "I could not fetch the track, it's hosted on a service I don't support."
-msgstr ""
+msgstr "Je n'ai pas pu récupérer la piste, elle est hébergée sur un service que je ne supporte pas."
 
 msgid "I could not fetch the track, YouTube search API returned error status : {error}"
-msgstr ""
+msgstr "Je n'ai pas pu récupérer la piste, l'API search de YouTube a retourné le statut d'erreur : {error}"
 
 msgid "That’s too far back ! Even my buffer’s got limits."
-msgstr ""
+msgstr "Là, tu vas trop loin dans le passé ! Même ma mémoire a ses limites."
 
 msgid "I’d love to seek there, but the track isn't that long."
-msgstr ""
+msgstr "J’aimerais bien aller jusque là, mais le morceau n’est pas aussi long."
 
 msgid "I’d love to seek there, but it’s still downloading... patience, friend."
-msgstr ""
+msgstr "J’aimerais bien aller jusque-là, mais ça télécharge encore... un peu de patience, l’ami."
 
 msgid "Jump failed. That’s outside the queue’s bounds."
-msgstr ""
+msgstr "Raté ! Cette piste n’existe pas dans la file."
 
 msgid "That’s further back than my memory goes. Try a smaller number."
-msgstr ""
+msgstr "Tu veux remonter plus loin que ma mémoire ! Essaie avec un nombre plus petit."
 
 msgid "Oops ! Nothing to remove at that spot !"
-msgstr ""
+msgstr "Oups ! Rien à supprimer à cet endroit-là !"
 
 msgid "I couldn’t move anything. The queue only has {len_next_tracks} track(s)."
-msgstr ""
+msgstr "Je n’ai rien pu déplacer. Il n’y a que {len_next_tracks} morceau(x) dans la file."
 
 msgid "You must join a voice channel first."
-msgstr ""
+msgstr "Tu dois d’abord rejoindre un salon vocal."
 
 msgid "I'm not in the same voice channel !"
-msgstr ""
+msgstr "On n’est pas dans le même salon vocal !"
 
 msgid "I'm not currently playing any track."
-msgstr ""
+msgstr "Je ne joue aucune piste pour le moment."
 
 msgid "I've already joined a voice channel."
-msgstr ""
+msgstr "Je suis déjà dans un salon vocal."
 
 msgid "Already paused. No need to rush."
-msgstr ""
+msgstr "C’est déjà en pause. Pas besoin de se précipiter."
 
 msgid "The music never really stopped."
-msgstr ""
+msgstr "La musique ne s'est jamais vraiment arrêtée."
 
 msgid "The queue is empty, what can I do ?"
-msgstr ""
+msgstr "La file est vide, que puis-je faire ?"
 
 msgid "I can't do that with no track in the history."
-msgstr ""
+msgstr "Je ne peux pas faire cela sans aucune piste dans l'historique."
 
 msgid "I got abruptly disconnected, ask me again in {remaining_seconds} second(s)."
-msgstr ""
+msgstr "J’ai été déconnecté brutalement, réessaie dans {remaining_seconds} seconde(s)."
 
 msgid "No playable track were found !"
-msgstr ""
+msgstr "Aucune piste jouable trouvée !"
 
 msgid "You don't have the permission to use this command."
-msgstr ""
+msgstr "Tu n'as pas le droit d'utiliser cette commande."
 
 msgid "Anarchy rules here, votes are disabled !"
-msgstr ""
+msgstr "Ici, c’est l’anarchie, les votes sont désactivés !"
 
 msgid "I'm only accepting commands in the {channel} channel."
-msgstr ""
+msgstr "Je n’accepte les commandes que dans le salon {channel}."
