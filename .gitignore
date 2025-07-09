@@ -1,5 +1,6 @@
 /.venv/
 /.idea/
 *.iml
-/data/
+/dist/
 *.mo
+/data/

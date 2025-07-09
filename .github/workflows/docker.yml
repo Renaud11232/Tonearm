@@ -13,8 +13,12 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install "hatchling >= 1.27" "hatch-vcs >= 0.5.0"
       - id: version
-        run: echo "version=$(echo $GITHUB_REF | sed 's/refs\/tags\///')" | tee -a $GITHUB_OUTPUT
+        run: hatchling version | tee -a $GITHUB_OUTPUT
       - uses: docker/metadata-action@v5
         id: metadata
         with:

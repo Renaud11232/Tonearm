@@ -1,10 +1,13 @@
 [build-system]
-requires = ["hatchling >= 1.27"]
+requires = [
+    "hatchling >= 1.27",
+    "hatch-vcs >= 0.5.0",
+    "polib >= 1.2.0, < 2"
+]
 build-backend = "hatchling.build"
 
 [project]
 name = "Tonearm"
-version = "0.1.0dev9"
 dependencies = [
     "nextcord[voice] >= 3.1.0, < 4",
     "google-api-python-client >= 2.170.0, < 3",
@@ -32,6 +35,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent"
 ]
+dynamic = [
+    "version"
+]
 
 [project.urls]
 homepage = "https://github.com/Renaud11232/Tonearm"
@@ -41,3 +47,19 @@ issues = "https://github.com/Renaud11232/Tonearm/issues"
 
 [project.scripts]
 tonearm = "tonearm:main"
+
+[tool.hatch.build]
+exclude = [
+    "*.pot",
+    "*.po"
+]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.custom]
+
+[tool.hatch.build.targets.wheel]
+artifacts = [
+    "*.mo"
+]
