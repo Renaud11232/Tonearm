@@ -48,12 +48,6 @@ issues = "https://github.com/Renaud11232/Tonearm/issues"
 [project.scripts]
 tonearm = "tonearm:main"
 
-[tool.hatch.build]
-exclude = [
-    "*.pot",
-    "*.po"
-]
-
 [tool.hatch.version]
 source = "vcs"
 
@@ -62,4 +56,8 @@ source = "vcs"
 [tool.hatch.build.targets.wheel]
 artifacts = [
     "*.mo"
+]
+exclude = [
+    "*.pot",
+    "*.po"
 ]
