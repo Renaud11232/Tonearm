@@ -213,7 +213,7 @@ msgid "Wiped the queue. Sometimes starting fresh hits different."
 msgstr "File vidée. Parfois, repartir de zéro, ça fait du bien."
 
 msgid "Promoted {role_or_member} to DJ. Don’t scratch the vinyl !"
-msgstr "{role_or_member} est maintenant DJ. Attention à ne pas rayer le vinyle !"
+msgstr "{role_or_member} a été promu au rang de DJ. Attention à ne pas rayer le vinyle !"
 
 msgid "Who needs intros anyway ?"
 msgstr "Qui a besoin d’intros, franchement ?"
