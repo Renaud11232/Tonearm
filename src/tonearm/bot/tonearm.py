@@ -15,7 +15,6 @@ class Tonearm:
     def __init__(self, configuration: Configuration, bot: commands.Bot):
         self.__configuration = configuration
         self.__bot = bot
-        self.__init_logger("injector")
         self.__init_logger("nextcord")
         self.__init_logger("tonearm")
 
