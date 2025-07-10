@@ -1,11 +1,11 @@
 FROM python:3.13 AS builder
 
-ADD . /tmp/tonearm
+ADD dist/*.whl /tmp/
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends build-essential libffi-dev libnacl-dev \
     && python -m venv /app \
-    && /app/bin/pip install --no-cache-dir /tmp/tonearm
+    && /app/bin/pip install --no-cache-dir /tmp/*.whl
 
 
 FROM python:3.13-slim

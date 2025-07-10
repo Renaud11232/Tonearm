@@ -49,7 +49,10 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
       - uses: docker/metadata-action@v5
         id: metadata
         with:
