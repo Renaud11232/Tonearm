@@ -17,7 +17,7 @@ class BuildTranslationFiles(BuildHookInterface):
                     continue
                 po_file = os.path.join(root, file)
                 po = polib.pofile(po_file, check_for_duplicates=True)
-                po.save_as_mofile(os.path.join(root, file.replace(".po", ".mo")))
+                po.save_as_mofile(f"{po_file.removesuffix(".po")}.mo")
 
     def clean(self, versions: list[str]) -> None:
         for root, dirs, files in os.walk(BuildTranslationFiles.SRC_DIR):
