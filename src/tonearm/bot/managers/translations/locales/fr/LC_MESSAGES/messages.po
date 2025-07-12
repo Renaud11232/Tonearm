@@ -1,6 +1,7 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Jump back to a specific track in the history"
 msgstr "Revenir à une piste précise de l'historique"
@@ -204,10 +205,9 @@ msgid "Rewinding to track {track}. Let’s bring it back !"
 msgstr "Retour à la piste {track}. En arrière toute !"
 
 msgid "My message is gone. It's like I was never here !"
-msgstr "Plus de message. Plus de trace. Comme si je n’avais jamais existé."
-
-msgid "All my {len_messages} messages are gone. It's like I was never here !"
-msgstr "Mes {len_messages} messages se sont volatilisés. Comme si je n’avais jamais existé."
+msgid_plural "My {len_messages} messages are gone. It's like I was never here !"
+msgstr[0] "Mon message s'est volatilisé. C'est comme si je n’avais jamais existé !"
+msgstr[1] "Mes {len_messages} messages se sont volatilisés. C'est comme si je n’avais jamais existé !"
 
 msgid "Wiped the queue. Sometimes starting fresh hits different."
 msgstr "File vidée. Parfois, repartir de zéro, ça fait du bien."
@@ -264,10 +264,9 @@ msgid "Playback paused. Take your time !"
 msgstr "Lecture mise en pause. Prends ton temps !"
 
 msgid "Added {track_title} to the queue ! This one’s gonna slap."
-msgstr "{track_title} ajouté à la file ! Ça va envoyer du lourd."
-
-msgid "Added {len_tracks} tracks to the queue ! Now that’s what I call a playlist."
-msgstr "{len_tracks} morceaux ajoutés à la file ! Voilà ce que j’appelle une vraie playlist."
+msgid_plural "Added {len_tracks} tracks to the queue ! Now that’s what I call a playlist."
+msgstr[0] "{track_title} ajouté à la file ! Ça va envoyer du lourd."
+msgstr[1] "{len_tracks} morceaux ajoutés à la file ! Voilà ce que j’appelle une vraie playlist."
 
 msgid "Because one listen wasn’t enough..."
 msgstr "Parce qu’une écoute, ça ne suffisait pas..."
@@ -279,10 +278,9 @@ msgid "Nothing to show here"
 msgstr "Rien à montrer ici"
 
 msgid "{len_tracks} track"
-msgstr "{len_tracks} piste"
-
-msgid "{len_tracks} tracks"
-msgstr "{len_tracks} pistes"
+msgid_plural "{len_tracks} tracks"
+msgstr[0] "{len_tracks} piste"
+msgstr[1] "{len_tracks} pistes"
 
 msgid "Page"
 msgstr "Page"

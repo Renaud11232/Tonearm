@@ -1,6 +1,7 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Jump back to a specific track in the history"
 msgstr ""
@@ -204,10 +205,9 @@ msgid "Rewinding to track {track}. Let’s bring it back !"
 msgstr ""
 
 msgid "My message is gone. It's like I was never here !"
-msgstr ""
-
-msgid "All my {len_messages} messages are gone. It's like I was never here !"
-msgstr ""
+msgid_plural "My {len_messages} messages are gone. It's like I was never here !"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Wiped the queue. Sometimes starting fresh hits different."
 msgstr ""
@@ -264,10 +264,9 @@ msgid "Playback paused. Take your time !"
 msgstr ""
 
 msgid "Added {track_title} to the queue ! This one’s gonna slap."
-msgstr ""
-
-msgid "Added {len_tracks} tracks to the queue ! Now that’s what I call a playlist."
-msgstr ""
+msgid_plural "Added {len_tracks} tracks to the queue ! Now that’s what I call a playlist."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Because one listen wasn’t enough..."
 msgstr ""
@@ -279,10 +278,9 @@ msgid "Nothing to show here"
 msgstr ""
 
 msgid "{len_tracks} track"
-msgstr ""
-
-msgid "{len_tracks} tracks"
-msgstr ""
+msgid_plural "{len_tracks} tracks"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Page"
 msgstr ""

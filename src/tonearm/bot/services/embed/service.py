@@ -59,7 +59,7 @@ class EmbedService:
         len_messages = len(messages)
         message = TranslationsManager().get(self.__locale).ngettext(
             "My message is gone. It's like I was never here !",
-            "All my {len_messages} messages are gone. It's like I was never here !",
+            "My {len_messages} messages are gone. It's like I was never here !",
             len_messages
         ).format(
             len_messages=len_messages
