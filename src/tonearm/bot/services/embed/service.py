@@ -11,6 +11,7 @@ from tonearm.bot.exceptions import TonearmException
 from tonearm.bot.services.player.status import PlayerStatus
 from tonearm.bot.services.player.track import QueuedTrack
 from tonearm.bot.services.player.loop import LoopMode
+from tonearm.bot.services.player.vote import VoteStatus
 from tonearm.bot.services.bot import TonearmVersion
 from tonearm.bot.services.storage import StorageService
 from tonearm.bot.managers.translations import TranslationsManager
@@ -433,5 +434,23 @@ class EmbedService:
         )
         return nextcord.Embed(
             description=f":sound: {message}",
+            colour=self.__configuration.colour
+        )
+
+    def votenext(self, status: VoteStatus):
+        if status.needed_votes > 0:
+            emote = ":ballot_box:"
+            message = TranslationsManager().get(self.__locale).ngettext(
+                "We need {needed_votes} more vote to skip this track.",
+                "We need {needed_votes} more votes to skip this track.",
+                status.needed_votes
+            ).format(
+                needed_votes=status.needed_votes,
+            )
+        else:
+            emote = ":track_next:"
+            message = TranslationsManager().get(self.__locale).gettext("Track skipped by popular demand !")
+        return nextcord.Embed(
+            description=f"{emote} {message}",
             colour=self.__configuration.colour
         )

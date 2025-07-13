@@ -452,3 +452,14 @@ msgstr ""
 
 msgid "I'm only accepting commands in the {channel} channel."
 msgstr ""
+
+msgid "We need {needed_votes} more vote to skip this track."
+msgid_plural "We need {needed_votes} more votes to skip this track."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Track skipped by popular demand !"
+msgstr ""
+
+msgid "You already voted to skip this track."
+msgstr ""

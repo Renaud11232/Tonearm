@@ -2,12 +2,15 @@ import gettext
 import os
 from typing import Union
 
+from injector import singleton
+
 from nextcord import Locale
 
 from tonearm.bot.managers.base import ManagerBase
 from tonearm.utils.singleton import Singleton
 
 
+@singleton
 class TranslationsManager(Singleton, ManagerBase[Locale, Union[gettext.GNUTranslations, gettext.NullTranslations]]):
 
     def __init__(self):

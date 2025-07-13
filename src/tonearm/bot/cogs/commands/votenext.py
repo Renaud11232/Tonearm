@@ -1,3 +1,5 @@
+import logging
+
 import nextcord
 from nextcord import Locale
 from nextcord.ext import application_checks
@@ -5,7 +7,7 @@ from nextcord.ext import application_checks
 from injector import singleton, inject
 
 from tonearm.bot.cogs.checks import IsCorrectChannel, IsNotAnarchy
-from tonearm.bot.managers import TranslationsManager
+from tonearm.bot.managers import TranslationsManager, EmbedManager, PlayerManager
 
 from .base import CommandCogBase
 
@@ -14,8 +16,15 @@ from .base import CommandCogBase
 class VotenextCommand(CommandCogBase):
 
     @inject
-    def __init__(self, is_correct_channel: IsCorrectChannel, is_not_anarchy: IsNotAnarchy):
+    def __init__(self,
+                 player_manager: PlayerManager,
+                 embed_manager: EmbedManager,
+                 is_correct_channel: IsCorrectChannel,
+                 is_not_anarchy: IsNotAnarchy):
         super().__init__()
+        self.__player_manager = player_manager
+        self.__embed_manager = embed_manager
+        self.__logger = logging.getLogger("tonearm.commands")
         self._add_checks(self.votenext, self.voteskip, checks=[
             application_checks.guild_only(),
             is_correct_channel(),
@@ -45,7 +54,10 @@ class VotenextCommand(CommandCogBase):
         await self.__votenext(interaction)
 
     async def __votenext(self, interaction: nextcord.Interaction):
-        #TODO :ballot_box: We need Y - X more votes to skip this track.
-        #TODO :track_next: Track skipped by popular demand!
-        #TODO :x: You already voted to skip this track.
-        await interaction.send(":wrench: This feature is not implemented yet !")
+        self.__logger.debug(f"Handling `votenext` command (interaction:{interaction.id})")
+        await interaction.response.defer()
+        status = await self.__player_manager.get(interaction.guild).votenext(interaction.user)
+        await interaction.followup.send(
+            embed=self.__embed_manager.get(interaction.guild).votenext(status)
+        )
+        self.__logger.debug(f"Successfully handled `votenext` command (interaction:{interaction.id})")

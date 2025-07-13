@@ -21,6 +21,7 @@ from .track import QueuedTrack
 from .status import PlayerStatus, AudioSourceStatus
 from .loop import LoopMode
 from .voice_client import TonearmVoiceClient
+from .vote import VoteStatus
 
 
 class PlayerService:
@@ -47,6 +48,7 @@ class PlayerService:
         self.__audio_source: ControllableFFmpegPCMAudio | None = None
         self.__player_loop_task: asyncio.Task | None = None
         self.__last_forced_leave: float | None = None
+        self.__votes = set()
 
     @property
     def __voice_client(self) -> TonearmVoiceClient | None:
@@ -138,6 +140,15 @@ class PlayerService:
             )
         self.__logger.debug(f"The bot wasn't kicked recently")
 
+    def __check_did_not_vote_yet(self, member: nextcord.Member):
+        self.__logger.debug(f"Checking the member {member.id} did already vote to skip the current track in guild {self.__guild.id}")
+        if member.id in self.__votes:
+            self.__logger.debug(f"Member {member.id} already did already vote in guild {self.__guild.id}")
+            raise PlayerException(
+                "You already voted to skip this track."
+            )
+        self.__logger.debug(f"Member {member.id} did not already vote in guild {self.__guild.id}")
+
     def __is_active(self):
         return self.__is_playing() or self.__is_paused()
 
@@ -227,10 +238,11 @@ class PlayerService:
             self.__logger.debug(f"Audio source ended normally in guild {self.__guild.id}")
         else:
             self.__logger.warning(f"Audio source ended with error in guild {self.__guild.id} : {repr(error)}")
-        self.__logger.debug(f"Ending current track and audio source in guild {self.__guild.id}")
+        self.__logger.debug(f"Ending current track and audio source in guild {self.__guild.id}, resetting votes")
         async with self.__condition:
             self.__audio_source = None
             self.__condition.notify()
+            self.__votes.clear()
 
     async def play(self, member: nextcord.Member, query: str) -> List[QueuedTrack]:
         self.__logger.debug(f"Member {member.id} asked the bot to play {repr(query)} in guild {self.__guild.id}")
@@ -296,15 +308,18 @@ class PlayerService:
             if before.channel is not None:
                 if member.id != self.__bot.user.id:
                     self.__logger.debug(f"Detected that a user moved from (or left) a voice channel in guild {self.__guild.id}")
-                    await self.__on_user_moved(before.channel)
+                    await self.__on_user_moved_or_left(member, before.channel)
                 elif after.channel is not None:
                     self.__logger.debug(f"Detected that the bot was moved to a different voice channel in guild {self.__guild.id}")
                     await self.__on_bot_moved()
 
-    def __is_alone(self, channel: nextcord.VoiceChannel) -> bool:
-        others = [m for m in channel.members if m.id != self.__bot.user.id]
-        self.__logger.debug(f"Checking if the bot is alone in voice chanel {channel.id} in guild {self.__guild.id} : {len(others) == 0}")
+    def __is_alone(self) -> bool:
+        others = self.__get_humans_in_same_voice_channel()
+        self.__logger.debug(f"Checking if the bot is alone in voice chanel in guild {self.__guild.id} : {len(others) == 0}")
         return len(others) == 0
+
+    def __get_humans_in_same_voice_channel(self):
+        return [member for member in self.__voice_client.channel.members if not member.bot]
 
     async def __on_bot_moved(self):
         async with self.__condition:
@@ -314,11 +329,15 @@ class PlayerService:
             self.__logger.debug(f"Finished waiting, leaving voice channel in guild {self.__guild.id}")
             await self.__safe_leave()
 
-    async def __on_user_moved(self, from_channel: nextcord.VoiceChannel):
+    async def __on_user_moved_or_left(self, member: nextcord.Member, from_channel: nextcord.VoiceChannel):
         async with self.__condition:
-            if self.__is_connected() and self.__voice_client.channel == from_channel and self.__is_alone(from_channel):
-                self.__logger.debug(f"The bot is now alone in a voice channel in guild {self.__guild.id}, leaving")
-                await self.__safe_leave()
+            if self.__is_connected() and self.__voice_client.channel == from_channel:
+                if self.__is_alone():
+                    self.__logger.debug(f"The bot is now alone in a voice channel in guild {self.__guild.id}, leaving")
+                    await self.__safe_leave()
+                else:
+                    self.__votes.discard(member.id)
+                    await self.__safe_handle_vote(True)
 
     def clear(self, member: nextcord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to clear the queue in guild {self.__guild.id}")
@@ -431,8 +450,11 @@ class PlayerService:
             self.__check_member_in_voice_channel(member)
             self.__check_same_voice_channel(member)
             self.__check_active_audio_source()
-            await self.__queue.jump(track)
-            self.__safe_stop_current_track()
+            await self.__safe_jump(track)
+
+    async def __safe_jump(self, track: int):
+        await self.__queue.jump(track)
+        self.__safe_stop_current_track()
 
     async def remove(self, member: nextcord.Member, track: int) -> QueuedTrack:
         self.__logger.debug(f"Member {member.id} asked the bot to remove track {track} from the queue in guild {self.__guild.id}")
@@ -456,3 +478,28 @@ class PlayerService:
             self.__check_member_in_voice_channel(member)
             self.__check_same_voice_channel(member)
             await self.__queue.loop(mode)
+
+    async def votenext(self, member: nextcord.Member) -> VoteStatus:
+        self.__logger.debug(f"Member {member.id} voted to skip the current track in guild {self.__guild.id}")
+        async with self.__condition:
+            self.__check_member_in_voice_channel(member)
+            self.__check_same_voice_channel(member)
+            self.__check_active_audio_source()
+            self.__check_did_not_vote_yet(member)
+            self.__votes.add(member.id)
+            return await self.__safe_handle_vote()
+
+    async def __safe_handle_vote(self, should_announce: bool = False):
+        required_votes = math.ceil(len(self.__get_humans_in_same_voice_channel()) / 2)
+        received_votes = len(self.__votes)
+        status = VoteStatus(
+            required_votes=required_votes,
+            received_votes=received_votes,
+            needed_votes=required_votes - received_votes,
+        )
+        self.__logger.debug(f"Received {status.received_votes} votes out of {status.required_votes} votes required in guild {self.__guild.id}")
+        if status.received_votes > 0 and status.received_votes >= status.required_votes:
+            await self.__safe_jump(0)
+            if should_announce:
+                await self.__send_to_channel(self.__embed_service.votenext(status))
+        return status

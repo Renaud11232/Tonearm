@@ -452,3 +452,14 @@ msgstr "Anarchy rules here, votes are disabled !"
 
 msgid "I'm only accepting commands in the {channel} channel."
 msgstr "I'm only accepting commands in the {channel} channel."
+
+msgid "We need {needed_votes} more vote to skip this track."
+msgid_plural "We need {needed_votes} more votes to skip this track."
+msgstr[0] "We need {needed_votes} more vote to skip this track."
+msgstr[1] "We need {needed_votes} more votes to skip this track."
+
+msgid "Track skipped by popular demand !"
+msgstr "Track skipped by popular demand !"
+
+msgid "You already voted to skip this track."
+msgstr "You already voted to skip this track."
