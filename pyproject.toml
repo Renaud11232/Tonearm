@@ -9,7 +9,7 @@ build-backend = "hatchling.build"
 [project]
 name = "Tonearm"
 dependencies = [
-    "nextcord[voice] >= 3.1.0, < 4",
+    "nextcord[voice,speed] >= 3.1.0, < 4",
     "google-api-python-client >= 2.170.0, < 3",
     "requests >= 2.32.3",
     "injector >= 0.22.0",
