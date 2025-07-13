@@ -2,16 +2,13 @@ import gettext
 import os
 from typing import Union
 
-from injector import singleton
-
 from nextcord import Locale
 
 from tonearm.bot.managers.base import ManagerBase
-from tonearm.utils.singleton import Singleton
+from tonearm.utils.singleton import ABCMetaSingleton
 
 
-@singleton
-class TranslationsManager(Singleton, ManagerBase[Locale, Union[gettext.GNUTranslations, gettext.NullTranslations]]):
+class TranslationsManager(ManagerBase[Locale, Union[gettext.GNUTranslations, gettext.NullTranslations]], metaclass=ABCMetaSingleton):
 
     def __init__(self):
         super().__init__()
