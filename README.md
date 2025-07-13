@@ -84,5 +84,5 @@ Or by providing the corresponding flags :
 tonearm \
   --discord-token "yourtoken" \
   --youtube-api-key "youapikey" \
-  -- cobale-api-url "https://cobalt.example.org"
+  --cobalt-api-url "https://cobalt.example.org"
 ```
