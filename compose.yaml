@@ -13,7 +13,7 @@ services:
   #    - net.ipv6.conf.all.disable_ipv6=0
   #    - net.ipv4.conf.all.src_valid_mark=1
   #  volumes:
-  #    - ./warp:/var/lib/cloudflare-warp
+  #    - /opt/tonearm/warp:/var/lib/cloudflare-warp
   yt-session-generator:
     image: ghcr.io/imputnet/yt-session-generator:webserver
     init: true
@@ -32,14 +32,8 @@ services:
     restart: unless-stopped
     environment:
       API_URL: "http://cobalt:9000"
-      #COOKIE_PATH: "/cookies.json"
       #API_EXTERNAL_PROXY: "http://warp:1080"
-      #API_KEY_URL: "file:///keys.json"
-      #API_AUTH_REQUIRED: 1
       YOUTUBE_SESSION_SERVER: "http://yt-session-generator:8080"
-    #volumes:
-    #  - ./cobalt/cookies.json:/cookies.json:ro
-    #  - ./cobalt/keys.json:/keys.json:ro
     depends_on:
       yt-session-generator:
         condition: service_healthy
@@ -50,10 +44,10 @@ services:
     restart: unless-stopped
     environment:
       DISCORD_TOKEN: "your discord token"
-      LOG_LEVEL: "INFO"
       YOUTUBE_API_KEY: "your youtube api key"
       COBALT_API_URL: "http://cobalt:9000"
-      # COBALT_API_KEY: "your cobalt api key"
+    volumes:
+      - /opt/tonearm/tonearm:/data
     depends_on:
       cobalt:
         condition: service_started
