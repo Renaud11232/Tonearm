@@ -1,11 +1,12 @@
 import argparse
 import logging
 
+import nextcord
 from injector import Module, singleton, provider
 
 from .configuration import Configuration
 from .action import EnvDefault
-from .converter import color
+from .converters import color
 
 
 class ConfigurationModule(Module):
@@ -85,6 +86,51 @@ class ConfigurationModule(Module):
             env_var="EMBED_COLOR",
             help="Embed color. Defaults to #71368A (dark purple)"
         )
+        parser.add_argument(
+            "--status",
+            action=EnvDefault,
+            type=str,
+            required=True,
+            default=nextcord.Status.online.name,
+            env_var="STATUS",
+            choices=[s.name for s in nextcord.Status],
+            help="Bot status. Defaults to `online`"
+        )
+        parser.add_argument(
+            "--activity-type",
+            action=EnvDefault,
+            type=str,
+            required=True,
+            default=nextcord.ActivityType.listening.name,
+            env_var="ACTIVITY_TYPE",
+            choices=[t.name for t in nextcord.ActivityType if t.value >= 0],
+            help="Bot activity type. Defaults to `listening`"
+        )
+        parser.add_argument(
+            "--activity-name",
+            action=EnvDefault,
+            type=str,
+            required=True,
+            default="/play",
+            env_var="ACTIVITY_NAME",
+            help="Bot activity name. Defaults to `/play`"
+        )
+        parser.add_argument(
+            "--activity-state",
+            action=EnvDefault,
+            type=str,
+            required=False,
+            env_var="ACTIVITY_STATE",
+            help="Bot activity state, if the activity type is custom"
+        )
+        parser.add_argument(
+            "--activity-url",
+            action=EnvDefault,
+            type=str,
+            required=False,
+            env_var="ACTIVITY_URL",
+            help="Bot stream url, if the activity type is streaming."
+        )
         args = parser.parse_args()
         return Configuration(
             discord_token=args.discord_token,
@@ -95,4 +141,9 @@ class ConfigurationModule(Module):
             data_path=args.data_path,
             buffer_length=args.buffer_length,
             colour=args.embed_color,
+            status=nextcord.Status[args.status],  # type: ignore
+            activity_type=nextcord.ActivityType[args.activity_type],
+            activity_name=args.activity_name,
+            activity_state=args.activity_state,
+            activity_url=args.activity_url,
         )

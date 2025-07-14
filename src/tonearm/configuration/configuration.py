@@ -13,3 +13,8 @@ class Configuration:
     data_path: str
     buffer_length: int
     colour: nextcord.Colour
+    status: nextcord.Status
+    activity_type: nextcord.ActivityType
+    activity_name: str | None
+    activity_state: str | None
+    activity_url: str | None

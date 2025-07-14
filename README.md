@@ -22,6 +22,11 @@ You can run this bot using docker CLI, `docker compose` or directly on you host 
 | `--data-path`       | `DATA_PATH`          | Path where Tonearm will store its configuration files                                                            | No       | `.` (`/data` for Docker) |
 | `--buffer-length`   | `BUFFER_LENGTH`      | Length (in seconds) of the audio buffer in seconds. This is useful to control how much memory is used by the bot | No       | `7200` (2 hours)         |
 | `--embed-color`     | `EMBED_COLOR`        | Color of the embeds sent by the bot. Error embeds are not affected by this setting and will always be red        | No       | `#71368A` (dark purple)  |
+| `--status`          | `STATUS`             | Bot status (online, idle, ...)                                                                                   | No       | `online`                 |
+| `--activity-type`   | `ACTIVITY_TYPE`      | Activity type that will be displayed on the bot status                                                           | No       | `listening`              |
+| `--activity-name`   | `ACTIVITY_NAME`      | Activity name that will be displayed on the bot status                                                           | No       | `/play`                  |
+| `--activity-state`  | `ACTIVITY_STATE`     | Activity state that will be displayed on the bot status, if custom activity type                                 | No       |                          |
+| `--activity-url`    | `ACTIVITY_URL`       | Stream url that will be displayed if the activity type is streaming                                              | No       |                          |
 
 ### Docker CLI
 

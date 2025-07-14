@@ -5,12 +5,15 @@ from nextcord.ext import commands
 
 from injector import Module, singleton, provider
 
+from tonearm.configuration import Configuration
+
 
 class BotModule(Module):
 
     @singleton
     @provider
     def provide_bot(self,
+                    configuration: Configuration,
                     application_command_error_listener: ApplicationCommandErrorListener,
                     error_listener: ErrorListener,
                     ready_listener: ReadyListener,
@@ -47,12 +50,15 @@ class BotModule(Module):
         intents.members = True #Needed to check dj members
         intents.voice_states = True #Needed to check when members leave voice channels
         activity = nextcord.Activity(
-            type=nextcord.ActivityType.listening,
-            name="/play"
+            type=configuration.activity_type,
+            name=configuration.activity_name,
+            state=configuration.activity_state,
+            url=configuration.activity_url,
         )
         bot = commands.Bot(
+            status=configuration.status,
             intents=intents,
-            activity=activity
+            activity=activity,
         )
         bot.add_cog(application_command_error_listener)
         bot.add_cog(error_listener)
