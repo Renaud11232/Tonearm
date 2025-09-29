@@ -363,12 +363,6 @@ msgstr ""
 msgid "I could not load the track, it's hosted on a service I don't support."
 msgstr ""
 
-msgid "I could not load the track, I was unable to connect to the Cobalt API."
-msgstr ""
-
-msgid "I could not load the track, Cobalt API returned error : {error}"
-msgstr ""
-
 msgid "I faced an unexpected error, please contact {owner}. I feel weird."
 msgstr ""
 

@@ -29,4 +29,4 @@ class YoutubeMediaService(MediaServiceBase):
             })
         with yt_dlp.YoutubeDL(options) as ytdl:
             info = ytdl.extract_info(url, download=False)
-            return info["url"] #TODO: handle the case where this key doesn't exists + update translations
+            return info["url"]

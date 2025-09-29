@@ -363,12 +363,6 @@ msgstr "I could not fetch the playlist, YouTube playlistItems API returned error
 msgid "I could not load the track, it's hosted on a service I don't support."
 msgstr "I could not load the track, it's hosted on a service I don't support."
 
-msgid "I could not load the track, I was unable to connect to the Cobalt API."
-msgstr "I could not load the track, I was unable to connect to the Cobalt API."
-
-msgid "I could not load the track, Cobalt API returned error : {error}"
-msgstr "I could not load the track, Cobalt API returned error : {error}"
-
 msgid "I faced an unexpected error, please contact {owner}. I feel weird."
 msgstr "I faced an unexpected error, please contact {owner}. I feel weird."
 
