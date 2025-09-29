@@ -2,7 +2,7 @@
 
 Tonearm is a no nonsense Discord music bot that you can self-host.
 
-Compared to most other music bots, Tonearm doesn't rely on Lavalink to play audio, but instead on [cobalt](https://github.com/imputnet/cobalt).
+Compared to most other music bots, Tonearm doesn't rely on Lavalink to play audio, but instead on [yt-dlp](https://github.com/yt-dlp/yt-dlp).
 
 The docker images can be used on `amd64` and `arm64` systems.
 
@@ -12,21 +12,21 @@ You can run this bot using docker CLI, `docker compose` or directly on you host 
 
 ### Startup parameters
 
-| CLI flag            | Environment variable | Description                                                                                                      | Required | Default                  |
-|---------------------|----------------------|------------------------------------------------------------------------------------------------------------------|----------|--------------------------|
-| `--discord-token`   | `DISCORD_TOKEN`      | The Discord bot token used to access the Discord API                                                             | Yes      |                          |
-| `--log-level`       | `LOG_LEVEL`          | The log level used for the bot                                                                                   | No       | `INFO`                   |
-| `--youtube-api-key` | `YOUTUBE_API_KEY`    | YouTube API key used to fetch video metadata, playlists and search                                               | Yes      |                          |
-| `--cobalt-api-url`  | `COBALT_API_URL`     | URL of the cobalt instance to use to download media                                                              | Yes      |                          |
-| `--cobalt-api-key`  | `COBALT_API_KEY`     | API key used to authenticate on the cobalt instance, if needed                                                   | No       |                          |
-| `--data-path`       | `DATA_PATH`          | Path where Tonearm will store its configuration files                                                            | No       | `.` (`/data` for Docker) |
-| `--buffer-length`   | `BUFFER_LENGTH`      | Length (in seconds) of the audio buffer in seconds. This is useful to control how much memory is used by the bot | No       | `7200` (2 hours)         |
-| `--embed-color`     | `EMBED_COLOR`        | Color of the embeds sent by the bot. Error embeds are not affected by this setting and will always be red        | No       | `#71368A` (dark purple)  |
-| `--status`          | `STATUS`             | Bot status (online, idle, ...)                                                                                   | No       | `online`                 |
-| `--activity-type`   | `ACTIVITY_TYPE`      | Activity type that will be displayed on the bot status                                                           | No       | `listening`              |
-| `--activity-name`   | `ACTIVITY_NAME`      | Activity name that will be displayed on the bot status                                                           | No       | `/play`                  |
-| `--activity-state`  | `ACTIVITY_STATE`     | Activity state that will be displayed on the bot status, if custom activity type                                 | No       |                          |
-| `--activity-url`    | `ACTIVITY_URL`       | Stream url that will be displayed if the activity type is streaming                                              | No       |                          |
+| CLI flag              | Environment variable | Description                                                                                                      | Required | Default                  |
+|-----------------------|----------------------|------------------------------------------------------------------------------------------------------------------|----------|--------------------------|
+| `--discord-token`     | `DISCORD_TOKEN`      | The Discord bot token used to access the Discord API                                                             | Yes      |                          |
+| `--log-level`         | `LOG_LEVEL`          | The log level used for the bot                                                                                   | No       | `INFO`                   |
+| `--youtube-api-key`   | `YOUTUBE_API_KEY`    | YouTube API key used to fetch video metadata, playlists and search                                               | Yes      |                          |
+| `--ffmpeg-executable` | `FFMPEG_EXECUTABLE`  | ffmpeg executable. This can also be a full path to the executable file                                           | No       | `ffmpeg`                 |
+| `--youtube-cookies`   | `YOUTUBE_COOKIES`    | Path to the YouTube cookies file to use to avoid content restrictions or bot detection                           | No       |                          |
+| `--data-path`         | `DATA_PATH`          | Path where Tonearm will store its configuration files                                                            | No       | `.` (`/data` for Docker) |
+| `--buffer-length`     | `BUFFER_LENGTH`      | Length (in seconds) of the audio buffer in seconds. This is useful to control how much memory is used by the bot | No       | `7200` (2 hours)         |
+| `--embed-color`       | `EMBED_COLOR`        | Color of the embeds sent by the bot. Error embeds are not affected by this setting and will always be red        | No       | `#71368A` (dark purple)  |
+| `--status`            | `STATUS`             | Bot status (online, idle, ...)                                                                                   | No       | `online`                 |
+| `--activity-type`     | `ACTIVITY_TYPE`      | Activity type that will be displayed on the bot status                                                           | No       | `listening`              |
+| `--activity-name`     | `ACTIVITY_NAME`      | Activity name that will be displayed on the bot status                                                           | No       | `/play`                  |
+| `--activity-state`    | `ACTIVITY_STATE`     | Activity state that will be displayed on the bot status, if custom activity type                                 | No       |                          |
+| `--activity-url`      | `ACTIVITY_URL`       | Stream url that will be displayed if the activity type is streaming                                              | No       |                          |
 
 ### Docker CLI
 
@@ -37,7 +37,6 @@ docker run \
   --restart unless-stopped \
   -e DISCORD_TOKEN=yourtoken \
   -e YOUTUBE_API_KEY=yourapikey \
-  -e COBALT_API_URL=https://cobalt.example.org \
   -v /opt/tonearm/tonearm:/data \
   ghcr.io/renaud11232/tonearm
 ```
@@ -54,7 +53,6 @@ services:
     environment:
       DISCORD_TOKEN: "yourtoken"
       YOUTUBE_API_KEY: "yourapikey"
-      COBALT_API_URL: "https://cobalt.example.org"
     volumes:
       - /opt/tonearm/tonearm:/data
 ```
@@ -79,7 +77,6 @@ Once it's installed, you can start it either by setting the correct environment 
 ```bash
 export DISCORD_TOKEN=yourtoken
 export YOUTUBE_API_KEY=yourapikey
-export COBALT_API_URL="https://cobalt.example.org"
 tonearm
 ```
 
@@ -88,6 +85,5 @@ Or by providing the corresponding flags :
 ```bash
 tonearm \
   --discord-token "yourtoken" \
-  --youtube-api-key "youapikey" \
-  --cobalt-api-url "https://cobalt.example.org"
+  --youtube-api-key "youapikey"
 ```

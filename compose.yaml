@@ -1,53 +1,9 @@
 services:
-  # Enable warp to avoid the IP ban some providers did (looking at you YouTube...)
-  #warp:
-  #  image: caomingjun/warp
-  #  restart: unless-stopped
-  #  device_cgroup_rules:
-  #    - 'c 10:200 rwm'
-  #  environment:
-  #    - WARP_SLEEP=2
-  #  cap_add:
-  #    - NET_ADMIN
-  #  sysctls:
-  #    - net.ipv6.conf.all.disable_ipv6=0
-  #    - net.ipv4.conf.all.src_valid_mark=1
-  #  volumes:
-  #    - /opt/tonearm/warp:/var/lib/cloudflare-warp
-  yt-session-generator:
-    image: ghcr.io/imputnet/yt-session-generator:webserver
-    init: true
-    restart: unless-stopped
-    command: sh -c "./startup-webserver.sh 2>&1 | tee /tmp/server.log"
-    healthcheck:
-      test: grep -Fq '[server] [INFO] Starting web-server at 0.0.0.0:8080' /tmp/server.log
-      start_period: 10s
-      interval: 2s
-      retries: 15
-      timeout: 3s
-  cobalt:
-    image: ghcr.io/imputnet/cobalt:11
-    init: true
-    read_only: true
-    restart: unless-stopped
-    environment:
-      API_URL: "http://cobalt:9000"
-      #API_EXTERNAL_PROXY: "http://warp:1080"
-      YOUTUBE_SESSION_SERVER: "http://yt-session-generator:8080"
-    depends_on:
-      yt-session-generator:
-        condition: service_healthy
-      #warp:
-      #  condition: service_started
   tonearm:
     image: ghcr.io/renaud11232/tonearm
     restart: unless-stopped
     environment:
       DISCORD_TOKEN: "your discord token"
       YOUTUBE_API_KEY: "your youtube api key"
-      COBALT_API_URL: "http://cobalt:9000"
     volumes:
       - /opt/tonearm/tonearm:/data
-    depends_on:
-      cobalt:
-        condition: service_started
