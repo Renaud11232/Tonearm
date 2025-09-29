@@ -9,6 +9,7 @@ from .base import MediaServiceBase
 from .exceptions import MediaFetchingException
 
 
+#TODO: remove cobalt when yt-dlp is fully working + Remove translations
 @singleton
 class CobaltMediaService(MediaServiceBase):
 

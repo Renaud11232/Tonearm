@@ -4,9 +4,9 @@ from dataclasses import dataclass
 from injector import inject, singleton
 
 from .base import MediaServiceBase
-from .cobalt import CobaltMediaService
 from .direct_url import DirectUrlMediaService
 from .exceptions import MediaFetchingException
+from .youtube import YoutubeMediaService
 
 
 @dataclass
@@ -19,15 +19,15 @@ class MediaServiceEntry:
 class MediaService(MediaServiceBase):
 
     @inject
-    def __init__(self, cobalt_media_service: CobaltMediaService, direct_url_media_service: DirectUrlMediaService):
+    def __init__(self, youtube_media_service: YoutubeMediaService, direct_url_media_service: DirectUrlMediaService):
         super().__init__()
         self.__media_services = [
-            MediaServiceEntry(r"^(?:https://)?youtube\.com(?:/.*)?$", cobalt_media_service),
-            MediaServiceEntry(r"^(?:https://)?www\.youtube\.com(?:/.*)?$", cobalt_media_service),
-            MediaServiceEntry(r"^(?:https://)?m\.youtube\.com(?:/.*)?$", cobalt_media_service),
-            MediaServiceEntry(r"^(?:https://)?music\.youtube\.com(?:/.*)?$", cobalt_media_service),
-            MediaServiceEntry(r"^(?:https://)?www\.music\.youtube\.com(?:/.*)?$", cobalt_media_service),
-            MediaServiceEntry(r"^(?:https://)?youtu\.be(?:/.*)?$", cobalt_media_service),
+            MediaServiceEntry(r"^(?:https://)?youtube\.com(?:/.*)?$", youtube_media_service),
+            MediaServiceEntry(r"^(?:https://)?www\.youtube\.com(?:/.*)?$", youtube_media_service),
+            MediaServiceEntry(r"^(?:https://)?m\.youtube\.com(?:/.*)?$", youtube_media_service),
+            MediaServiceEntry(r"^(?:https://)?music\.youtube\.com(?:/.*)?$", youtube_media_service),
+            MediaServiceEntry(r"^(?:https://)?www\.music\.youtube\.com(?:/.*)?$", youtube_media_service),
+            MediaServiceEntry(r"^(?:https://)?youtu\.be(?:/.*)?$", youtube_media_service),
             MediaServiceEntry(r"^https?://.*$", direct_url_media_service)
         ]
 

@@ -44,20 +44,21 @@ class ConfigurationModule(Module):
             help="YouTube API key used to fetch video metadata. If omitted, YouTube support will be disabled"
         )
         parser.add_argument(
-            "--cobalt-api-url",
+            "--ffmpeg-executable",
             action=EnvDefault,
             type=str,
             required=True,
-            env_var="COBALT_API_URL",
-            help="URL of the cobalt.tools instance to use to download media"
+            default="ffmpeg",
+            env_var="FFMPEG_EXECUTABLE",
+            help="ffmpeg executable. This can also be a full path to the executable file"
         )
         parser.add_argument(
-            "--cobalt-api-key",
+            "--youtube-cookies",
             action=EnvDefault,
             type=str,
             required=False,
-            env_var="COBALT_API_KEY",
-            help="API key used to authenticate on the configured cobalt.tools instance"
+            env_var="YOUTUBE_COOKIES",
+            help="Path to the YouTube cookies file to use to avoid content restrictions or bot detection"
         )
         parser.add_argument(
             "--data-path",
@@ -136,8 +137,8 @@ class ConfigurationModule(Module):
             discord_token=args.discord_token,
             log_level=args.log_level,
             youtube_api_key=args.youtube_api_key,
-            cobalt_api_key=args.cobalt_api_key,
-            cobalt_api_url=args.cobalt_api_url,
+            ffmpeg_executable=args.ffmpeg_executable,
+            youtube_cookies=args.youtube_cookies,
             data_path=args.data_path,
             buffer_length=args.buffer_length,
             colour=args.embed_color,
