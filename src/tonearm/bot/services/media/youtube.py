@@ -21,11 +21,11 @@ class YoutubeMediaService(MediaServiceBase):
         }
         if self.__configuration.ffmpeg_executable != "ffmpeg":
             options.update({
-                "ffmpeg-location": self.__configuration.ffmpeg_executable,
+                "ffmpeg_location": self.__configuration.ffmpeg_executable,
             })
         if self.__configuration.youtube_cookies is not None:
             options.update({
-                "cookies": self.__configuration.youtube_cookies
+                "cookiefile": self.__configuration.youtube_cookies
             })
         with yt_dlp.YoutubeDL(options) as ytdl:
             info = ytdl.extract_info(url, download=False)
