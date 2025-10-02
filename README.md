@@ -12,21 +12,22 @@ You can run this bot using docker CLI, `docker compose` or directly on you host 
 
 ### Startup parameters
 
-| CLI flag              | Environment variable | Description                                                                                                      | Required | Default                  |
-|-----------------------|----------------------|------------------------------------------------------------------------------------------------------------------|----------|--------------------------|
-| `--discord-token`     | `DISCORD_TOKEN`      | The Discord bot token used to access the Discord API                                                             | Yes      |                          |
-| `--log-level`         | `LOG_LEVEL`          | The log level used for the bot                                                                                   | No       | `INFO`                   |
-| `--youtube-api-key`   | `YOUTUBE_API_KEY`    | YouTube API key used to fetch video metadata, playlists and search                                               | Yes      |                          |
-| `--ffmpeg-executable` | `FFMPEG_EXECUTABLE`  | ffmpeg executable. This can also be a full path to the executable file                                           | No       | `ffmpeg`                 |
-| `--youtube-cookies`   | `YOUTUBE_COOKIES`    | Path to the YouTube cookies file to use to avoid content restrictions or bot detection                           | No       |                          |
-| `--data-path`         | `DATA_PATH`          | Path where Tonearm will store its configuration files                                                            | No       | `.` (`/data` for Docker) |
-| `--buffer-length`     | `BUFFER_LENGTH`      | Length (in seconds) of the audio buffer in seconds. This is useful to control how much memory is used by the bot | No       | `7200` (2 hours)         |
-| `--embed-color`       | `EMBED_COLOR`        | Color of the embeds sent by the bot. Error embeds are not affected by this setting and will always be red        | No       | `#71368A` (dark purple)  |
-| `--status`            | `STATUS`             | Bot status (online, idle, ...)                                                                                   | No       | `online`                 |
-| `--activity-type`     | `ACTIVITY_TYPE`      | Activity type that will be displayed on the bot status                                                           | No       | `listening`              |
-| `--activity-name`     | `ACTIVITY_NAME`      | Activity name that will be displayed on the bot status                                                           | No       | `/play`                  |
-| `--activity-state`    | `ACTIVITY_STATE`     | Activity state that will be displayed on the bot status, if custom activity type                                 | No       |                          |
-| `--activity-url`      | `ACTIVITY_URL`       | Stream url that will be displayed if the activity type is streaming                                              | No       |                          |
+| CLI flag                | Environment variable  | Description                                                                                                      | Required | Default                  |
+|-------------------------|-----------------------|------------------------------------------------------------------------------------------------------------------|----------|--------------------------|
+| `--discord-token`       | `DISCORD_TOKEN`       | The Discord bot token used to access the Discord API                                                             | Yes      |                          |
+| `--log-level`           | `LOG_LEVEL`           | The log level used for the bot                                                                                   | No       | `INFO`                   |
+| `--youtube-api-key`     | `YOUTUBE_API_KEY`     | YouTube API key used to fetch video metadata, playlists and search                                               | Yes      |                          |
+| `--max-playlist-length` | `MAX_PLAYLIST_LENGTH` | Maximum playlist length that can be added                                                                        | No       | `200`                    |
+| `--ffmpeg-executable`   | `FFMPEG_EXECUTABLE`   | ffmpeg executable. This can also be a full path to the executable file                                           | No       | `ffmpeg`                 |
+| `--youtube-cookies`     | `YOUTUBE_COOKIES`     | Path to the YouTube cookies file to use to avoid content restrictions or bot detection                           | No       |                          |
+| `--data-path`           | `DATA_PATH`           | Path where Tonearm will store its configuration files                                                            | No       | `.` (`/data` for Docker) |
+| `--buffer-length`       | `BUFFER_LENGTH`       | Length (in seconds) of the audio buffer in seconds. This is useful to control how much memory is used by the bot | No       | `7200` (2 hours)         |
+| `--embed-color`         | `EMBED_COLOR`         | Color of the embeds sent by the bot. Error embeds are not affected by this setting and will always be red        | No       | `#71368A` (dark purple)  |
+| `--status`              | `STATUS`              | Bot status (online, idle, ...)                                                                                   | No       | `online`                 |
+| `--activity-type`       | `ACTIVITY_TYPE`       | Activity type that will be displayed on the bot status                                                           | No       | `listening`              |
+| `--activity-name`       | `ACTIVITY_NAME`       | Activity name that will be displayed on the bot status                                                           | No       | `/play`                  |
+| `--activity-state`      | `ACTIVITY_STATE`      | Activity state that will be displayed on the bot status, if custom activity type                                 | No       |                          |
+| `--activity-url`        | `ACTIVITY_URL`        | Stream url that will be displayed if the activity type is streaming                                              | No       |                          |
 
 ### Docker CLI
 

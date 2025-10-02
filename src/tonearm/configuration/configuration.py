@@ -8,6 +8,7 @@ class Configuration:
     discord_token: str
     log_level: str
     youtube_api_key: str
+    max_playlist_length: int
     ffmpeg_executable: str
     youtube_cookies: str | None
     data_path: str

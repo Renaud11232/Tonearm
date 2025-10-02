@@ -20,6 +20,7 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
     @inject
     def __init__(self, configuration: Configuration):
         super().__init__(configuration)
+        self.__configuration = configuration
 
     def fetch(self, query: str) -> List[TrackMetadata]:
         self._logger.debug(f"Fetching metadata via YouTube API : {query}")
@@ -79,11 +80,13 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
             request = self._youtube.playlistItems().list(
                 part="snippet",
                 playlistId=id,
-                maxResults=50
+                maxResults=self.__configuration.max_playlist_length
             )
             while request:
                 response = request.execute()
                 for item in response["items"]:
+                    if len(items) >= self.__configuration.max_playlist_length:
+                        break
                     items.append(
                         TrackMetadata(
                             url=f"https://www.youtube.com/watch?v={item["snippet"]["resourceId"]["videoId"]}",
@@ -92,6 +95,9 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
                             thumbnail=item["snippet"]["thumbnails"]["medium"]["url"]
                         )
                     )
+                if len(items) >= self.__configuration.max_playlist_length:
+                    request = None
+                else:
                     request = self._youtube.playlistItems().list_next(request, response)
             return items
         except googleapiclient.errors.HttpError as e:

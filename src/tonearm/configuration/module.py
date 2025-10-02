@@ -44,6 +44,15 @@ class ConfigurationModule(Module):
             help="YouTube API key used to fetch video metadata. If omitted, YouTube support will be disabled"
         )
         parser.add_argument(
+            "--max-playlist-length",
+            action=EnvDefault,
+            type=int,
+            required=True,
+            default=200,
+            env_var="MAX_PLAYLIST_LENGTH",
+            help="Maximum playlist length that can be added. Defaults to 200."
+        )
+        parser.add_argument(
             "--ffmpeg-executable",
             action=EnvDefault,
             type=str,
@@ -137,6 +146,7 @@ class ConfigurationModule(Module):
             discord_token=args.discord_token,
             log_level=args.log_level,
             youtube_api_key=args.youtube_api_key,
+            max_playlist_length=args.max_playlist_length,
             ffmpeg_executable=args.ffmpeg_executable,
             youtube_cookies=args.youtube_cookies,
             data_path=args.data_path,
