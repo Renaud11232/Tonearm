@@ -1,19 +1,22 @@
 from injector import singleton, inject
 import yt_dlp
+import nextcord
 
-from tonearm.bot.services.media.base import MediaServiceBase
+from tonearm.bot.services.source.base import SourceServiceBase
 from tonearm.configuration import Configuration
+
+from tonearm.bot.services.player.audiosource import ControllableFFmpegPCMAudio
 
 
 @singleton
-class YoutubeMediaService(MediaServiceBase):
+class YoutubeSourceService(SourceServiceBase):
 
     @inject
     def __init__(self, configuration: Configuration):
         super().__init__()
         self.__configuration = configuration
 
-    def fetch(self, url: str) -> str:
+    def open(self, url: str) -> nextcord.AudioSource:
         self._logger.debug(f"Fetching media from YouTube URL : {url}")
         options = {
             "format": "bestaudio",
@@ -29,4 +32,8 @@ class YoutubeMediaService(MediaServiceBase):
             })
         with yt_dlp.YoutubeDL(options) as ytdl:
             info = ytdl.extract_info(url, download=False)
-            return info["url"]
+            return ControllableFFmpegPCMAudio(
+                info["url"],
+                buffer_length=self.__configuration.buffer_length,
+                executable=self.__configuration.ffmpeg_executable
+            )

@@ -1,5 +1,5 @@
 from tonearm.bot.exceptions import TonearmException
 
 
-class MediaFetchingException(TonearmException):
+class SourceOpeningException(TonearmException):
     pass

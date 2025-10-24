@@ -9,10 +9,9 @@ from nextcord.ext import commands
 
 from injector import inject, noninjectable
 
-from tonearm.bot.services.media import MediaService, MediaFetchingException
+from tonearm.bot.services.source import SourceService, SourceOpeningException
 from tonearm.bot.services.storage import StorageService
 from tonearm.bot.services.embed import EmbedService
-from tonearm.configuration import Configuration
 
 from .exceptions import PlayerException
 from .audiosource import ControllableFFmpegPCMAudio
@@ -34,15 +33,13 @@ class PlayerService:
                  embed_service: EmbedService,
                  bot: commands.Bot,
                  queue: Queue,
-                 media_service: MediaService,
-                 configuration: Configuration):
+                 source_service: SourceService):
         self.__guild = guild
         self.__storage_service = storage_service
         self.__embed_service = embed_service
         self.__bot = bot
         self.__queue = queue
-        self.__media_service = media_service
-        self.__configuration = configuration
+        self.__source_service = source_service
         self.__logger = logging.getLogger("tonearm.player")
         self.__condition = asyncio.Condition()
         self.__audio_source: ControllableFFmpegPCMAudio | None = None
@@ -197,11 +194,10 @@ class PlayerService:
                         await self.__condition.wait()
                 while self.__audio_source is None:
                     next_track = await self.__queue.get_next_track()
+                    self.__logger.debug(f"Starting playback of url {next_track.url} in guild {self.__guild.id}")
                     try:
-                        stream_url = self.__media_service.fetch(next_track.url)
-                        self.__logger.debug(f"Starting playback of url {stream_url} in guild {self.__guild.id}")
                         async with self.__condition:
-                            self.__audio_source = ControllableFFmpegPCMAudio(stream_url, buffer_length=self.__configuration.buffer_length)
+                            self.__audio_source = self.__source_service.open(next_track.url)
                             self.__audio_source.volume = self.__storage_service.get_volume() / 100
                             self.__voice_client.play(
                                 self.__audio_source,
@@ -211,7 +207,7 @@ class PlayerService:
                                 await self.__send_to_channel(self.__embed_service.now(self.__get_status()))
                     except asyncio.CancelledError as e:
                         raise e
-                    except MediaFetchingException as e:
+                    except SourceOpeningException as e:
                         self.__logger.warning(f"Failed to fetch media url in guild {self.__guild.id} : {repr(e)}")
                         await self.__send_to_channel(self.__embed_service.error(e))
                     except:
