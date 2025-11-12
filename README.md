@@ -28,6 +28,7 @@ You can run this bot using docker CLI, `docker compose` or directly on you host 
 | `--activity-name`       | `ACTIVITY_NAME`       | Activity name that will be displayed on the bot status                                                           | No       | `/play`                  |
 | `--activity-state`      | `ACTIVITY_STATE`      | Activity state that will be displayed on the bot status, if custom activity type                                 | No       |                          |
 | `--activity-url`        | `ACTIVITY_URL`        | Stream url that will be displayed if the activity type is streaming                                              | No       |                          |
+| `--deno-executable`     | `DENO_EXECUTABLE`     | deno executable. This can also be a full path to the executable file                                             | No       | `deno`                   |
 
 ### Docker CLI
 

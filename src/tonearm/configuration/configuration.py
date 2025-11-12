@@ -19,3 +19,4 @@ class Configuration:
     activity_name: str | None
     activity_state: str | None
     activity_url: str | None
+    deno_executable: str

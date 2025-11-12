@@ -20,8 +20,13 @@ class YoutubeSourceService(SourceServiceBase):
         self._logger.debug(f"Fetching media from YouTube URL : {url}")
         options = {
             "format": "bestaudio",
-            "logger": self._logger
+            "logger": self._logger,
+            "js_runtimes": {
+                "deno": {}
+            }
         }
+        if self.__configuration.deno_executable != "deno":
+            options["js_runtimes"]["deno"]["path"] = self.__configuration.deno_executable
         if self.__configuration.ffmpeg_executable != "ffmpeg":
             options.update({
                 "ffmpeg_location": self.__configuration.ffmpeg_executable,

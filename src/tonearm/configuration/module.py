@@ -141,6 +141,15 @@ class ConfigurationModule(Module):
             env_var="ACTIVITY_URL",
             help="Bot stream url, if the activity type is streaming."
         )
+        parser.add_argument(
+            "--deno-executable",
+            action=EnvDefault,
+            type=str,
+            required=True,
+            default="deno",
+            env_var="DENO_EXECUTABLE",
+            help="deno executable. This can also be a full path to the executable file"
+        )
         args = parser.parse_args()
         return Configuration(
             discord_token=args.discord_token,
@@ -157,4 +166,5 @@ class ConfigurationModule(Module):
             activity_name=args.activity_name,
             activity_state=args.activity_state,
             activity_url=args.activity_url,
+            deno_executable=args.deno_executable,
         )
