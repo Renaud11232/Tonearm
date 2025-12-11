@@ -2,6 +2,7 @@ from injector import singleton, inject
 import yt_dlp
 import nextcord
 
+from tonearm.bot.services.source.exceptions import SourceOpeningException
 from tonearm.bot.services.source.base import SourceServiceBase
 from tonearm.configuration import Configuration
 
@@ -36,9 +37,12 @@ class YoutubeSourceService(SourceServiceBase):
                 "cookiefile": self.__configuration.youtube_cookies
             })
         with yt_dlp.YoutubeDL(options) as ytdl:
-            info = ytdl.extract_info(url, download=False)
-            return ControllableFFmpegPCMAudio(
-                info["url"],
-                buffer_length=self.__configuration.buffer_length,
-                executable=self.__configuration.ffmpeg_executable
-            )
+            try:
+                info = ytdl.extract_info(url, download=False)
+                return ControllableFFmpegPCMAudio(
+                    info["url"],
+                    buffer_length=self.__configuration.buffer_length,
+                    executable=self.__configuration.ffmpeg_executable
+                )
+            except yt_dlp.utils.DownloadError as e:
+                raise SourceOpeningException(e.args[0])
