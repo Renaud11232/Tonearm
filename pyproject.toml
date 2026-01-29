@@ -10,11 +10,11 @@ build-backend = "hatchling.build"
 name = "Tonearm"
 dependencies = [
     "nextcord[voice,speed] @ git+https://github.com/Renaud11232/nextcord.git@v3.1.2a1",
-    "google-api-python-client >= 2.187.0, < 3",
+    "google-api-python-client >= 2.188.0, < 3",
     "requests >= 2.32.5, < 3",
-    "injector >= 0.23.0, < 1",
-    "werkzeug >= 3.1.4, < 4",
-    "yt-dlp[default] >= 2025.12.8"
+    "injector >= 0.24.0, < 1",
+    "werkzeug >= 3.1.5, < 4",
+    "yt-dlp[default] >= 2026.1.19"
 ]
 requires-python = ">= 3.13"
 authors = [
