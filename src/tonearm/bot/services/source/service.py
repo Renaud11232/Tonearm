@@ -2,7 +2,8 @@ import re
 from dataclasses import dataclass
 
 from injector import inject, singleton
-import discord
+
+from tonearm.bot.services.player.audiosource import ControllableFFmpegPCMAudio
 
 from .base import SourceServiceBase
 from .direct_url import DirectUrlSourceService
@@ -32,7 +33,7 @@ class SourceService(SourceServiceBase):
             SourceServiceEntry(r"^https?://.*$", direct_url_source_service)
         ]
 
-    def open(self, url: str) -> discord.AudioSource:
+    def open(self, url: str) -> ControllableFFmpegPCMAudio:
         for entry in self.__source_services:
             if re.search(entry.pattern, url):
                 return entry.service.open(url)

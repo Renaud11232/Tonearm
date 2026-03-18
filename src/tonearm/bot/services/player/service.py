@@ -201,7 +201,7 @@ class PlayerService:
                             self.__audio_source.volume = self.__storage_service.get_volume() / 100
                             self.__voice_client.play(
                                 self.__audio_source,
-                                after=self.__on_audio_source_ended
+                                after=lambda error: self.__bot.loop.create_task(self.__on_audio_source_ended(error))
                             )
                             if self.__storage_service.get_announcements():
                                 await self.__send_to_channel(self.__embed_service.now(self.__get_status()))

@@ -1,7 +1,8 @@
-import subprocess
 import logging
 import threading
 import math
+import io
+from typing import Union, IO, Optional
 
 import discord
 
@@ -11,7 +12,15 @@ from .buffer import AudioBuffer
 
 class SeekableFFmpegPCMAudio(discord.FFmpegPCMAudio):
 
-    def __init__(self, source, *, buffer_length: int, executable="ffmpeg", pipe=False, stderr=subprocess.DEVNULL, before_options=None, options=None):
+    def __init__(self,
+                 source: Union[str, io.BufferedIOBase],
+                 *,
+                 buffer_length: int,
+                 executable: str = "ffmpeg",
+                 pipe: bool = False,
+                 stderr: Optional[IO[bytes]] = None,
+                 before_options: Optional[str] = None,
+                 options: Optional[str] = None):
         super().__init__(
             source,
             executable=executable,
@@ -105,17 +114,26 @@ class SeekableFFmpegPCMAudio(discord.FFmpegPCMAudio):
 
 class ControllableFFmpegPCMAudio(discord.PCMVolumeTransformer):
 
-    def __init__(self, source, *, buffer_length: int, executable="ffmpeg", pipe=False, stderr=subprocess.DEVNULL, before_options=None, options=None):
+    def __init__(self,
+                 source: Union[str, io.BufferedIOBase],
+                 *,
+                 volume: float = 1.0,
+                 buffer_length: int,
+                 executable: str = "ffmpeg",
+                 pipe: bool = False,
+                 stderr: Optional[IO[bytes]] = None,
+                 before_options: Optional[str] = None,
+                 options: Optional[str] = None):
         self.__source = SeekableFFmpegPCMAudio(
             source,
             executable=executable,
             pipe=pipe,
-            stderr=stderr,  # type: ignore
+            stderr=stderr,
             before_options=before_options,
             options=options,
             buffer_length=buffer_length
         )
-        super().__init__(self.__source)
+        super().__init__(self.__source, volume)
 
     @property
     def elapsed(self) -> int:

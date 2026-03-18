@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import logging
 
-import discord
+from tonearm.bot.services.player.audiosource import ControllableFFmpegPCMAudio
 
 
 class SourceServiceBase(ABC):
@@ -10,5 +10,5 @@ class SourceServiceBase(ABC):
         self._logger = logging.getLogger("tonearm.source")
 
     @abstractmethod
-    def open(self, url: str) -> discord.AudioSource:
+    def open(self, url: str) -> ControllableFFmpegPCMAudio:
         pass
