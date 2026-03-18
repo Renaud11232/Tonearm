@@ -26,8 +26,9 @@ class EmbedService:
 
     @inject
     @noninjectable("storage_service")
-    def __init__(self, storage_service: StorageService, configuration: Configuration):
+    def __init__(self, storage_service: StorageService, translations_manager: TranslationsManager, configuration: Configuration):
         self.__storage_service = storage_service
+        self.__translations_manager = translations_manager
         self.__configuration = configuration
 
     @property
@@ -38,7 +39,7 @@ class EmbedService:
         return self.error_message(error.template, **error.kwargs)
 
     def error_message(self, template: str, **kwargs) -> discord.Embed:
-        message = TranslationsManager().get(self.__locale).gettext(template).format(**kwargs)
+        message = self.__translations_manager.get(self.__locale).gettext(template).format(**kwargs)
         return discord.Embed(
             description=f":x: {escape_markdown(message)}",
             colour=discord.Colour.red()
@@ -47,7 +48,7 @@ class EmbedService:
     def back(self, track: int):
         if track == 1:
             return self.previous()
-        message = TranslationsManager().get(self.__locale).gettext("Rewinding to track {track}. Let’s bring it back !").format(
+        message = self.__translations_manager.get(self.__locale).gettext("Rewinding to track {track}. Let’s bring it back !").format(
             track=track + 1
         )
         return discord.Embed(
@@ -58,7 +59,7 @@ class EmbedService:
 
     def clean(self, messages: List[discord.Message]):
         len_messages = len(messages)
-        message = TranslationsManager().get(self.__locale).ngettext(
+        message = self.__translations_manager.get(self.__locale).ngettext(
             "My message is gone. It's like I was never here !",
             "My {len_messages} messages are gone. It's like I was never here !",
             len_messages
@@ -71,14 +72,14 @@ class EmbedService:
         )
 
     def clear(self):
-        message = TranslationsManager().get(self.__locale).gettext("Wiped the queue. Sometimes starting fresh hits different.")
+        message = self.__translations_manager.get(self.__locale).gettext("Wiped the queue. Sometimes starting fresh hits different.")
         return discord.Embed(
             description=f":broom: {message}",
             colour=self.__configuration.colour
         )
 
     def dj_add(self, role_or_member: discord.Role | discord.Member):
-        message = TranslationsManager().get(self.__locale).gettext("Promoted {role_or_member} to DJ. Don’t scratch the vinyl !").format(
+        message = self.__translations_manager.get(self.__locale).gettext("Promoted {role_or_member} to DJ. Don’t scratch the vinyl !").format(
             role_or_member=role_or_member.mention
         )
         return discord.Embed(
@@ -87,7 +88,7 @@ class EmbedService:
         )
 
     def dj_remove(self, role_or_member: discord.Role | discord.Member):
-        message = TranslationsManager().get(self.__locale).gettext("{role_or_member} is off the decks for now.").format(
+        message = self.__translations_manager.get(self.__locale).gettext("{role_or_member} is off the decks for now.").format(
             role_or_member=role_or_member.mention
         )
         return discord.Embed(
@@ -96,7 +97,7 @@ class EmbedService:
         )
 
     def forward(self):
-        message = TranslationsManager().get(self.__locale).gettext("Who needs intros anyway ?")
+        message = self.__translations_manager.get(self.__locale).gettext("Who needs intros anyway ?")
         return discord.Embed(
             description=f":fast_forward: {message}",
             colour=self.__configuration.colour
@@ -104,20 +105,20 @@ class EmbedService:
 
     def history(self, previous_tracks: List[QueuedTrack], page: int):
         embed = discord.Embed(
-            title=TranslationsManager().get(self.__locale).gettext("History"),
+            title=self.__translations_manager.get(self.__locale).gettext("History"),
             colour=self.__configuration.colour
         )
         self.__build_track_list(
             embed,
             previous_tracks,
             page,
-            f"{TranslationsManager().get(self.__locale).gettext("Previous tracks")} :",
-            TranslationsManager().get(self.__locale).gettext("Played")
+            f"{self.__translations_manager.get(self.__locale).gettext("Previous tracks")} :",
+            self.__translations_manager.get(self.__locale).gettext("Played")
         )
         return embed
 
     def join(self):
-        message = TranslationsManager().get(self.__locale).gettext("Let's get this party started !")
+        message = self.__translations_manager.get(self.__locale).gettext("Let's get this party started !")
         return discord.Embed(
             description=f":party_popper: {message}",
             colour=self.__configuration.colour
@@ -126,7 +127,7 @@ class EmbedService:
     def jump(self, track: int):
         if track == 0:
             return self.next()
-        message = TranslationsManager().get(self.__locale).gettext("Boom. Skipped straight to track {track}. Enjoy !").format(
+        message = self.__translations_manager.get(self.__locale).gettext("Boom. Skipped straight to track {track}. Enjoy !").format(
             track=track + 1
         )
         return discord.Embed(
@@ -135,7 +136,7 @@ class EmbedService:
         )
 
     def leave(self):
-        message = TranslationsManager().get(self.__locale).gettext("Mic dropped. I'm gone.")
+        message = self.__translations_manager.get(self.__locale).gettext("Mic dropped. I'm gone.")
         return discord.Embed(
             description=f":microphone: {message}",
             colour=self.__configuration.colour
@@ -146,18 +147,18 @@ class EmbedService:
             colour=self.__configuration.colour
         )
         if mode == LoopMode.OFF:
-            message = TranslationsManager().get(self.__locale).gettext("Looping turned off. One play, no reruns.")
+            message = self.__translations_manager.get(self.__locale).gettext("Looping turned off. One play, no reruns.")
             embed.description = f":arrow_right: {message}"
         elif mode == LoopMode.TRACK:
-            message = TranslationsManager().get(self.__locale).gettext("You must really love this one. Looping it on repeat.")
+            message = self.__translations_manager.get(self.__locale).gettext("You must really love this one. Looping it on repeat.")
             embed.description = f":repeat_one: {message}"
         else:
-            message = TranslationsManager().get(self.__locale).gettext("Get ready for the encore. And the encore's encore. Looping the queue !")
+            message = self.__translations_manager.get(self.__locale).gettext("Get ready for the encore. And the encore's encore. Looping the queue !")
             embed.description = f":repeat: {message}"
         return embed
 
     def move(self, track: QueuedTrack, from_: int, to: int):
-        message = TranslationsManager().get(self.__locale).gettext("Shifted {track_title} like a playlist ninja. Moved from {from_} to {to}.").format(
+        message = self.__translations_manager.get(self.__locale).gettext("Shifted {track_title} like a playlist ninja. Moved from {from_} to {to}.").format(
             track_title=bold(escape_markdown(track.title)),
             from_=from_ + 1,
             to=to + 1
@@ -168,7 +169,7 @@ class EmbedService:
         )
 
     def next(self):
-        message = TranslationsManager().get(self.__locale).gettext("Skipping the current track, I didn't like this one either.")
+        message = self.__translations_manager.get(self.__locale).gettext("Skipping the current track, I didn't like this one either.")
         return discord.Embed(
             description=f":track_next: {message}",
             colour=self.__configuration.colour
@@ -224,10 +225,10 @@ class EmbedService:
             LoopMode.QUEUE.name: ":repeat:"
         }[player_status.queue.loop_mode.name]
         embed = discord.Embed(
-            title=TranslationsManager().get(self.__locale).gettext("Now Playing"),
+            title=self.__translations_manager.get(self.__locale).gettext("Now Playing"),
             description=(
                 f"{bold(link(escape_link_text(truncate(player_status.queue.current_track.title, 50)), escape_link_url(player_status.queue.current_track.url)))}\n"
-                f"{TranslationsManager().get(self.__locale).gettext("Queued by")} : {player_status.queue.current_track.member.mention}\n"
+                f"{self.__translations_manager.get(self.__locale).gettext("Queued by")} : {player_status.queue.current_track.member.mention}\n"
                 f"\n"
                 f"{status_icon} {bar_progress} {inline_code(f'[{elapsed_time}/{total_time}]')} {loop_icon} :sound: {round(player_status.audio_source.volume)}%"
             ),
@@ -235,12 +236,12 @@ class EmbedService:
         )
         embed.set_thumbnail(url=player_status.queue.current_track.thumbnail)
         embed.set_footer(
-            text=f"{TranslationsManager().get(self.__locale).gettext("Source")} : {escape_markdown(player_status.queue.current_track.source)}"
+            text=f"{self.__translations_manager.get(self.__locale).gettext("Source")} : {escape_markdown(player_status.queue.current_track.source)}"
         )
         return embed
 
     def pause(self):
-        message = TranslationsManager().get(self.__locale).gettext("Playback paused. Take your time !")
+        message = self.__translations_manager.get(self.__locale).gettext("Playback paused. Take your time !")
         return discord.Embed(
             description=f":pause_button: {message}",
             colour=self.__configuration.colour
@@ -248,7 +249,7 @@ class EmbedService:
 
     def play(self, tracks: List[QueuedTrack]):
         len_tracks = len(tracks)
-        message = TranslationsManager().get(self.__locale).ngettext(
+        message = self.__translations_manager.get(self.__locale).ngettext(
             "Added {track_title} to the queue ! This one’s gonna slap.",
             "Added {len_tracks} tracks to the queue ! Now that’s what I call a playlist.",
             len_tracks
@@ -263,7 +264,7 @@ class EmbedService:
         return embed
 
     def previous(self):
-        message = TranslationsManager().get(self.__locale).gettext("Because one listen wasn’t enough...")
+        message = self.__translations_manager.get(self.__locale).gettext("Because one listen wasn’t enough...")
         return discord.Embed(
             description=f":track_previous: {message}",
             colour=self.__configuration.colour
@@ -283,7 +284,7 @@ class EmbedService:
             )
         if len_tracks == 0:
             track_list = [
-                italic(TranslationsManager().get(self.__locale).gettext("Nothing to show here"))
+                italic(self.__translations_manager.get(self.__locale).gettext("Nothing to show here"))
             ]
         else:
             tracks_chunk = tracks[page * 10: page * 10 + 10]
@@ -298,7 +299,7 @@ class EmbedService:
         )
         embed.add_field(
             name=title2,
-            value=TranslationsManager().get(self.__locale).ngettext(
+            value=self.__translations_manager.get(self.__locale).ngettext(
                 "{len_tracks} track",
                 "{len_tracks} tracks",
                 len_tracks
@@ -308,8 +309,8 @@ class EmbedService:
             inline=True
         )
         embed.add_field(
-            name=TranslationsManager().get(self.__locale).gettext("Page"),
-            value=TranslationsManager().get(self.__locale).gettext("{page} our of {max_pages}").format(
+            name=self.__translations_manager.get(self.__locale).gettext("Page"),
+            value=self.__translations_manager.get(self.__locale).gettext("{page} our of {max_pages}").format(
                 page=page + 1,
                 max_pages=max_pages
             ),
@@ -322,13 +323,13 @@ class EmbedService:
             embed,
             player_status.queue.next_tracks,
             page,
-            TranslationsManager().get(self.__locale).gettext("Up next :"),
-            TranslationsManager().get(self.__locale).gettext("In queue")
+            self.__translations_manager.get(self.__locale).gettext("Up next :"),
+            self.__translations_manager.get(self.__locale).gettext("In queue")
         )
         return embed
 
     def remove(self, track: QueuedTrack):
-        message = TranslationsManager().get(self.__locale).gettext("Say goodbye to {track_title}. It didn’t make the cut.").format(
+        message = self.__translations_manager.get(self.__locale).gettext("Say goodbye to {track_title}. It didn’t make the cut.").format(
             track_title=bold(escape_markdown(track.title))
         )
         return discord.Embed(
@@ -337,21 +338,21 @@ class EmbedService:
         )
 
     def resume(self):
-        message = TranslationsManager().get(self.__locale).gettext("Back in action ! Enjoy the tracks.")
+        message = self.__translations_manager.get(self.__locale).gettext("Back in action ! Enjoy the tracks.")
         return discord.Embed(
             description=f":play_pause: {message}",
             colour=self.__configuration.colour
         )
 
     def rewind(self):
-        message = TranslationsManager().get(self.__locale).gettext("That part was worth a second listen !")
+        message = self.__translations_manager.get(self.__locale).gettext("That part was worth a second listen !")
         return discord.Embed(
             description=f":rewind: {message}",
             colour=self.__configuration.colour
         )
 
     def seek(self):
-        message = TranslationsManager().get(self.__locale).gettext("Dropping the needle, classic move.")
+        message = self.__translations_manager.get(self.__locale).gettext("Dropping the needle, classic move.")
         return discord.Embed(
             description=f":dart: {message}",
             colour=self.__configuration.colour
@@ -361,15 +362,15 @@ class EmbedService:
         if hasattr(value, "mention"):
             return value.mention
         if isinstance(value, bool):
-            return inline_code(TranslationsManager().get(self.__locale).gettext(repr(value)))
+            return inline_code(self.__translations_manager.get(self.__locale).gettext(repr(value)))
         if isinstance(value, Enum):
             return inline_code(value.name)
         return inline_code(escape_markdown(repr(value)))
 
     def setting_set(self, name: str, value: Any):
-        setting_name = TranslationsManager().get(self.__locale).gettext(name)
+        setting_name = self.__translations_manager.get(self.__locale).gettext(name)
         setting_value = self.__setting_repr(value)
-        message = TranslationsManager().get(self.__locale).gettext("All set ! {setting_name} is now {setting_value}.").format(
+        message = self.__translations_manager.get(self.__locale).gettext("All set ! {setting_name} is now {setting_value}.").format(
             setting_name=setting_name,
             setting_value=setting_value
         )
@@ -379,9 +380,9 @@ class EmbedService:
         )
 
     def setting_reset(self, name: str, value: Any):
-        setting_name = TranslationsManager().get(self.__locale).gettext(name)
+        setting_name = self.__translations_manager.get(self.__locale).gettext(name)
         setting_value = self.__setting_repr(value)
-        message = TranslationsManager().get(self.__locale).gettext("Boom ! {setting_name} is back to default: {setting_value}.").format(
+        message = self.__translations_manager.get(self.__locale).gettext("Boom ! {setting_name} is back to default: {setting_value}.").format(
             setting_name=setting_name,
             setting_value=setting_value
         )
@@ -391,31 +392,31 @@ class EmbedService:
         )
 
     def shuffle(self):
-        message = TranslationsManager().get(self.__locale).gettext("Shuffled the queue. I hope you like surprises !")
+        message = self.__translations_manager.get(self.__locale).gettext("Shuffled the queue. I hope you like surprises !")
         return discord.Embed(
             description=f":twisted_rightwards_arrows: {message}",
             colour=self.__configuration.colour
         )
 
     def shutdown(self):
-        message = TranslationsManager().get(self.__locale).gettext("Initiating shutdown sequence... it’s been an honor.")
+        message = self.__translations_manager.get(self.__locale).gettext("Initiating shutdown sequence... it’s been an honor.")
         return discord.Embed(
             description=f":saluting_face: {message}",
             colour=self.__configuration.colour
         )
 
     def stop(self):
-        message = TranslationsManager().get(self.__locale).gettext("Music stopped. The crowd goes silent.")
+        message = self.__translations_manager.get(self.__locale).gettext("Music stopped. The crowd goes silent.")
         return discord.Embed(
             description=f":stop_button: {message}",
             colour=self.__configuration.colour
         )
 
     def version(self, version: TonearmVersion):
-        version_message = TranslationsManager().get(self.__locale).gettext("Version {version}, up and running !").format(
+        version_message = self.__translations_manager.get(self.__locale).gettext("Version {version}, up and running !").format(
             version=inline_code(f"v{version.version}")
         )
-        created_by_message = TranslationsManager().get(self.__locale).gettext("Crafted with :heart: by {authors}.").format(
+        created_by_message = self.__translations_manager.get(self.__locale).gettext("Crafted with :heart: by {authors}.").format(
             authors=", ".join(map(italic, version.authors))
         )
         return discord.Embed(
@@ -429,7 +430,7 @@ class EmbedService:
         )
 
     def volume(self, volume: int):
-        message = TranslationsManager().get(self.__locale).gettext("Volume’s now {volume}%. Don’t blame me if it’s too loud !").format(
+        message = self.__translations_manager.get(self.__locale).gettext("Volume’s now {volume}%. Don’t blame me if it’s too loud !").format(
             volume=volume
         )
         return discord.Embed(
@@ -440,7 +441,7 @@ class EmbedService:
     def votenext(self, status: VoteStatus):
         if status.needed_votes > 0:
             emote = ":ballot_box:"
-            message = TranslationsManager().get(self.__locale).ngettext(
+            message = self.__translations_manager.get(self.__locale).ngettext(
                 "We need {needed_votes} more vote to skip this track.",
                 "We need {needed_votes} more votes to skip this track.",
                 status.needed_votes
@@ -449,7 +450,7 @@ class EmbedService:
             )
         else:
             emote = ":track_next:"
-            message = TranslationsManager().get(self.__locale).gettext("Track skipped by popular demand !")
+            message = self.__translations_manager.get(self.__locale).gettext("Track skipped by popular demand !")
         return discord.Embed(
             description=f"{emote} {message}",
             colour=self.__configuration.colour
