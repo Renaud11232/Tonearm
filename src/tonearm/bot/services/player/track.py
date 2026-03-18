@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-import nextcord
+import discord
 
 
 @dataclass
@@ -9,4 +9,4 @@ class QueuedTrack:
     title: str
     source: str
     thumbnail: str | None
-    member: nextcord.Member
+    member: discord.Member

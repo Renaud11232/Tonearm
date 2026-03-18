@@ -2,7 +2,7 @@ import gettext
 import os
 from typing import Union
 
-from nextcord import Locale
+from discord import Locale
 
 from tonearm.bot.managers.base import ManagerBase
 from tonearm.utils.singleton import ABCMetaSingleton

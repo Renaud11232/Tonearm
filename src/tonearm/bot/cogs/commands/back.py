@@ -1,90 +1,62 @@
 import logging
 
-import nextcord
-from nextcord import SlashOption, Locale
-from nextcord.ext import application_checks
+import discord
+from discord import app_commands
 
-from injector import singleton, inject
+from injector import singleton, inject, Injector
 
-from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
-from tonearm.bot.cogs.converters import ZeroIndexConverter
-from tonearm.bot.managers import PlayerManager, TranslationsManager, EmbedManager
+from tonearm.bot.cogs.checks import can_use_dj_command, is_correct_channel
+from tonearm.bot.managers import PlayerManager, EmbedManager
+from tonearm.bot.cogs.transformers import ZeroIndexTransformer
 
-from .base import CommandCogBase
+from .base import CogBase
 
 
 @singleton
-class BackCommand(CommandCogBase):
+class BackCommand(CogBase):
 
     @inject
     def __init__(self,
                  player_manager: PlayerManager,
                  embed_manager: EmbedManager,
-                 can_use_dj_command: CanUseDjCommand,
-                 is_correct_channel: IsCorrectChannel):
-        super().__init__()
+                 injector: Injector):
+        super().__init__(injector)
         self.__player_manager = player_manager
         self.__embed_manager = embed_manager
         self.__logger = logging.getLogger("tonearm.commands")
-        self._add_checks(self.back, self.unskipto, checks=[
-            application_checks.guild_only(),
-            is_correct_channel(),
-            can_use_dj_command()
-        ])
 
-    @nextcord.slash_command(
+    @app_commands.command(
         name="back",
-        description=TranslationsManager().get(Locale.en_US).gettext("Jump back to a specific track in the history"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Jump back to a specific track in the history"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Jump back to a specific track in the history")
-        }
+        description="Jump back to a specific track in the history"
     )
+    @app_commands.describe(
+        track="Track number to jump back to"
+    )
+    @app_commands.guild_only()
+    @is_correct_channel()
+    @can_use_dj_command()
     async def back(self,
-                   interaction: nextcord.Interaction,
-                   track: ZeroIndexConverter = SlashOption(
-                       name=TranslationsManager().get(Locale.en_US).gettext("track"),
-                       name_localizations={
-                           Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("track"),
-                           Locale.fr: TranslationsManager().get(Locale.fr).gettext("track")
-                       },
-                       description=TranslationsManager().get(Locale.en_US).gettext("Track number to jump back to"),
-                       description_localizations={
-                           Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Track number to jump back to"),
-                           Locale.fr: TranslationsManager().get(Locale.fr).gettext("Track number to jump back to")
-                       },
-                       required=True,
-                       min_value=1
-                   )):
-        await self.__back(interaction, track)  # type: ignore
+                   interaction: discord.Interaction,
+                   track: app_commands.Transform[int, ZeroIndexTransformer]):
+        await self.__back(interaction, track)
 
-    @nextcord.slash_command(
+
+    @app_commands.command(
         name="unskipto",
-        description=TranslationsManager().get(Locale.en_US).gettext("Jump back to a specific track in the history"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Jump back to a specific track in the history"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Jump back to a specific track in the history")
-        }
+        description="Jump back to a specific track in the history"
     )
+    @app_commands.describe(
+        track="Track number to jump back to"
+    )
+    @app_commands.guild_only()
+    @is_correct_channel()
+    @can_use_dj_command()
     async def unskipto(self,
-                       interaction: nextcord.Interaction,
-                       track: ZeroIndexConverter = SlashOption(
-                           name=TranslationsManager().get(Locale.en_US).gettext("track"),
-                           name_localizations={
-                               Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("track"),
-                               Locale.fr: TranslationsManager().get(Locale.fr).gettext("track")
-                           },
-                           description=TranslationsManager().get(Locale.en_US).gettext("Track number to jump back to"),
-                           description_localizations={
-                               Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Track number to jump back to"),
-                               Locale.fr: TranslationsManager().get(Locale.fr).gettext("Track number to jump back to")
-                           },
-                           required=True,
-                           min_value=1
-                       )):
-        await self.__back(interaction, track)  # type: ignore
+                       interaction: discord.Interaction,
+                       track: app_commands.Transform[int, ZeroIndexTransformer]):
+        await self.__back(interaction, track)
 
-    async def __back(self, interaction: nextcord.Interaction, track: int):
+    async def __back(self, interaction: discord.Interaction, track: int):
         self.__logger.debug(f"Handling `back` command (interaction:{interaction.id})")
         await interaction.response.defer()
         await self.__player_manager.get(interaction.guild).back(interaction.user, track)

@@ -1,20 +1,17 @@
-from injector import inject
+from injector import inject, noninjectable
 
-import nextcord
-from nextcord.ext import application_checks
+import discord
 
 from tonearm.bot.managers import StorageManager
 
+from .internal import dependency_needing_check
 
-class IsDjMember:
 
+def is_dj_member():
     @inject
-    def __init__(self, storage_manager: StorageManager):
-        self.__storage_manager = storage_manager
-
-    def __call__(self):
-        def predicate(interaction: nextcord.Interaction) -> bool:
-            members = self.__storage_manager.get(interaction.guild).get_dj_members()
-            int_members = list(map(lambda member: member.id, members))
-            return interaction.user.id in int_members
-        return application_checks.check(predicate)
+    @noninjectable("interaction")
+    async def predicate(interaction: discord.Interaction, storage_manager: StorageManager) -> bool:
+        members = storage_manager.get(interaction.guild).get_dj_members()
+        int_members = list(map(lambda member: member.id, members))
+        return interaction.user.id in int_members
+    return dependency_needing_check(predicate)

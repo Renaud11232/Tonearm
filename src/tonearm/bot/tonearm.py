@@ -1,29 +1,187 @@
-import logging
-import sys
+from tonearm.bot.cogs import *
 
-from nextcord.ext import commands
+from injector import singleton, inject
 
-from injector import inject, singleton
+import discord
+from discord.ext import commands
 
+from tonearm.bot.translator import TonearmTranslator
 from tonearm.configuration import Configuration
 
 
 @singleton
-class Tonearm:
+class TonearmBot(commands.Bot):
 
     @inject
-    def __init__(self, configuration: Configuration, bot: commands.Bot):
-        self.__configuration = configuration
-        self.__bot = bot
-        self.__init_logger("nextcord")
-        self.__init_logger("tonearm")
+    def __init__(self,
+                 configuration: Configuration,
+                 ready_listener: ReadyListener,
+                 back_command: BackCommand,
+                 clean_command: CleanCommand,
+                 clear_command: ClearCommand,
+                 dj_command: DjCommand,
+                 forward_command: ForwardCommand,
+                 history_command: HistoryCommand,
+                 join_command: JoinCommand,
+                 jump_command: JumpCommand,
+                 leave_command: LeaveCommand,
+                 loop_command: LoopCommand,
+                 move_command: MoveCommand,
+                 next_command: NextCommand,
+                 now_command: NowCommand,
+                 pause_command: PauseCommand,
+                 play_command: PlayCommand,
+                 previous_command: PreviousCommand,
+                 queue_command: QueueCommand,
+                 remove_command: RemoveCommand,
+                 resume_command: ResumeCommand,
+                 rewind_command: RewindCommand,
+                 seek_command: SeekCommand,
+                 setting_command: SettingCommand,
+                 shuffle_command: ShuffleCommand,
+                 shutdown_command: ShutdownCommand,
+                 stop_command: StopCommand,
+                 version_command: VersionCommand,
+                 volume_command: VolumeCommand,
+                 votenext_command: VotenextCommand):
+        intents = discord.Intents.default()
+        intents.members = True
+        intents.voice_states = True
+        activity = discord.Activity(
+            type=configuration.activity_type,
+            name=configuration.activity_name,
+            state=configuration.activity_state,
+            url=configuration.activity_url
+        )
+        super().__init__(
+            status=configuration.status,
+            intents=intents,
+            activity=activity,
+            command_prefix="",
+            help_command=None
+        )
+        self.__tonearm_cogs = [
+            ready_listener,
+            back_command,
+            clean_command,
+            clear_command,
+            dj_command,
+            forward_command,
+            history_command,
+            join_command,
+            jump_command,
+            leave_command,
+            loop_command,
+            move_command,
+            next_command,
+            now_command,
+            pause_command,
+            play_command,
+            previous_command,
+            queue_command,
+            remove_command,
+            resume_command,
+            rewind_command,
+            seek_command,
+            setting_command,
+            shuffle_command,
+            shutdown_command,
+            stop_command,
+            version_command,
+            volume_command,
+            votenext_command
+        ]
 
-    def __init_logger(self, name: str):
-        logger = logging.getLogger(name)
-        logger.setLevel(self.__configuration.log_level)
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-        logger.addHandler(handler)
+    async def setup_hook(self) -> None:
+        await self.tree.set_translator(TonearmTranslator())
+        for cog in self.__tonearm_cogs:
+            await self.add_cog(cog)
+        await self.tree.sync()
 
-    def run(self):
-        self.__bot.run(self.__configuration.discord_token)
+        # def provide_bot__old(self,
+        #                 configuration: Configuration,
+        #                 application_command_error_listener: ApplicationCommandErrorListener,
+        #                 error_listener: ErrorListener,
+        #                 ready_listener: ReadyListener,
+        #                 voice_state_change_listener: VoiceStateChangeListener,
+        #                 back_command: BackCommand,
+        #                 clean_command: CleanCommand,
+        #                 clear_command: ClearCommand,
+        #                 dj_command: DjCommand,
+        #                 forward_command: ForwardCommand,
+        #                 history_command: HistoryCommand,
+        #                 join_command: JoinCommand,
+        #                 jump_command: JumpCommand,
+        #                 leave_command: LeaveCommand,
+        #                 loop_command: LoopCommand,
+        #                 move_command: MoveCommand,
+        #                 next_command: NextCommand,
+        #                 now_command: NowCommand,
+        #                 pause_command: PauseCommand,
+        #                 play_command: PlayCommand,
+        #                 previous_command: PreviousCommand,
+        #                 queue_command: QueueCommand,
+        #                 remove_command: RemoveCommand,
+        #                 resume_command: ResumeCommand,
+        #                 rewind_command: RewindCommand,
+        #                 seek_command: SeekCommand,
+        #                 setting_command: SettingCommand,
+        #                 shuffle_command: ShuffleCommand,
+        #                 shutdown_command: ShutdownCommand,
+        #                 stop_command: StopCommand,
+        #                 version_command: VersionCommand,
+        #                 volume_command: VolumeCommand,
+        #                 votenext_command: VotenextCommand) -> commands.Bot:
+        #     intents = discord.Intents.default()
+        #     intents.members = True #Needed to check dj members
+        #     intents.voice_states = True #Needed to check when members leave voice channels
+        #     activity = discord.Activity(
+        #         type=configuration.activity_type,
+        #         name=configuration.activity_name,
+        #         state=configuration.activity_state,
+        #         url=configuration.activity_url,
+        #     )
+        #     bot = commands.Bot(
+        #         status=configuration.status,
+        #         intents=intents,
+        #         activity=activity,
+        #     )
+        #     bot.add_cog(application_command_error_listener)
+        #     bot.add_cog(error_listener)
+        #     bot.add_cog(ready_listener)
+        #     bot.add_cog(voice_state_change_listener)
+        #     bot.add_cog(back_command)
+        #     bot.add_cog(clean_command)
+        #     bot.add_cog(clear_command)
+        #     bot.add_cog(dj_command)
+        #     bot.add_cog(forward_command)
+        #     bot.add_cog(history_command)
+        #     bot.add_cog(join_command)
+        #     bot.add_cog(jump_command)
+        #     bot.add_cog(leave_command)
+        #     bot.add_cog(loop_command)
+        #     bot.add_cog(move_command)
+        #     bot.add_cog(next_command)
+        #     bot.add_cog(now_command)
+        #     bot.add_cog(pause_command)
+        #     bot.add_cog(play_command)
+        #     bot.add_cog(previous_command)
+        #     bot.add_cog(queue_command)
+        #     bot.add_cog(remove_command)
+        #     bot.add_cog(resume_command)
+        #     bot.add_cog(rewind_command)
+        #     bot.add_cog(seek_command)
+        #     bot.add_cog(setting_command)
+        #     bot.add_cog(shuffle_command)
+        #     bot.add_cog(shutdown_command)
+        #     bot.add_cog(stop_command)
+        #     bot.add_cog(version_command)
+        #     bot.add_cog(volume_command)
+        #     bot.add_cog(votenext_command)
+        #     @bot.event
+        #     async def on_application_command_error(interaction: discord.Interaction, error):
+        #         await application_command_error_listener.on_application_command_error(interaction, error)
+        #     @bot.event
+        #     async def on_error(event: str, *args, **kwargs):
+        #         await error_listener.on_error(event, *args, **kwargs)
+        #     return bot

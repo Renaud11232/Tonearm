@@ -1,2 +1,2 @@
-from .tonearm import Tonearm
+from .tonearm import TonearmBot
 from .module import BotModule

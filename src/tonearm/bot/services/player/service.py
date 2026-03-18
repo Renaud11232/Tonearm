@@ -4,8 +4,8 @@ import time
 import asyncio
 import logging
 
-import nextcord
-from nextcord.ext import commands
+import discord
+from discord.ext import commands
 
 from injector import inject, noninjectable
 
@@ -28,7 +28,7 @@ class PlayerService:
     @inject
     @noninjectable("guild", "storage_service", "embed_service")
     def __init__(self,
-                 guild: nextcord.Guild,
+                 guild: discord.Guild,
                  storage_service: StorageService,
                  embed_service: EmbedService,
                  bot: commands.Bot,
@@ -49,12 +49,12 @@ class PlayerService:
 
     @property
     def __voice_client(self) -> TonearmVoiceClient | None:
-        protocol = nextcord.utils.get(self.__bot.voice_clients, guild=self.__guild)
+        protocol = discord.utils.get(self.__bot.voice_clients, guild=self.__guild)
         if isinstance(protocol, TonearmVoiceClient):
             return protocol
         return None
 
-    def __check_member_in_voice_channel(self, member: nextcord.Member):
+    def __check_member_in_voice_channel(self, member: discord.Member):
         self.__logger.debug(f"Checking if member {member.id} of guild {self.__guild.id} is in a voice channel")
         if member.voice is None or member.voice.channel is None:
             self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} was not in a voice channel")
@@ -63,7 +63,7 @@ class PlayerService:
             )
         self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} is in a voice channel")
 
-    def __check_same_voice_channel(self, member: nextcord.Member):
+    def __check_same_voice_channel(self, member: discord.Member):
         self.__logger.debug(f"Checking if member {member.id} of guild {self.__guild.id} is in the same voice channel as the bot")
         if self.__voice_client is None or member.voice.channel != self.__voice_client.channel:
             self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} was not in the same voice channel as the bot")
@@ -137,7 +137,7 @@ class PlayerService:
             )
         self.__logger.debug(f"The bot wasn't kicked recently")
 
-    def __check_did_not_vote_yet(self, member: nextcord.Member):
+    def __check_did_not_vote_yet(self, member: discord.Member):
         self.__logger.debug(f"Checking the member {member.id} did already vote to skip the current track in guild {self.__guild.id}")
         if member.id in self.__votes:
             self.__logger.debug(f"Member {member.id} already did already vote in guild {self.__guild.id}")
@@ -158,14 +158,14 @@ class PlayerService:
     def __is_paused(self):
         return self.__voice_client is not None and self.__voice_client.is_paused()
 
-    async def join(self, member: nextcord.Member):
+    async def join(self, member: discord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to join him in a voice channel of guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)
             self.__check_not_in_voice_channel()
             await self.__safe_join(member.voice.channel)
 
-    async def __safe_join(self, channel: nextcord.VoiceChannel):
+    async def __safe_join(self, channel: discord.VoiceChannel):
         self.__logger.debug(f"Got request to join voice channel {channel.id} of guild {self.__guild.id}")
         self.__check_not_kicked_recently()
         await channel.connect(cls=TonearmVoiceClient)
@@ -219,7 +219,7 @@ class PlayerService:
         except asyncio.CancelledError:
             self.__logger.debug(f"Cancelled player loop for guild {self.__guild.id}")
 
-    async def __send_to_channel(self, embed: nextcord.Embed):
+    async def __send_to_channel(self, embed: discord.Embed):
         channel = self.__storage_service.get_channel()
         self.__logger.debug(f"Sending message to the configured bot channel ({channel.id}) : in guild {self.__guild.id}")
         if channel is not None:
@@ -240,7 +240,7 @@ class PlayerService:
             self.__condition.notify()
             self.__votes.clear()
 
-    async def play(self, member: nextcord.Member, query: str) -> List[QueuedTrack]:
+    async def play(self, member: discord.Member, query: str) -> List[QueuedTrack]:
         self.__logger.debug(f"Member {member.id} asked the bot to play {repr(query)} in guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)
@@ -264,7 +264,7 @@ class PlayerService:
             self.__logger.debug(f"Stopping voice client in guild {self.__guild.id}")
             self.__voice_client.stop()
 
-    async def stop(self, member: nextcord.Member):
+    async def stop(self, member: discord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to stop playing in guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)
@@ -279,7 +279,7 @@ class PlayerService:
         self.__safe_stop_current_track()
         self.__logger.debug(f"Clearing previous tracks in guild {self.__guild.id}")
 
-    async def leave(self, member: nextcord.Member):
+    async def leave(self, member: discord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to leave the current voice channel in guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)
@@ -299,7 +299,7 @@ class PlayerService:
             self.__player_loop_task.cancel()
             self.__player_loop_task = None
 
-    async def on_voice_state_update(self, member: nextcord.Member, before: nextcord.VoiceState, after: nextcord.VoiceState):
+    async def on_voice_state_update(self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState):
         if before.channel != after.channel:
             if before.channel is not None:
                 if member.id != self.__bot.user.id:
@@ -325,7 +325,7 @@ class PlayerService:
             self.__logger.debug(f"Finished waiting, leaving voice channel in guild {self.__guild.id}")
             await self.__safe_leave()
 
-    async def __on_user_moved_or_left(self, member: nextcord.Member, from_channel: nextcord.VoiceChannel):
+    async def __on_user_moved_or_left(self, member: discord.Member, from_channel: discord.VoiceChannel):
         async with self.__condition:
             if self.__is_connected() and self.__voice_client.channel == from_channel:
                 if self.__is_alone():
@@ -335,13 +335,13 @@ class PlayerService:
                     self.__votes.discard(member.id)
                     await self.__safe_handle_vote(True)
 
-    def clear(self, member: nextcord.Member):
+    def clear(self, member: discord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to clear the queue in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
         self.__queue.clear()
 
-    def seek(self, member: nextcord.Member, duration: int):
+    def seek(self, member: discord.Member, duration: int):
         self.__logger.debug(f"Member {member.id} asked the bot to seek to {duration}ms in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
@@ -355,21 +355,21 @@ class PlayerService:
         else:
             self.__logger.debug(f"Bot is not currently playing, not seeking in guild {self.__guild.id}")
 
-    def forward(self, member: nextcord.Member, duration: int):
+    def forward(self, member: discord.Member, duration: int):
         self.__logger.debug(f"Member {member.id} asked the bot to seek forward {duration}ms in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
         self.__check_active_audio_source()
         self.__safe_seek(self.__audio_source.elapsed + duration)
 
-    def rewind(self, member: nextcord.Member, duration: int):
+    def rewind(self, member: discord.Member, duration: int):
         self.__logger.debug(f"Member {member.id} asked the bot to rewind {duration}ms in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
         self.__check_active_audio_source()
         self.__safe_seek(self.__audio_source.elapsed - duration)
 
-    def now(self, member: nextcord.Member) -> PlayerStatus:
+    def now(self, member: discord.Member) -> PlayerStatus:
         self.__logger.debug(f"Member {member.id} asked the bot to get the current track in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
@@ -387,14 +387,14 @@ class PlayerService:
             )
         )
 
-    def queue(self, member: nextcord.Member) -> PlayerStatus:
+    def queue(self, member: discord.Member) -> PlayerStatus:
         self.__logger.debug(f"Member {member.id} asked the bot to get the queue in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
         self.__check_queue_not_empty()
         return self.__get_status()
 
-    def volume(self, member: nextcord.Member, volume: int):
+    def volume(self, member: discord.Member, volume: int):
         self.__logger.debug(f"Member {member.id} asked the bot to change the volume to {volume}% in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
@@ -402,14 +402,14 @@ class PlayerService:
         if self.__is_active():
             self.__audio_source.volume = volume / 100
 
-    def shuffle(self, member: nextcord.Member):
+    def shuffle(self, member: discord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to shuffle the queue in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
         self.__check_queue_not_empty()
         self.__queue.shuffle()
 
-    def pause(self, member: nextcord.Member):
+    def pause(self, member: discord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to pause playback in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
@@ -417,7 +417,7 @@ class PlayerService:
         self.__check_not_paused()
         self.__voice_client.pause()
 
-    def resume(self, member: nextcord.Member):
+    def resume(self, member: discord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to pause playback in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
@@ -425,13 +425,13 @@ class PlayerService:
         self.__check_paused()
         self.__voice_client.resume()
 
-    def history(self, member: nextcord.Member) -> List[QueuedTrack]:
+    def history(self, member: discord.Member) -> List[QueuedTrack]:
         self.__logger.debug(f"Member {member.id} asked the bot to get the track history in guild {self.__guild.id}")
         self.__check_member_in_voice_channel(member)
         self.__check_same_voice_channel(member)
         return self.__queue.get_previous_tracks()
 
-    async def back(self, member: nextcord.Member, track: int):
+    async def back(self, member: discord.Member, track: int):
         self.__logger.debug(f"Member {member.id} asked the bot to go back to track {track} in the history in guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)
@@ -440,7 +440,7 @@ class PlayerService:
             await self.__queue.back(track)
             self.__safe_stop_current_track()
 
-    async def jump(self, member: nextcord.Member, track: int):
+    async def jump(self, member: discord.Member, track: int):
         self.__logger.debug(f"Member {member.id} asked the bot to jump to track {track} in guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)
@@ -452,7 +452,7 @@ class PlayerService:
         await self.__queue.jump(track)
         self.__safe_stop_current_track()
 
-    async def remove(self, member: nextcord.Member, track: int) -> QueuedTrack:
+    async def remove(self, member: discord.Member, track: int) -> QueuedTrack:
         self.__logger.debug(f"Member {member.id} asked the bot to remove track {track} from the queue in guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)
@@ -460,7 +460,7 @@ class PlayerService:
             self.__check_queue_not_empty()
             return await self.__queue.remove(track)
 
-    async def move(self, member: nextcord.Member, from_: int, to: int) -> QueuedTrack:
+    async def move(self, member: discord.Member, from_: int, to: int) -> QueuedTrack:
         self.__logger.debug(f"Member {member.id} asked the bot to move track {from_} to {to} in in guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)
@@ -468,14 +468,14 @@ class PlayerService:
             self.__check_queue_not_empty()
             return await self.__queue.move(from_, to)
 
-    async def loop(self, member: nextcord.Member, mode: LoopMode):
+    async def loop(self, member: discord.Member, mode: LoopMode):
         self.__logger.debug(f"Member {member.id} asked the bot to change the loop mode to {mode} in in guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)
             self.__check_same_voice_channel(member)
             await self.__queue.loop(mode)
 
-    async def votenext(self, member: nextcord.Member) -> VoteStatus:
+    async def votenext(self, member: discord.Member) -> VoteStatus:
         self.__logger.debug(f"Member {member.id} voted to skip the current track in guild {self.__guild.id}")
         async with self.__condition:
             self.__check_member_in_voice_channel(member)

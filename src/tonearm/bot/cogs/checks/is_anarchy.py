@@ -1,18 +1,15 @@
-from injector import inject
+import discord
 
-import nextcord
-from nextcord.ext import application_checks
+from injector import inject, noninjectable
 
 from tonearm.bot.managers import StorageManager
 
+from .internal import dependency_needing_check
 
-class IsAnarchy:
 
+def is_anarchy():
     @inject
-    def __init__(self, storage_manager: StorageManager):
-        self.__storage_manager = storage_manager
-
-    def __call__(self):
-        def predicate(interaction: nextcord.Interaction) -> bool:
-            return self.__storage_manager.get(interaction.guild).get_anarchy()
-        return application_checks.check(predicate)
+    @noninjectable("interaction")
+    async def predicate(interaction: discord.Interaction, storage_manager: StorageManager) -> bool:
+        return storage_manager.get(interaction.guild).get_anarchy()
+    return dependency_needing_check(predicate)

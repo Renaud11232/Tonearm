@@ -1,12 +1,13 @@
-from nextcord.ext import commands
+from discord.ext import commands
+from injector import Injector
 
 
-class CommandCogBase(commands.Cog):
+class CogBase(commands.Cog):
 
-    def __init__(self):
+    def __init__(self, injector: Injector) -> None:
         super().__init__()
+        self.__injector = injector
 
-    def _add_checks(self, *commands, checks):
-        for command in commands:
-            for check in checks:
-                command.checks.append(check.predicate)
+    @property
+    def injector(self) -> Injector:
+        return self.__injector

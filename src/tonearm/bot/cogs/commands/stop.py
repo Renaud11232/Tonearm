@@ -1,45 +1,37 @@
 import logging
 
-import nextcord
-from nextcord import Locale
-from nextcord.ext import application_checks
+import discord
+from discord import app_commands
 
-from injector import inject, singleton
+from injector import inject, singleton, Injector
 
-from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
-from tonearm.bot.managers import PlayerManager, TranslationsManager, EmbedManager
+from tonearm.bot.cogs.checks import can_use_dj_command, is_correct_channel
+from tonearm.bot.managers import PlayerManager, EmbedManager
 
-from .base import CommandCogBase
+from .base import CogBase
 
 
 @singleton
-class StopCommand(CommandCogBase):
+class StopCommand(CogBase):
 
     @inject
     def __init__(self,
                  player_manager: PlayerManager,
                  embed_manager: EmbedManager,
-                 is_correct_channel: IsCorrectChannel,
-                 can_use_dj_command: CanUseDjCommand):
-        super().__init__()
+                 injector: Injector):
+        super().__init__(injector)
         self.__player_manager = player_manager
         self.__embed_manager = embed_manager
         self.__logger = logging.getLogger("tonearm.commands")
-        self._add_checks(self.stop, checks=[
-            application_checks.guild_only(),
-            is_correct_channel(),
-            can_use_dj_command()
-        ])
 
-    @nextcord.slash_command(
+    @app_commands.command(
         name="stop",
-        description=TranslationsManager().get(Locale.en_US).gettext("Stop the current playback"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Stop the current playback"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Stop the current playback"),
-        }
+        description="Stop the current playback"
     )
-    async def stop(self, interaction: nextcord.Interaction):
+    @app_commands.guild_only()
+    @is_correct_channel()
+    @can_use_dj_command()
+    async def stop(self, interaction: discord.Interaction):
         self.__logger.debug(f"Handling `stop` command (interaction:{interaction.id})")
         await interaction.response.defer()
         await self.__player_manager.get(interaction.guild).stop(interaction.user)

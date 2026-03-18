@@ -1,93 +1,62 @@
 import logging
 
-import nextcord
-from nextcord import SlashOption, Locale
-from nextcord.ext import application_checks
+import discord
+from discord import app_commands
 
-from injector import singleton, inject
+from injector import singleton, inject, Injector
 
-from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
-from tonearm.bot.managers import PlayerManager, TranslationsManager, EmbedManager
-from tonearm.bot.cogs.converters import LoopModeConverter
+from tonearm.bot.cogs.checks import can_use_dj_command, is_correct_channel
+from tonearm.bot.managers import PlayerManager, EmbedManager
+from tonearm.bot.cogs.transformers import LoopModeTransformer
 from tonearm.bot.services.player import LoopMode
 
-from .base import CommandCogBase
+from .base import CogBase
 
 
 @singleton
-class LoopCommand(CommandCogBase):
+class LoopCommand(CogBase):
 
     @inject
     def __init__(self,
                  player_manager: PlayerManager,
                  embed_manager: EmbedManager,
-                 is_correct_channel: IsCorrectChannel,
-                 can_use_dj_command: CanUseDjCommand):
-        super().__init__()
+                 injector: Injector):
+        super().__init__(injector)
         self.__player_manager = player_manager
         self.__embed_manager = embed_manager
         self.__logger = logging.getLogger("tonearm.commands")
-        self._add_checks(self.loop, self.repeat, checks=[
-            application_checks.guild_only(),
-            is_correct_channel(),
-            can_use_dj_command()
-        ])
 
-    @nextcord.slash_command(
+    @app_commands.command(
         name="loop",
-        description=TranslationsManager().get(Locale.en_US).gettext("Set the loop mode of the current playback queue"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Set the loop mode of the current playback queue"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Set the loop mode of the current playback queue"),
-        }
+        description="Set the loop mode of the current playback queue"
     )
+    @app_commands.describe(
+        mode="Loop mode to use"
+    )
+    @app_commands.guild_only()
+    @is_correct_channel()
+    @can_use_dj_command()
     async def loop(self,
-                   interaction: nextcord.Interaction,
-                   mode: LoopModeConverter = SlashOption(
-                       name=TranslationsManager().get(Locale.en_US).gettext("mode"),
-                       name_localizations={
-                           Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("mode"),
-                           Locale.fr: TranslationsManager().get(Locale.fr).gettext("mode"),
-                       },
-                       description=TranslationsManager().get(Locale.en_US).gettext("Loop mode to use"),
-                       description_localizations={
-                           Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Loop mode to use"),
-                           Locale.fr: TranslationsManager().get(Locale.fr).gettext("Loop mode to use"),
-                       },
-                       choices=LoopModeConverter.get_choices(),
-                       choice_localizations=LoopModeConverter.get_choice_localizations(),
-                       required=True
-                   )):
-        await self.__loop(interaction, mode)  # type: ignore
+                   interaction: discord.Interaction,
+                   mode: app_commands.Transform[LoopMode, LoopModeTransformer]):
+        await self.__loop(interaction, mode)
 
-    @nextcord.slash_command(
+    @app_commands.command(
         name="repeat",
-        description=TranslationsManager().get(Locale.en_US).gettext("Set the loop mode of the current playback queue"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Set the loop mode of the current playback queue"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Set the loop mode of the current playback queue"),
-        }
+        description="Set the loop mode of the current playback queue"
     )
+    @app_commands.describe(
+        mode="Loop mode to use"
+    )
+    @app_commands.guild_only()
+    @is_correct_channel()
+    @can_use_dj_command()
     async def repeat(self,
-                     interaction: nextcord.Interaction,
-                     mode: LoopModeConverter = SlashOption(
-                         name=TranslationsManager().get(Locale.en_US).gettext("mode"),
-                         name_localizations={
-                             Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("mode"),
-                             Locale.fr: TranslationsManager().get(Locale.fr).gettext("mode"),
-                         },
-                         description=TranslationsManager().get(Locale.en_US).gettext("Loop mode to use"),
-                         description_localizations={
-                             Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Loop mode to use"),
-                             Locale.fr: TranslationsManager().get(Locale.fr).gettext("Loop mode to use"),
-                         },
-                         choices=LoopModeConverter.get_choices(),
-                         choice_localizations=LoopModeConverter.get_choice_localizations(),
-                         required=True
-                     )):
-        await self.__loop(interaction, mode)  # type: ignore
+                     interaction: discord.Interaction,
+                     mode: app_commands.Transform[LoopMode, LoopModeTransformer]):
+        await self.__loop(interaction, mode)
 
-    async def __loop(self, interaction: nextcord.Interaction, mode: LoopMode):
+    async def __loop(self, interaction: discord.Interaction, mode: LoopMode):
         self.__logger.debug(f"Handling `loop` command (interaction:{interaction.id})")
         await interaction.response.defer()
         await self.__player_manager.get(interaction.guild).loop(interaction.user, mode)

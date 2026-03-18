@@ -1,62 +1,44 @@
 import logging
 
-import nextcord
-from nextcord import SlashOption, Locale
-from nextcord.ext import application_checks
+import discord
+from discord import app_commands
 
-from injector import inject, singleton
+from injector import inject, singleton, Injector
 
-from tonearm.bot.managers import ChatManager, TranslationsManager, EmbedManager
-from tonearm.bot.cogs.checks import IsGuildAdministrator
+from tonearm.bot.managers import ChatManager, EmbedManager
+from tonearm.bot.cogs.checks import is_guild_administrator
 
-from .base import CommandCogBase
+from .base import CogBase
 
 
 @singleton
-class CleanCommand(CommandCogBase):
+class CleanCommand(CogBase):
 
     @inject
     def __init__(self,
                  chat_manager: ChatManager,
                  embed_manager: EmbedManager,
-                 is_guild_administrator: IsGuildAdministrator):
-        super().__init__()
+                 injector: Injector):
+        super().__init__(injector)
         self.__chat_manager = chat_manager
         self.__embed_manager = embed_manager
         self.__logger = logging.getLogger("tonearm.commands")
-        self._add_checks(self.clean, checks=[
-            application_checks.guild_only(),
-            is_guild_administrator()
-        ])
 
-    @nextcord.slash_command(
+    @app_commands.command(
         name="clean",
-        description=TranslationsManager().get(Locale.en_US).gettext("Delete bot messages in the channel (up to 100 at once)"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Delete bot messages in the channel (up to 100 at once)"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Delete bot messages in the channel (up to 100 at once)")
-        }
+        description="Delete bot messages in the channel (up to 100 at once)"
     )
+    @app_commands.describe(
+        limit="Maximum number of messages to delete in one run"
+    )
+    @app_commands.guild_only()
+    @is_guild_administrator()
     async def clean(self,
-                    interaction: nextcord.Interaction,
-                    limit: int = SlashOption(
-                        name=TranslationsManager().get(Locale.en_US).gettext("limit"),
-                        name_localizations={
-                            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("limit"),
-                            Locale.fr: TranslationsManager().get(Locale.fr).gettext("limit")
-                        },
-                        description=TranslationsManager().get(Locale.en_US).gettext("Maximum number of messages to delete in one run"),
-                        description_localizations={
-                            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Maximum number of messages to delete in one run"),
-                            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Maximum number of messages to delete in one run")
-                        },
-                        required=True,
-                        min_value=1,
-                        max_value=100
-                    )):
+                    interaction: discord.Interaction,
+                    limit: app_commands.Range[int, 1, 100]):
         self.__logger.debug(f"Handling `clean` command (interaction:{interaction.id})")
         await interaction.response.defer(ephemeral=True)
-        messages = await self.__chat_manager.get(interaction.channel).clean(limit)  # type: ignore
+        messages = await self.__chat_manager.get(interaction.channel).clean(limit)
         await interaction.followup.send(
             embed=self.__embed_manager.get(interaction.guild).clean(messages)
         )

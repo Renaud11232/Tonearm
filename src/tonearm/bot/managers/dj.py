@@ -1,4 +1,4 @@
-import nextcord
+import discord
 
 from injector import singleton, inject, Injector
 
@@ -9,7 +9,7 @@ from .storage import StorageManager
 
 
 @singleton
-class DjManager(ManagerBase[nextcord.Guild, DjService]):
+class DjManager(ManagerBase[discord.Guild, DjService]):
 
     @inject
     def __init__(self, storage_manager: StorageManager, injector: Injector):
@@ -17,10 +17,10 @@ class DjManager(ManagerBase[nextcord.Guild, DjService]):
         self.__storage_manager = storage_manager
         self.__injector = injector
 
-    def _get_id(self, key: nextcord.Guild) -> int:
+    def _get_id(self, key: discord.Guild) -> int:
         return key.id
 
-    def _create(self, key: nextcord.Guild) -> DjService:
+    def _create(self, key: discord.Guild) -> DjService:
         return self.__injector.create_object(
             DjService,
             additional_kwargs={

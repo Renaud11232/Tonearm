@@ -1,44 +1,37 @@
 import logging
 
-import nextcord
-from nextcord import Locale
-from nextcord.ext import application_checks
+import discord
+from discord import app_commands
 
-from injector import inject, singleton
+from injector import inject, singleton, Injector
 
-from tonearm.bot.cogs.checks import IsCorrectChannel
-from tonearm.bot.managers import TranslationsManager, EmbedManager
+from tonearm.bot.cogs.checks import is_correct_channel
+from tonearm.bot.managers import EmbedManager
 from tonearm.bot.services import BotService
 
-from .base import CommandCogBase
+from .base import CogBase
 
 
 @singleton
-class VersionCommand(CommandCogBase):
+class VersionCommand(CogBase):
 
     @inject
     def __init__(self,
                  bot_service: BotService,
                  embed_manager: EmbedManager,
-                 is_correct_channel: IsCorrectChannel):
-        super().__init__()
+                 injector: Injector):
+        super().__init__(injector)
         self.__bot_service = bot_service
         self.__embed_manager = embed_manager
         self.__logger = logging.getLogger("tonearm.commands")
-        self._add_checks(self.version, checks=[
-            application_checks.guild_only(),
-            is_correct_channel()
-        ])
 
-    @nextcord.slash_command(
+    @app_commands.command(
         name="version",
-        description=TranslationsManager().get(Locale.en_US).gettext("Show nerdy details about the bot"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Show nerdy details about the bot"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Show nerdy details about the bot"),
-        }
+        description="Show nerdy details about the bot"
     )
-    async def version(self, interaction: nextcord.Interaction):
+    @app_commands.guild_only()
+    @is_correct_channel()
+    async def version(self, interaction: discord.Interaction):
         self.__logger.debug(f"Handling `version` command (interaction:{interaction.id})")
         await interaction.response.defer()
         version = self.__bot_service.version()

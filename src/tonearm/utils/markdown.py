@@ -1,4 +1,4 @@
-from nextcord.utils import escape_markdown
+from discord.utils import escape_markdown
 
 def escape_link_text(text: str) -> str:
     return text.replace('[', '［').replace(']', '］')

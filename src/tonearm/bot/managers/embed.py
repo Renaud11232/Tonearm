@@ -1,6 +1,6 @@
 from injector import singleton, inject, Injector
 
-import nextcord
+import discord
 
 from tonearm.bot.services import EmbedService
 
@@ -9,7 +9,7 @@ from .storage import StorageManager
 
 
 @singleton
-class EmbedManager(ManagerBase[nextcord.Guild, EmbedService]):
+class EmbedManager(ManagerBase[discord.Guild, EmbedService]):
 
     @inject
     def __init__(self, storage_manager: StorageManager, injector: Injector):
@@ -17,10 +17,10 @@ class EmbedManager(ManagerBase[nextcord.Guild, EmbedService]):
         self.__storage_manager = storage_manager
         self.__injector = injector
 
-    def _get_id(self, key: nextcord.Guild) -> int:
+    def _get_id(self, key: discord.Guild) -> int:
         return key.id
 
-    def _create(self, key: nextcord.Guild) -> EmbedService:
+    def _create(self, key: discord.Guild) -> EmbedService:
         return self.__injector.create_object(
             EmbedService,
             additional_kwargs={

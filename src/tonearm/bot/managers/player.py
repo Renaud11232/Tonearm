@@ -1,4 +1,4 @@
-import nextcord
+import discord
 
 from injector import singleton, inject, Injector
 
@@ -10,7 +10,7 @@ from .embed import EmbedManager
 
 
 @singleton
-class PlayerManager(ManagerBase[nextcord.Guild, PlayerService]):
+class PlayerManager(ManagerBase[discord.Guild, PlayerService]):
 
     @inject
     def __init__(self, storage_manager: StorageManager, embed_manager: EmbedManager, injector: Injector):
@@ -19,10 +19,10 @@ class PlayerManager(ManagerBase[nextcord.Guild, PlayerService]):
         self.__embed_manager = embed_manager
         self.__injector = injector
 
-    def _get_id(self, key: nextcord.Guild) -> int:
+    def _get_id(self, key: discord.Guild) -> int:
         return key.id
 
-    def _create(self, key: nextcord.Guild) -> PlayerService:
+    def _create(self, key: discord.Guild) -> PlayerService:
         return self.__injector.create_object(
             PlayerService,
             additional_kwargs={

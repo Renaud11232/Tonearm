@@ -2,7 +2,7 @@ import logging
 
 from injector import inject, singleton
 
-from nextcord.ext import commands
+from discord.ext import commands
 
 from tonearm.bot.services import BotService
 

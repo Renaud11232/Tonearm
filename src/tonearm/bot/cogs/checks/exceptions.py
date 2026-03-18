@@ -1,8 +1,8 @@
-from nextcord import ApplicationCheckFailure
+from discord.app_commands.errors import CheckFailure
 
 
-class IsAnarchy(ApplicationCheckFailure):
+class IsAnarchy(CheckFailure):
     pass
 
-class NotCorrectChannel(ApplicationCheckFailure):
+class NotCorrectChannel(CheckFailure):
     pass

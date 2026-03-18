@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 
 from injector import inject, singleton
-import nextcord
+import discord
 
 from .base import SourceServiceBase
 from .direct_url import DirectUrlSourceService
@@ -32,7 +32,7 @@ class SourceService(SourceServiceBase):
             SourceServiceEntry(r"^https?://.*$", direct_url_source_service)
         ]
 
-    def open(self, url: str) -> nextcord.AudioSource:
+    def open(self, url: str) -> discord.AudioSource:
         for entry in self.__source_services:
             if re.search(entry.pattern, url):
                 return entry.service.open(url)

@@ -1,6 +1,6 @@
 import inspect
 
-from nextcord import voice_client, Client, abc
+from discord import voice_client, Client, abc
 
 
 class TonearmVoiceClient(voice_client.VoiceClient):

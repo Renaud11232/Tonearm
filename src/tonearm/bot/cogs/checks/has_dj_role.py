@@ -1,20 +1,18 @@
-from injector import inject
+from injector import inject, noninjectable
 
-import nextcord
-from nextcord.ext import application_checks
+import discord
+from discord import app_commands
 
 from tonearm.bot.managers import StorageManager
 
+from .internal import dependency_needing_check, recover_predicates
 
-class HasDjRole:
 
+def has_dj_role():
     @inject
-    def __init__(self, storage_manager: StorageManager):
-        self.__storage_manager = storage_manager
-
-    def __call__(self):
-        def predicate(interaction: nextcord.Interaction) -> bool:
-            roles = self.__storage_manager.get(interaction.guild).get_dj_roles()
-            int_roles = list(map(lambda role: role.id, roles))
-            return application_checks.has_any_role(*int_roles).predicate(interaction)
-        return application_checks.check(predicate)
+    @noninjectable("interaction")
+    async def predicate(interaction: discord.Interaction, storage_manager: StorageManager) -> bool:
+        roles = storage_manager.get(interaction.guild).get_dj_roles()
+        int_roles = list(map(lambda role: role.id, roles))
+        return await discord.utils.maybe_coroutine(recover_predicates(app_commands.checks.has_any_role(*int_roles))[0], interaction)
+    return dependency_needing_check(predicate)

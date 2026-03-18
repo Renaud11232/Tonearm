@@ -1,7 +1,7 @@
-from nextcord.errors import ApplicationError
+from discord.app_commands import AppCommandError
 
-
-class TonearmException(ApplicationError):
+#FIXME Is this compatible with discord.py, check all exceptions in fact
+class TonearmException(AppCommandError):
     def __init__(self, template: str, **kwargs):
         super().__init__(template.format(**kwargs))
         self.__template = template

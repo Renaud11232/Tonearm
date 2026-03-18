@@ -1,42 +1,37 @@
 import logging
 
-import nextcord
-from nextcord import Locale
-from nextcord.ext import application_checks
+import discord
+from discord import app_commands
 
-from injector import inject, singleton
+from injector import inject, singleton, Injector
 
+from tonearm.bot.cogs.checks import is_owner
 from tonearm.bot.services import BotService
-from tonearm.bot.managers import TranslationsManager, EmbedManager
+from tonearm.bot.managers import EmbedManager
 
-from .base import CommandCogBase
+from .base import CogBase
 
 
 @singleton
-class ShutdownCommand(CommandCogBase):
+class ShutdownCommand(CogBase):
 
     @inject
     def __init__(self,
                  bot_service: BotService,
-                 embed_manager: EmbedManager):
-        super().__init__()
+                 embed_manager: EmbedManager,
+                 injector: Injector):
+        super().__init__(injector)
         self.__bot_service = bot_service
         self.__embed_manager = embed_manager
         self.__logger = logging.getLogger("tonearm.commands")
-        self._add_checks(self.shutdown, checks=[
-            application_checks.guild_only(),
-            application_checks.is_owner()
-        ])
 
-    @nextcord.slash_command(
+    @app_commands.command(
         name="shutdown",
-        description=TranslationsManager().get(Locale.en_US).gettext("Shut the bot down"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Shut the bot down"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Shut the bot down"),
-        }
+        description="Shut the bot down"
     )
-    async def shutdown(self, interaction: nextcord.Interaction):
+    @app_commands.guild_only()
+    @is_owner()
+    async def shutdown(self, interaction: discord.Interaction):
         self.__logger.debug(f"Handling `shutdown` command (interaction:{interaction.id})")
         await interaction.response.defer()
         await interaction.followup.send(

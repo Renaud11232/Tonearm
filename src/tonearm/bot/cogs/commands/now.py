@@ -1,57 +1,46 @@
 import logging
 
-import nextcord
-from nextcord import Locale
-from nextcord.ext import application_checks
+import discord
+from discord import app_commands
 
-from injector import singleton, inject
+from injector import singleton, inject, Injector
 
-from tonearm.bot.cogs.checks import IsCorrectChannel
-from tonearm.bot.managers import PlayerManager, TranslationsManager, EmbedManager
+from tonearm.bot.cogs.checks import is_correct_channel
+from tonearm.bot.managers import PlayerManager, EmbedManager
 
-from .base import CommandCogBase
+from .base import CogBase
 
 
 @singleton
-class NowCommand(CommandCogBase):
+class NowCommand(CogBase):
 
     @inject
     def __init__(self,
                  player_manager: PlayerManager,
                  embed_manager: EmbedManager,
-                 is_correct_channel: IsCorrectChannel):
-        super().__init__()
+                 injector: Injector):
+        super().__init__(injector)
         self.__player_manager = player_manager
         self.__embed_manager = embed_manager
         self.__logger = logging.getLogger("tonearm.commands")
-        self._add_checks(self.now, self.now_playing, checks=[
-            application_checks.guild_only(),
-            is_correct_channel()
-        ])
 
-    @nextcord.slash_command(
+    @app_commands.command(
         name="now",
-        description=TranslationsManager().get(Locale.en_US).gettext("Show the current playing track"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Show the current playing track"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Show the current playing track"),
-        }
+        description="Show the current playing track"
     )
-    async def now(self, interaction: nextcord.Interaction):
+    @app_commands.guild_only()
+    @is_correct_channel()
+    async def now(self, interaction: discord.Interaction):
         await self.__now(interaction)
 
-    @nextcord.slash_command(
+    @app_commands.command(
         name="now-playing",
-        description=TranslationsManager().get(Locale.en_US).gettext("Show the current playing track"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Show the current playing track"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Show the current playing track"),
-        }
+        description="Show the current playing track"
     )
-    async def now_playing(self, interaction: nextcord.Interaction):
+    async def now_playing(self, interaction: discord.Interaction):
         await self.__now(interaction)
 
-    async def __now(self, interaction: nextcord.Interaction):
+    async def __now(self, interaction: discord.Interaction):
         self.__logger.debug(f"Handling `now` command (interaction:{interaction.id})")
         await interaction.response.defer()
         status = self.__player_manager.get(interaction.guild).now(interaction.user)

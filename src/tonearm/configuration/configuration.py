@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-import nextcord
+import discord
 
 
 @dataclass
@@ -13,9 +13,9 @@ class Configuration:
     youtube_cookies: str | None
     data_path: str
     buffer_length: int
-    colour: nextcord.Colour
-    status: nextcord.Status
-    activity_type: nextcord.ActivityType
+    colour: discord.Colour
+    status: discord.Status
+    activity_type: discord.ActivityType
     activity_name: str | None
     activity_state: str | None
     activity_url: str | None

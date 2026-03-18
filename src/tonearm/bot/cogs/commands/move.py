@@ -1,79 +1,52 @@
 import logging
 
-import nextcord
-from nextcord import SlashOption, Locale
-from nextcord.ext import application_checks
+import discord
+from discord import app_commands
 
-from injector import singleton, inject
+from injector import singleton, inject, Injector
 
-from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
-from tonearm.bot.cogs.converters import ZeroIndexConverter
-from tonearm.bot.managers import PlayerManager, TranslationsManager, EmbedManager
+from tonearm.bot.cogs.checks import can_use_dj_command, is_correct_channel
+from tonearm.bot.cogs.transformers import ZeroIndexTransformer
+from tonearm.bot.managers import PlayerManager, EmbedManager
 
-from .base import CommandCogBase
+from .base import CogBase
 
 
 @singleton
-class MoveCommand(CommandCogBase):
+class MoveCommand(CogBase):
 
     @inject
     def __init__(self,
                  player_manager: PlayerManager,
                  embed_manager: EmbedManager,
-                 is_correct_channel: IsCorrectChannel,
-                 can_use_dj_command: CanUseDjCommand):
-        super().__init__()
+                 injector: Injector):
+        super().__init__(injector)
         self.__player_manager = player_manager
         self.__embed_manager = embed_manager
         self.__logger = logging.getLogger("tonearm.commands")
-        self._add_checks(self.move, checks=[
-            application_checks.guild_only(),
-            is_correct_channel(),
-            can_use_dj_command()
-        ])
 
-    @nextcord.slash_command(
+    @app_commands.command(
         name="move",
-        description=TranslationsManager().get(Locale.en_US).gettext("Change the position of a track in the queue"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Change the position of a track in the queue"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Change the position of a track in the queue")
-        }
+        description="Change the position of a track in the queue"
     )
+    @app_commands.describe(
+        from_="Initial track position",
+        to="Target track position"
+    )
+    @app_commands.rename(
+        from_="from"
+    )
+    @app_commands.guild_only()
+    @is_correct_channel()
+    @can_use_dj_command()
     async def move(self,
-                   interaction: nextcord.Interaction,
-                   from_: ZeroIndexConverter = SlashOption(
-                       name=TranslationsManager().get(Locale.en_US).gettext("from"),
-                       name_localizations={
-                           Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("from"),
-                           Locale.fr: TranslationsManager().get(Locale.en_US).gettext("from")
-                       },
-                       description=TranslationsManager().get(Locale.en_US).gettext("Initial track position"),
-                       description_localizations={
-                           Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Initial track position"),
-                           Locale.fr: TranslationsManager().get(Locale.fr).gettext("Initial track position"),
-                       },
-                       required=True,
-                       min_value=1
-                   ),
-                   to: ZeroIndexConverter = SlashOption(
-                       name=TranslationsManager().get(Locale.en_US).gettext("to"),
-                       name_localizations={
-                           Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("to"),
-                           Locale.fr: TranslationsManager().get(Locale.en_US).gettext("to")
-                       },
-                       description=TranslationsManager().get(Locale.en_US).gettext("Target track position"),
-                       description_localizations={
-                           Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Target track position"),
-                           Locale.fr: TranslationsManager().get(Locale.fr).gettext("Target track position"),
-                       },
-                       required=True,
-                       min_value=1
-                   )):
+                   interaction: discord.Interaction,
+                   from_: app_commands.Transform[int, ZeroIndexTransformer],
+                   to: app_commands.Transform[int, ZeroIndexTransformer]):
         self.__logger.debug(f"Handling `move` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        moved_track = await self.__player_manager.get(interaction.guild).move(interaction.user, from_, to) # type: ignore
+        moved_track = await self.__player_manager.get(interaction.guild).move(interaction.user, from_, to)
         await interaction.followup.send(
-            embed=self.__embed_manager.get(interaction.guild).move(moved_track, from_, to) # type: ignore
+            embed=self.__embed_manager.get(interaction.guild).move(moved_track, from_, to)
         )
         self.__logger.debug(f"Successfully handled `move` command (interaction:{interaction.id})")

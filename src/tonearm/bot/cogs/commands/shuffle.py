@@ -1,45 +1,37 @@
 import logging
 
-import nextcord
-from nextcord import Locale
-from nextcord.ext import application_checks
+import discord
+from discord import app_commands
 
-from injector import singleton, inject
+from injector import inject, singleton, Injector
 
-from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
-from tonearm.bot.managers import PlayerManager, TranslationsManager, EmbedManager
+from tonearm.bot.cogs.checks import can_use_dj_command, is_correct_channel
+from tonearm.bot.managers import PlayerManager, EmbedManager
 
-from .base import CommandCogBase
+from .base import CogBase
 
 
 @singleton
-class ShuffleCommand(CommandCogBase):
+class ShuffleCommand(CogBase):
 
     @inject
     def __init__(self,
                  player_manager: PlayerManager,
                  embed_manager: EmbedManager,
-                 is_correct_channel: IsCorrectChannel,
-                 can_use_dj_command: CanUseDjCommand):
-        super().__init__()
+                 injector: Injector):
+        super().__init__(injector)
         self.__player_manager = player_manager
         self.__embed_manager = embed_manager
         self.__logger = logging.getLogger("tonearm.commands")
-        self._add_checks(self.shuffle, checks=[
-            application_checks.guild_only(),
-            is_correct_channel(),
-            can_use_dj_command()
-        ])
 
-    @nextcord.slash_command(
+    @app_commands.command(
         name="shuffle",
-        description=TranslationsManager().get(Locale.en_US).gettext("Shuffle tracks in the queue"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Shuffle tracks in the queue"),
-            Locale.fr: TranslationsManager().get(Locale.en_US).gettext("Shuffle tracks in the queue"),
-        }
+        description="Shuffle tracks in the queue"
     )
-    async def shuffle(self, interaction: nextcord.Interaction):
+    @app_commands.guild_only()
+    @is_correct_channel()
+    @can_use_dj_command()
+    async def shuffle(self, interaction: discord.Interaction):
         self.__logger.debug(f"Handling `shuffle` command (interaction:{interaction.id})")
         await interaction.response.defer()
         self.__player_manager.get(interaction.guild).shuffle(interaction.user)

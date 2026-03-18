@@ -1,6 +1,6 @@
 from injector import singleton, inject
 import yt_dlp
-import nextcord
+import discord
 
 from tonearm.bot.services.source.exceptions import SourceOpeningException
 from tonearm.bot.services.source.base import SourceServiceBase
@@ -17,7 +17,7 @@ class YoutubeSourceService(SourceServiceBase):
         super().__init__()
         self.__configuration = configuration
 
-    def open(self, url: str) -> nextcord.AudioSource:
+    def open(self, url: str) -> discord.AudioSource:
         self._logger.debug(f"Fetching media from YouTube URL : {url}")
         options = {
             "format": "bestaudio",

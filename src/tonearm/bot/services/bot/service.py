@@ -1,8 +1,8 @@
 import logging
 import importlib.metadata
 
-import nextcord
-from nextcord.ext import commands
+import discord
+from discord.ext import commands
 
 from injector import ProviderOf, inject, singleton
 
@@ -26,13 +26,13 @@ class BotService:
             "bot",
             "applications.commands"
         ]
-        permissions = nextcord.Permissions.none()
+        permissions = discord.Permissions.none()
         permissions.update(
             connect=True,
             speak=True,
             use_voice_activation=True
         )
-        invite_url = nextcord.utils.oauth_url(
+        invite_url = discord.utils.oauth_url(
             self.__bot_provider.get().user.id,
             scopes=scopes,
             permissions=permissions

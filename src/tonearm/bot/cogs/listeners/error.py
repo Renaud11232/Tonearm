@@ -2,9 +2,9 @@ import logging
 import sys
 from typing import cast
 
-import nextcord
+import discord
 from injector import inject, singleton
-from nextcord.ext import commands
+from discord.ext import commands
 
 from tonearm.bot.exceptions import TonearmConverterException
 from tonearm.bot.managers import EmbedManager
@@ -21,7 +21,7 @@ class ErrorListener(commands.Cog):
     async def on_error(self, event: str, *args, **kwargs):
         exception = sys.exception()
         if isinstance(exception, TonearmConverterException):
-            interaction, = cast(tuple[nextcord.Interaction,], args)
+            interaction, = cast(tuple[discord.Interaction,], args)
             await interaction.send(
                 ephemeral=True,
                 embed=self.__embed_manager.get(interaction.guild).error(exception)

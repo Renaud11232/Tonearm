@@ -1,201 +1,133 @@
 import logging
 
-import nextcord
-from nextcord import SlashOption, Locale
-from nextcord.ext import application_checks
+import discord
+from discord import app_commands
 
-from injector import singleton, inject
+from injector import singleton, inject, Injector
 
-from tonearm.bot.managers import StorageManager, TranslationsManager, EmbedManager
-from tonearm.bot.cogs.checks import IsGuildAdministrator
-from tonearm.bot.cogs.converters import BooleanConverter, LocaleConverter
+from tonearm.bot.managers import StorageManager, EmbedManager
+from tonearm.bot.cogs.checks import is_guild_administrator
+from tonearm.bot.cogs.transformers import BooleanTransformer, LocaleTransformer
 
-from .base import CommandCogBase
+from .base import CogBase
 
 
 @singleton
-class SettingCommand(CommandCogBase):
+class SettingCommand(CogBase):
+
+    setting = app_commands.Group(
+        name="setting",
+        description="Manage global bot settings"
+    )
+    setting_set = app_commands.Group(
+        name="set",
+        description="Set global bot settings",
+        parent=setting
+    )
+    setting_reset = app_commands.Group(
+        name="reset",
+        description="Reset global bot settings",
+        parent=setting
+    )
+
 
     @inject
     def __init__(self,
                  storage_manager: StorageManager,
                  embed_manager: EmbedManager,
-                 is_guild_administrator: IsGuildAdministrator):
-        super().__init__()
+                 injector: Injector):
+        super().__init__(injector)
         self.__storage_manager = storage_manager
         self.__embed_manager = embed_manager
         self.__logger = logging.getLogger("tonearm.commands")
-        self._add_checks(
-            self.setting_set_channel,
-            self.setting_set_anarchy,
-            self.setting_set_announcements,
-            self.setting_set_locale,
-            self.setting_reset_channel,
-            self.setting_reset_anarchy,
-            self.setting_reset_announcements,
-            self.setting_reset_locale,
-            checks=[
-                application_checks.guild_only(),
-                is_guild_administrator()
-            ]
-        )
 
-    @nextcord.slash_command(
-        name="setting"
-    )
-    async def setting(self, interaction: nextcord.Interaction):
-        pass
-
-    @setting.subcommand(
-        name="set"
-    )
-    async def setting_set(self, interaction: nextcord.Interaction):
-        pass
-
-    @setting_set.subcommand(
+    @setting_set.command(
         name="channel",
-        description=TranslationsManager().get(Locale.en_US).gettext("Set the text channel where this bot should be used"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Set the text channel where this bot should be used"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Set the text channel where this bot should be used"),
-        }
+        description="Set the text channel where this bot should be used"
     )
+    @app_commands.describe(
+        value="Text channel where this bot should be used"
+    )
+    @app_commands.guild_only()
+    @is_guild_administrator()
     async def setting_set_channel(self,
-                                  interaction: nextcord.Interaction,
-                                  value: nextcord.TextChannel = SlashOption(
-                                      name=TranslationsManager().get(Locale.en_US).gettext("value"),
-                                      name_localizations={
-                                          Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("value"),
-                                          Locale.fr: TranslationsManager().get(Locale.fr).gettext("value"),
-                                      },
-                                      description=TranslationsManager().get(Locale.en_US).gettext("Text channel where this bot should be used"),
-                                      description_localizations={
-                                          Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Text channel where this bot should be used"),
-                                          Locale.fr: TranslationsManager().get(Locale.fr).gettext("Text channel where this bot should be used"),
-                                      },
-                                      required=True
-                                  )):
+                                  interaction: discord.Interaction,
+                                  value: discord.TextChannel):
         self.__logger.debug(f"Handling `setting set channel` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        self.__storage_manager.get(interaction.guild).set_channel(value) # type: ignore
+        self.__storage_manager.get(interaction.guild).set_channel(value)
         await interaction.followup.send(
             embed=self.__embed_manager.get(interaction.guild).setting_set("channel", value)
         )
         self.__logger.debug(f"Successfully handled `setting set channel` command (interaction:{interaction.id})")
 
-    @setting_set.subcommand(
+    @setting_set.command(
         name="anarchy",
-        description=TranslationsManager().get(Locale.en_US).gettext("Enable anarchy mode, allowing everyone to use DJ commands"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Enable anarchy mode, allowing everyone to use DJ commands"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Enable anarchy mode, allowing everyone to use DJ commands"),
-        }
+        description="Enable anarchy mode, allowing everyone to use DJ commands"
     )
+    @app_commands.describe(
+        value="True to enable anarchy mode, False to disable it"
+    )
+    @app_commands.guild_only()
+    @is_guild_administrator()
     async def setting_set_anarchy(self,
-                                  interaction: nextcord.Interaction,
-                                  value: BooleanConverter = SlashOption(
-                                      name=TranslationsManager().get(Locale.en_US).gettext("value"),
-                                      name_localizations={
-                                          Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("value"),
-                                          Locale.fr: TranslationsManager().get(Locale.fr).gettext("value"),
-                                      },
-                                      description=TranslationsManager().get(Locale.en_US).gettext("True to enable anarchy mode, False to disable it"),
-                                      description_localizations={
-                                          Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("True to enable anarchy mode, False to disable it"),
-                                          Locale.fr: TranslationsManager().get(Locale.fr).gettext("True to enable anarchy mode, False to disable it")
-                                      },
-                                      choices=BooleanConverter.get_choices(),
-                                      choice_localizations=BooleanConverter.get_choice_localizations(),
-                                      required=True
-                                  )):
+                                  interaction: discord.Interaction,
+                                  value: app_commands.Transform[bool, BooleanTransformer]):
         self.__logger.debug(f"Handling `setting set anarchy` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        self.__storage_manager.get(interaction.guild).set_anarchy(value)  # type: ignore
+        self.__storage_manager.get(interaction.guild).set_anarchy(value)
         await interaction.followup.send(
             embed=self.__embed_manager.get(interaction.guild).setting_set("anarchy", value)
         )
         self.__logger.debug(f"Successfully handled `setting set channel` command (interaction:{interaction.id})")
 
-    @setting_set.subcommand(
+    @setting_set.command(
         name="announcements",
-        description=TranslationsManager().get(Locale.en_US).gettext("Enable automatic track announcements"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Enable automatic track announcements"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Enable automatic track announcements"),
-        }
+        description="Enable automatic track announcements"
     )
+    @app_commands.describe(
+        value="True to enable automatic track announcements, False to disable them"
+    )
+    @app_commands.guild_only()
+    @is_guild_administrator()
     async def setting_set_announcements(self,
-                                        interaction: nextcord.Interaction,
-                                        value: BooleanConverter = SlashOption(
-                                            name=TranslationsManager().get(Locale.en_US).gettext("value"),
-                                            name_localizations={
-                                                Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("value"),
-                                                Locale.fr: TranslationsManager().get(Locale.fr).gettext("value"),
-                                            },
-                                            description=TranslationsManager().get(Locale.en_US).gettext("True to enable automatic track announcements, False to disable them"),
-                                            description_localizations={
-                                                Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("True to enable automatic track announcements, False to disable them"),
-                                                Locale.fr: TranslationsManager().get(Locale.fr).gettext("True to enable automatic track announcements, False to disable them")
-                                            },
-                                            choices=BooleanConverter.get_choices(),
-                                            choice_localizations=BooleanConverter.get_choice_localizations(),
-                                            required=True
-                                  )):
+                                        interaction: discord.Interaction,
+                                        value: app_commands.Transform[bool, BooleanTransformer]):
         self.__logger.debug(f"Handling `setting set announcements` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        self.__storage_manager.get(interaction.guild).set_announcements(value)  # type: ignore
+        self.__storage_manager.get(interaction.guild).set_announcements(value)
         await interaction.followup.send(
             embed=self.__embed_manager.get(interaction.guild).setting_set("announcements", value)
         )
         self.__logger.debug(f"Successfully handled `setting set announcements` command (interaction:{interaction.id})")
 
-    @setting_set.subcommand(
+    @setting_set.command(
         name="locale",
-        description=TranslationsManager().get(Locale.en_US).gettext("Set the language to use on this server"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Set the language to use on this server"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Set the language to use on this server"),
-        }
+        description="Set the language to use on this server"
     )
+    @app_commands.describe(
+        value="Language to use on this server"
+    )
+    @app_commands.guild_only()
+    @is_guild_administrator()
     async def setting_set_locale(self,
-                                 interaction: nextcord.Interaction,
-                                 value: LocaleConverter = SlashOption(
-                                     name=TranslationsManager().get(Locale.en_US).gettext("value"),
-                                     name_localizations={
-                                         Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("value"),
-                                         Locale.fr: TranslationsManager().get(Locale.fr).gettext("value"),
-                                     },
-                                     description=TranslationsManager().get(Locale.en_US).gettext("Language to use on this server"),
-                                     description_localizations={
-                                         Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Language to use on this server"),
-                                         Locale.fr: TranslationsManager().get(Locale.fr).gettext("Language to use on this server")
-                                     },
-                                     choices=LocaleConverter.get_choices(),
-                                     required=True
-                                 )):
+                                 interaction: discord.Interaction,
+                                 value: app_commands.Transform[discord.Locale, LocaleTransformer]):
         self.__logger.debug(f"Handling `setting set locale` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        self.__storage_manager.get(interaction.guild).set_locale(value)  # type: ignore
+        self.__storage_manager.get(interaction.guild).set_locale(value)
         await interaction.followup.send(
             embed=self.__embed_manager.get(interaction.guild).setting_set("locale", value)
         )
         self.__logger.debug(f"Successfully handled `setting set locale` command (interaction:{interaction.id})")
 
-    @setting.subcommand(
-        name="reset"
-    )
-    async def setting_reset(self, interaction: nextcord.Interaction):
-        pass
-
-    @setting_reset.subcommand(
+    @setting_reset.command(
         name="channel",
-        description=TranslationsManager().get(Locale.en_US).gettext("Reset the text channel where this bot should be used"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Reset the text channel where this bot should be used"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Reset the text channel where this bot should be used"),
-        }
+        description="Reset the text channel where this bot should be used"
     )
-    async def setting_reset_channel(self, interaction: nextcord.Interaction):
+    @app_commands.guild_only()
+    @is_guild_administrator()
+    async def setting_reset_channel(self, interaction: discord.Interaction):
         self.__logger.debug(f"Handling `setting reset channel` command (interaction:{interaction.id})")
         await interaction.response.defer()
         self.__storage_manager.get(interaction.guild).set_channel(None)
@@ -204,15 +136,13 @@ class SettingCommand(CommandCogBase):
         )
         self.__logger.debug(f"Successfully handled `setting reset channel` command (interaction:{interaction.id})")
 
-    @setting_reset.subcommand(
+    @setting_reset.command(
         name="anarchy",
-        description=TranslationsManager().get(Locale.en_US).gettext("Reset anarchy mode, enabling back DJ enforcement"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Reset anarchy mode, enabling back DJ enforcement"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Reset anarchy mode, enabling back DJ enforcement"),
-        }
+        description="Reset anarchy mode, enabling back DJ enforcement"
     )
-    async def setting_reset_anarchy(self, interaction: nextcord.Interaction):
+    @app_commands.guild_only()
+    @is_guild_administrator()
+    async def setting_reset_anarchy(self, interaction: discord.Interaction):
         self.__logger.debug(f"Handling `setting reset anarchy` command (interaction:{interaction.id})")
         await interaction.response.defer()
         self.__storage_manager.get(interaction.guild).set_anarchy(False)
@@ -221,15 +151,13 @@ class SettingCommand(CommandCogBase):
         )
         self.__logger.debug(f"Successfully handled `setting reset channel` command (interaction:{interaction.id})")
 
-    @setting_reset.subcommand(
+    @setting_reset.command(
         name="announcements",
-        description=TranslationsManager().get(Locale.en_US).gettext("Reset automatic track announcements, disabling them"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Reset automatic track announcements, disabling them"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Reset automatic track announcements, disabling them"),
-        }
+        description="Reset automatic track announcements, disabling them"
     )
-    async def setting_reset_announcements(self, interaction: nextcord.Interaction):
+    @app_commands.guild_only()
+    @is_guild_administrator()
+    async def setting_reset_announcements(self, interaction: discord.Interaction):
         self.__logger.debug(f"Handling `setting reset announcements` command (interaction:{interaction.id})")
         await interaction.response.defer()
         self.__storage_manager.get(interaction.guild).set_announcements(False)
@@ -238,19 +166,17 @@ class SettingCommand(CommandCogBase):
         )
         self.__logger.debug(f"Successfully handled `setting reset announcements` command (interaction:{interaction.id})")
 
-    @setting_reset.subcommand(
+    @setting_reset.command(
         name="locale",
-        description=TranslationsManager().get(Locale.en_US).gettext("Reset the language to use on this server"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Reset the language to use on this server"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Reset the language to use on this server"),
-        }
+        description="Reset the language to use on this server"
     )
-    async def setting_reset_locale(self, interaction: nextcord.Interaction):
+    @app_commands.guild_only()
+    @is_guild_administrator()
+    async def setting_reset_locale(self, interaction: discord.Interaction):
         self.__logger.debug(f"Handling `setting reset locale` command (interaction:{interaction.id})")
         await interaction.response.defer()
-        self.__storage_manager.get(interaction.guild).set_locale(nextcord.Locale.en_US)
+        self.__storage_manager.get(interaction.guild).set_locale(discord.Locale.american_english)
         await interaction.followup.send(
-            embed=self.__embed_manager.get(interaction.guild).setting_set("locale", nextcord.Locale.en_US)
+            embed=self.__embed_manager.get(interaction.guild).setting_set("locale", discord.Locale.american_english)
         )
         self.__logger.debug(f"Successfully handled `setting reset locale` command (interaction:{interaction.id})")

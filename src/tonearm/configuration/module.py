@@ -1,12 +1,11 @@
 import argparse
 import logging
 
-import nextcord
+import discord
 from injector import Module, singleton, provider
 
 from .configuration import Configuration
 from .action import EnvDefault
-from .converters import color
 
 
 class ConfigurationModule(Module):
@@ -90,7 +89,7 @@ class ConfigurationModule(Module):
         parser.add_argument(
             "--embed-color",
             action=EnvDefault,
-            type=color,
+            type=discord.Colour.from_str,
             required=True,
             default="#71368A",
             env_var="EMBED_COLOR",
@@ -101,9 +100,9 @@ class ConfigurationModule(Module):
             action=EnvDefault,
             type=str,
             required=True,
-            default=nextcord.Status.online.name,
+            default=discord.Status.online.name,
             env_var="STATUS",
-            choices=[s.name for s in nextcord.Status],
+            choices=[s.name for s in discord.Status],
             help="Bot status. Defaults to `online`"
         )
         parser.add_argument(
@@ -111,9 +110,9 @@ class ConfigurationModule(Module):
             action=EnvDefault,
             type=str,
             required=True,
-            default=nextcord.ActivityType.listening.name,
+            default=discord.ActivityType.listening.name,
             env_var="ACTIVITY_TYPE",
-            choices=[t.name for t in nextcord.ActivityType if t.value >= 0],
+            choices=[t.name for t in discord.ActivityType if t.value >= 0],
             help="Bot activity type. Defaults to `listening`"
         )
         parser.add_argument(
@@ -161,8 +160,8 @@ class ConfigurationModule(Module):
             data_path=args.data_path,
             buffer_length=args.buffer_length,
             colour=args.embed_color,
-            status=nextcord.Status[args.status],  # type: ignore
-            activity_type=nextcord.ActivityType[args.activity_type],
+            status=discord.Status[args.status],  # type: ignore
+            activity_type=discord.ActivityType[args.activity_type],
             activity_name=args.activity_name,
             activity_state=args.activity_state,
             activity_url=args.activity_url,

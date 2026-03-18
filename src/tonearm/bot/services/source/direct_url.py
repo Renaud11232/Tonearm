@@ -1,6 +1,6 @@
 from injector import singleton, inject
 
-import nextcord
+import discord
 
 from tonearm.configuration import Configuration
 from .base import SourceServiceBase
@@ -15,7 +15,7 @@ class DirectUrlSourceService(SourceServiceBase):
         super().__init__()
         self.__configuration = configuration
 
-    def open(self, url: str) -> nextcord.AudioSource:
+    def open(self, url: str) -> discord.AudioSource:
         return ControllableFFmpegPCMAudio(
             url,
             buffer_length=self.__configuration.buffer_length,

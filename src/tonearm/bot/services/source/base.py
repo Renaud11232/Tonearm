@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import logging
 
-import nextcord
+import discord
 
 
 class SourceServiceBase(ABC):
@@ -10,5 +10,5 @@ class SourceServiceBase(ABC):
         self._logger = logging.getLogger("tonearm.source")
 
     @abstractmethod
-    def open(self, url: str) -> nextcord.AudioSource:
+    def open(self, url: str) -> discord.AudioSource:
         pass

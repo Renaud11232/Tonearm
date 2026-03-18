@@ -1,10 +1,10 @@
 import logging
 
-import nextcord
+import discord
 from injector import inject, singleton
-from nextcord.ext import commands
-from nextcord.errors import ApplicationCheckFailure
-from nextcord.ext.application_checks import ApplicationNoPrivateMessage
+from discord.ext import commands
+from discord.errors import ApplicationCheckFailure
+from discord.ext.application_checks import ApplicationNoPrivateMessage
 
 from tonearm.bot.cogs.checks.exceptions import IsAnarchy, NotCorrectChannel
 from tonearm.bot.exceptions import TonearmCommandException
@@ -23,7 +23,7 @@ class ApplicationCommandErrorListener(commands.Cog):
         self.__storage_manager = storage_manager
         self.__logger = logging.getLogger("tonearm.listeners")
 
-    async def on_application_command_error(self, interaction: nextcord.Interaction, error):
+    async def on_application_command_error(self, interaction: discord.Interaction, error):
         self.__logger.debug(f"Failed to handle command (interaction:{interaction.id}) due to exception : {repr(error)}")
         if isinstance(error, ApplicationCheckFailure):
             if isinstance(error, ApplicationNoPrivateMessage):
@@ -41,7 +41,7 @@ class ApplicationCommandErrorListener(commands.Cog):
                 ephemeral=True,
                 embed=embed
             )
-        elif isinstance(error, nextcord.ApplicationInvokeError):
+        elif isinstance(error, discord.ApplicationInvokeError):
             exception = error.original
             if isinstance(exception, TonearmCommandException):
                 await interaction.followup.send(

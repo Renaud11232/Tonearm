@@ -4,7 +4,7 @@ import logging
 import random
 from collections import deque
 
-import nextcord
+import discord
 
 from injector import inject
 
@@ -79,7 +79,7 @@ class Queue:
             self.__logger.debug(f"Clearing next tracks from queue {repr(self)}")
             self.__next_tracks.clear()
 
-    async def queue(self, member: nextcord.Member, query: str):
+    async def queue(self, member: discord.Member, query: str):
         self.__logger.debug(f"Fetching track metadata for query {repr(query)} in queue {repr(self)}")
         tracks = [
             QueuedTrack(

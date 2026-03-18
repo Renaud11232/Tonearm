@@ -1,8 +1,8 @@
 import logging
 import asyncio
 
-import nextcord
-from nextcord.ext import commands
+import discord
+from discord.ext import commands
 
 from injector import inject, noninjectable
 
@@ -11,7 +11,7 @@ class ChatService:
 
     @inject
     @noninjectable("channel")
-    def __init__(self, channel: nextcord.TextChannel, bot: commands.Bot):
+    def __init__(self, channel: discord.TextChannel, bot: commands.Bot):
         self.__channel = channel
         self.__bot = bot
         self.__lock = asyncio.Lock()

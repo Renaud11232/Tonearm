@@ -3,13 +3,13 @@ import logging
 import threading
 import math
 
-import nextcord
+import discord
 
 from .exceptions import PlayerException
 from .buffer import AudioBuffer
 
 
-class SeekableFFmpegPCMAudio(nextcord.FFmpegPCMAudio):
+class SeekableFFmpegPCMAudio(discord.FFmpegPCMAudio):
 
     def __init__(self, source, *, buffer_length: int, executable="ffmpeg", pipe=False, stderr=subprocess.DEVNULL, before_options=None, options=None):
         super().__init__(
@@ -103,7 +103,7 @@ class SeekableFFmpegPCMAudio(nextcord.FFmpegPCMAudio):
         super().cleanup()
 
 
-class ControllableFFmpegPCMAudio(nextcord.PCMVolumeTransformer):
+class ControllableFFmpegPCMAudio(discord.PCMVolumeTransformer):
 
     def __init__(self, source, *, buffer_length: int, executable="ffmpeg", pipe=False, stderr=subprocess.DEVNULL, before_options=None, options=None):
         self.__source = SeekableFFmpegPCMAudio(

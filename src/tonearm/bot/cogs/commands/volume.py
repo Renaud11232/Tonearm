@@ -1,62 +1,43 @@
 import logging
 
-import nextcord
-from nextcord import SlashOption, Locale
-from nextcord.ext import application_checks
+import discord
+from discord import app_commands
 
-from injector import singleton, inject
+from injector import inject, singleton, Injector
 
-from tonearm.bot.cogs.checks import CanUseDjCommand, IsCorrectChannel
-from tonearm.bot.managers import PlayerManager, TranslationsManager, EmbedManager
+from tonearm.bot.cogs.checks import can_use_dj_command, is_correct_channel
+from tonearm.bot.managers import PlayerManager, EmbedManager
 
-from .base import CommandCogBase
+from .base import CogBase
 
 
 @singleton
-class VolumeCommand(CommandCogBase):
+class VolumeCommand(CogBase):
 
     @inject
     def __init__(self,
                  player_manager: PlayerManager,
                  embed_manager: EmbedManager,
-                 is_correct_channel: IsCorrectChannel,
-                 can_use_dj_command: CanUseDjCommand):
-        super().__init__()
+                 injector: Injector):
+        super().__init__(injector)
         self.__player_manager = player_manager
         self.__embed_manager = embed_manager
         self.__logger = logging.getLogger("tonearm.commands")
-        self._add_checks(self.volume, checks=[
-            application_checks.guild_only(),
-            is_correct_channel(),
-            can_use_dj_command()
-        ])
 
 
-    @nextcord.slash_command(
+    @app_commands.command(
         name="volume",
-        description=TranslationsManager().get(Locale.en_US).gettext("Change the volume of the playing tracks"),
-        description_localizations={
-            Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Change the volume of the playing tracks"),
-            Locale.fr: TranslationsManager().get(Locale.fr).gettext("Change the volume of the playing tracks"),
-        }
+        description="Change the volume of the playing tracks"
     )
+    @app_commands.describe(
+        value="Playback volume (between 0 and 200)"
+    )
+    @app_commands.guild_only()
+    @is_correct_channel()
+    @can_use_dj_command()
     async def volume(self,
-                     interaction: nextcord.Interaction,
-                     value: int = SlashOption(
-                         name=TranslationsManager().get(Locale.en_US).gettext("value"),
-                         name_localizations={
-                             Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("value"),
-                             Locale.fr: TranslationsManager().get(Locale.fr).gettext("value"),
-                         },
-                         description=TranslationsManager().get(Locale.en_US).gettext("Playback volume (between 0 and 200)"),
-                         description_localizations={
-                             Locale.en_US: TranslationsManager().get(Locale.en_US).gettext("Playback volume (between 0 and 200)"),
-                             Locale.fr: TranslationsManager().get(Locale.fr).gettext("Playback volume (between 0 and 200)"),
-                         },
-                         required=True,
-                         min_value=0,
-                         max_value=200
-                     )):
+                     interaction: discord.Interaction,
+                     value: app_commands.Range[int, 0, 200]):
         self.__logger.debug(f"Handling `volume` command (interaction:{interaction.id})")
         await interaction.response.defer()
         self.__player_manager.get(interaction.guild).volume(interaction.user, value)

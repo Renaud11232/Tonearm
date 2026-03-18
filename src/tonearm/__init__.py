@@ -1,6 +1,7 @@
 from injector import Injector
 
-from tonearm.bot import Tonearm, BotModule
+from tonearm.app import Tonearm
+from tonearm.bot import BotModule
 from tonearm.configuration import ConfigurationModule
 
 
