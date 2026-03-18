@@ -26,10 +26,14 @@ class CleanCommand(CogBase):
 
     @app_commands.command(
         name="clean",
-        description="Delete bot messages in the channel (up to 100 at once)"
+        description=app_commands.locale_str("Delete bot messages in the channel (up to 100 at once)"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        limit="Maximum number of messages to delete in one run"
+        limit=app_commands.locale_str("Maximum number of messages to delete in one run")
+    )
+    @app_commands.rename(
+        limit=app_commands.locale_str("limit")
     )
     @app_commands.guild_only()
     @is_guild_administrator()

@@ -16,12 +16,9 @@ class DjCommand(CogBase):
 
     dj = app_commands.Group(
         name="dj",
-        description="Manage DJ roles and members", #TODO: add translation
-        allowed_contexts=app_commands.AppCommandContext(
-            guild=True,
-            dm_channel=False,
-            private_channel=False
-        )
+        description=app_commands.locale_str("Manage DJ roles and members"), #TODO: add translation
+        guild_only=True,
+        auto_locale_strings=False
     )
 
     @inject
@@ -36,10 +33,14 @@ class DjCommand(CogBase):
 
     @dj.command(
         name="add",
-        description="Add a role or member to the DJs"
+        description=app_commands.locale_str("Add a role or member to the DJs"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        dj="Role or member to add to the DJs"
+        dj=app_commands.locale_str("Role or member to add to the DJs")
+    )
+    @app_commands.rename(
+        dj=app_commands.locale_str("dj")
     )
     @is_guild_administrator()
     async def dj_add(self,
@@ -55,10 +56,14 @@ class DjCommand(CogBase):
 
     @dj.command(
         name="remove",
-        description="Remove a role or member from the DJs"
+        description=app_commands.locale_str("Remove a role or member from the DJs"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        dj="Role or member to remove from the DJs"
+        dj=app_commands.locale_str("Role or member to remove from the DJs")
+    )
+    @app_commands.rename(
+        dj=app_commands.locale_str("dj")
     )
     @is_guild_administrator()
     async def dj_remove(self,

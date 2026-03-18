@@ -26,7 +26,8 @@ class JoinCommand(CogBase):
 
     @app_commands.command(
         name="join",
-        description="Join your current voice channel"
+        description=app_commands.locale_str("Join your current voice channel"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()

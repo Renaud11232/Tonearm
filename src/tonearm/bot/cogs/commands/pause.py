@@ -26,7 +26,8 @@ class PauseCommand(CogBase):
 
     @app_commands.command(
         name="pause",
-        description="Pause the currently playing track"
+        description=app_commands.locale_str("Pause the currently playing track"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()

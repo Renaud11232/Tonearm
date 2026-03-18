@@ -17,22 +17,21 @@ class SettingCommand(CogBase):
 
     setting = app_commands.Group(
         name="setting",
-        description="Manage global bot settings",
-        allowed_contexts=app_commands.AppCommandContext(
-            guild=True,
-            dm_channel=False,
-            private_channel=False
-        )
+        description=app_commands.locale_str("Manage global bot settings"), #TODO: Translate
+        guild_only=True,
+        auto_locale_strings=False
     )
     setting_set = app_commands.Group(
         name="set",
-        description="Set global bot settings",
-        parent=setting
+        description=app_commands.locale_str("Set global bot settings"), #TODO: Translate
+        parent=setting,
+        auto_locale_strings=False
     )
     setting_reset = app_commands.Group(
         name="reset",
-        description="Reset global bot settings",
-        parent=setting
+        description=app_commands.locale_str("Reset global bot settings"), #TODO: Translate
+        parent=setting,
+        auto_locale_strings=False
     )
 
     @inject
@@ -47,10 +46,14 @@ class SettingCommand(CogBase):
 
     @setting_set.command(
         name="channel",
-        description="Set the text channel where this bot should be used"
+        description=app_commands.locale_str("Set the text channel where this bot should be used"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        value="Text channel where this bot should be used"
+        value=app_commands.locale_str("Text channel where this bot should be used")
+    )
+    @app_commands.rename(
+        value=app_commands.locale_str("value")
     )
     @is_guild_administrator()
     async def setting_set_channel(self,
@@ -66,10 +69,14 @@ class SettingCommand(CogBase):
 
     @setting_set.command(
         name="anarchy",
-        description="Enable anarchy mode, allowing everyone to use DJ commands"
+        description=app_commands.locale_str("Enable anarchy mode, allowing everyone to use DJ commands"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        value="True to enable anarchy mode, False to disable it"
+        value=app_commands.locale_str("True to enable anarchy mode, False to disable it")
+    )
+    @app_commands.rename(
+        value=app_commands.locale_str("value")
     )
     @is_guild_administrator()
     async def setting_set_anarchy(self,
@@ -85,10 +92,14 @@ class SettingCommand(CogBase):
 
     @setting_set.command(
         name="announcements",
-        description="Enable automatic track announcements"
+        description=app_commands.locale_str("Enable automatic track announcements"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        value="True to enable automatic track announcements, False to disable them"
+        value=app_commands.locale_str("True to enable automatic track announcements, False to disable them")
+    )
+    @app_commands.rename(
+        value=app_commands.locale_str("value")
     )
     @is_guild_administrator()
     async def setting_set_announcements(self,
@@ -104,10 +115,14 @@ class SettingCommand(CogBase):
 
     @setting_set.command(
         name="locale",
-        description="Set the language to use on this server"
+        description=app_commands.locale_str("Set the language to use on this server"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        value="Language to use on this server"
+        value=app_commands.locale_str("Language to use on this server")
+    )
+    @app_commands.rename(
+        value=app_commands.locale_str("value")
     )
     @is_guild_administrator()
     async def setting_set_locale(self,
@@ -123,7 +138,8 @@ class SettingCommand(CogBase):
 
     @setting_reset.command(
         name="channel",
-        description="Reset the text channel where this bot should be used"
+        description=app_commands.locale_str("Reset the text channel where this bot should be used"),
+        auto_locale_strings=False
     )
     @is_guild_administrator()
     async def setting_reset_channel(self, interaction: discord.Interaction):
@@ -137,7 +153,8 @@ class SettingCommand(CogBase):
 
     @setting_reset.command(
         name="anarchy",
-        description="Reset anarchy mode, enabling back DJ enforcement"
+        description=app_commands.locale_str("Reset anarchy mode, enabling back DJ enforcement"),
+        auto_locale_strings=False
     )
     @is_guild_administrator()
     async def setting_reset_anarchy(self, interaction: discord.Interaction):
@@ -151,7 +168,8 @@ class SettingCommand(CogBase):
 
     @setting_reset.command(
         name="announcements",
-        description="Reset automatic track announcements, disabling them"
+        description=app_commands.locale_str("Reset automatic track announcements, disabling them"),
+        auto_locale_strings=False
     )
     @is_guild_administrator()
     async def setting_reset_announcements(self, interaction: discord.Interaction):
@@ -165,7 +183,8 @@ class SettingCommand(CogBase):
 
     @setting_reset.command(
         name="locale",
-        description="Reset the language to use on this server"
+        description=app_commands.locale_str("Reset the language to use on this server"),
+        auto_locale_strings=False
     )
     @is_guild_administrator()
     async def setting_reset_locale(self, interaction: discord.Interaction):

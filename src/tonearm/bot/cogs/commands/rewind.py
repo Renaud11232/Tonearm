@@ -27,10 +27,14 @@ class RewindCommand(CogBase):
 
     @app_commands.command(
         name="rewind",
-        description="Rewind a specific amount of time into the track"
+        description=app_commands.locale_str("Rewind a specific amount of time into the track"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        duration="How far to rewind back into the track"
+        duration=app_commands.locale_str("How far to rewind back into the track")
+    )
+    @app_commands.rename(
+        duration=app_commands.locale_str("duration")
     )
     @app_commands.guild_only()
     @is_correct_channel()

@@ -26,7 +26,8 @@ class ClearCommand(CogBase):
 
     @app_commands.command(
         name="clear",
-        description="Clear all tracks in the queue"
+        description=app_commands.locale_str("Clear all tracks in the queue"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()

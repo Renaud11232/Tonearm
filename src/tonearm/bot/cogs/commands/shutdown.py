@@ -27,7 +27,8 @@ class ShutdownCommand(CogBase):
 
     @app_commands.command(
         name="shutdown",
-        description="Shut the bot down"
+        description=app_commands.locale_str("Shut the bot down"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_owner()

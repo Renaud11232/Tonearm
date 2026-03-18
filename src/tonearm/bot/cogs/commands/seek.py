@@ -27,10 +27,14 @@ class SeekCommand(CogBase):
 
     @app_commands.command(
         name="seek",
-        description="Seek to a specific time in the track"
+        description=app_commands.locale_str("Seek to a specific time in the track"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        duration="Where to seek in the track"
+        duration=app_commands.locale_str("Where to seek in the track")
+    )
+    @app_commands.rename(
+        duration=app_commands.locale_str("duration")
     )
     @app_commands.guild_only()
     @is_correct_channel()

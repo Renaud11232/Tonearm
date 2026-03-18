@@ -27,10 +27,14 @@ class ForwardCommand(CogBase):
 
     @app_commands.command(
         name="forward",
-        description="Forward a specific amount of time into the track"
+        description=app_commands.locale_str("Forward a specific amount of time into the track"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        duration="How far to fast forward into the track"
+        duration=app_commands.locale_str("How far to fast forward into the track")
+    )
+    @app_commands.rename(
+        duration=app_commands.locale_str("duration")
     )
     @app_commands.guild_only()
     @is_correct_channel()

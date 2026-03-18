@@ -26,7 +26,8 @@ class NextCommand(CogBase):
 
     @app_commands.command(
         name="next",
-        description="Skip the current playing track to the next one"
+        description=app_commands.locale_str("Skip the current playing track to the next one"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()
@@ -36,7 +37,8 @@ class NextCommand(CogBase):
 
     @app_commands.command(
         name="skip",
-        description="Skip the current playing track to the next one"
+        description=app_commands.locale_str("Skip the current playing track to the next one"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()

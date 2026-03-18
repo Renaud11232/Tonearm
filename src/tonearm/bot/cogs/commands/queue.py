@@ -27,10 +27,14 @@ class QueueCommand(CogBase):
 
     @app_commands.command(
         name="queue",
-        description="Show the current queue"
+        description=app_commands.locale_str("Show the current queue"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        page="Page to display"
+        page=app_commands.locale_str("Page to display")
+    )
+    @app_commands.rename(
+        page=app_commands.locale_str("page")
     )
     @app_commands.guild_only()
     @is_correct_channel()

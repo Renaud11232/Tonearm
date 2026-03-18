@@ -5,8 +5,6 @@ from discord import app_commands
 
 from injector import singleton, inject, Injector
 
-from injector import inject, singleton
-
 from tonearm.bot.cogs.checks import can_use_dj_command, is_correct_channel
 from tonearm.bot.managers import PlayerManager, EmbedManager
 
@@ -28,7 +26,8 @@ class LeaveCommand(CogBase):
 
     @app_commands.command(
         name="leave",
-        description="Leave the current voice channel"
+        description=app_commands.locale_str("Leave the current voice channel"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()

@@ -27,10 +27,14 @@ class VolumeCommand(CogBase):
 
     @app_commands.command(
         name="volume",
-        description="Change the volume of the playing tracks"
+        description=app_commands.locale_str("Change the volume of the playing tracks"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        value="Playback volume (between 0 and 200)"
+        value=app_commands.locale_str("Playback volume (between 0 and 200)")
+    )
+    @app_commands.rename(
+        value=app_commands.locale_str("value")
     )
     @app_commands.guild_only()
     @is_correct_channel()

@@ -26,15 +26,15 @@ class LoopModeTransformer(app_commands.Transformer):
     def choices(self):
         return [
             app_commands.Choice(
-                name="off",
+                name=app_commands.locale_str("off"),
                 value=LoopMode.OFF.name
             ),
             app_commands.Choice(
-                name="track",
+                name=app_commands.locale_str("track"),
                 value=LoopMode.TRACK.name
             ),
             app_commands.Choice(
-                name="queue",
+                name=app_commands.locale_str("queue"),
                 value=LoopMode.QUEUE.name
             )
         ]

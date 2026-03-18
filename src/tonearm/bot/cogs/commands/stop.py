@@ -26,7 +26,8 @@ class StopCommand(CogBase):
 
     @app_commands.command(
         name="stop",
-        description="Stop the current playback"
+        description=app_commands.locale_str("Stop the current playback"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()

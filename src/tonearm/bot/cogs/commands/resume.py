@@ -26,7 +26,8 @@ class ResumeCommand(CogBase):
 
     @app_commands.command(
         name="resume",
-        description="Resume the currently paused track"
+        description=app_commands.locale_str("Resume the currently paused track"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()

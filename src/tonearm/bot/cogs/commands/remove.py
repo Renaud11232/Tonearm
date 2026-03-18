@@ -27,10 +27,14 @@ class RemoveCommand(CogBase):
 
     @app_commands.command(
         name="remove",
-        description="Remove a track from the queue"
+        description=app_commands.locale_str("Remove a track from the queue"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        track="Track number to remove"
+        track=app_commands.locale_str("Track number to remove")
+    )
+    @app_commands.rename(
+        track=app_commands.locale_str("track")
     )
     @app_commands.guild_only()
     @is_correct_channel()

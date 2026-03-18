@@ -26,7 +26,8 @@ class ShuffleCommand(CogBase):
 
     @app_commands.command(
         name="shuffle",
-        description="Shuffle tracks in the queue"
+        description=app_commands.locale_str("Shuffle tracks in the queue"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()

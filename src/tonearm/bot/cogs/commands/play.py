@@ -26,10 +26,14 @@ class PlayCommand(CogBase):
 
     @app_commands.command(
         name="play",
-        description="Play a track or playlist in your voice channel. You can provide link, or search for a track"
+        description=app_commands.locale_str("Play a track or playlist in your voice channel. You can provide link, or search for a track"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        query="Track or playlist to play. You can provide a link, or search for a track"
+        query=app_commands.locale_str("Track or playlist to play. You can provide a link, or search for a track")
+    )
+    @app_commands.rename(
+        query=app_commands.locale_str("query")
     )
     @app_commands.guild_only()
     @is_correct_channel()

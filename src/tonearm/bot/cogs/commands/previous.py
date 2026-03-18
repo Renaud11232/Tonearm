@@ -26,7 +26,8 @@ class PreviousCommand(CogBase):
 
     @app_commands.command(
         name="previous",
-        description="Play the previous track from the queue"
+        description=app_commands.locale_str("Play the previous track from the queue"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()
@@ -36,7 +37,8 @@ class PreviousCommand(CogBase):
 
     @app_commands.command(
         name="unskip",
-        description="Play the previous track from the queue"
+        description=app_commands.locale_str("Play the previous track from the queue"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()

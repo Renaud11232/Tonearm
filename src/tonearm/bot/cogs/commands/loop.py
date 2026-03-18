@@ -28,10 +28,14 @@ class LoopCommand(CogBase):
 
     @app_commands.command(
         name="loop",
-        description="Set the loop mode of the current playback queue"
+        description=app_commands.locale_str("Set the loop mode of the current playback queue"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        mode="Loop mode to use"
+        mode=app_commands.locale_str("Loop mode to use")
+    )
+    @app_commands.rename(
+        mode=app_commands.locale_str("mode")
     )
     @app_commands.guild_only()
     @is_correct_channel()
@@ -43,10 +47,14 @@ class LoopCommand(CogBase):
 
     @app_commands.command(
         name="repeat",
-        description="Set the loop mode of the current playback queue"
+        description=app_commands.locale_str("Set the loop mode of the current playback queue"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        mode="Loop mode to use"
+        mode=app_commands.locale_str("Loop mode to use")
+    )
+    @app_commands.rename(
+        mode=app_commands.locale_str("mode")
     )
     @app_commands.guild_only()
     @is_correct_channel()

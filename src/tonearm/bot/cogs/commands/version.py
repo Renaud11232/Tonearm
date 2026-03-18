@@ -27,7 +27,8 @@ class VersionCommand(CogBase):
 
     @app_commands.command(
         name="version",
-        description="Show nerdy details about the bot"
+        description=app_commands.locale_str("Show nerdy details about the bot"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()

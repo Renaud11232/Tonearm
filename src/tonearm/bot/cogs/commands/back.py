@@ -27,10 +27,14 @@ class BackCommand(CogBase):
 
     @app_commands.command(
         name="back",
-        description="Jump back to a specific track in the history"
+        description=app_commands.locale_str("Jump back to a specific track in the history"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        track="Track number to jump back to"
+        track=app_commands.locale_str("Track number to jump back to"),
+    )
+    @app_commands.rename(
+        track=app_commands.locale_str("track")
     )
     @app_commands.guild_only()
     @is_correct_channel()
@@ -43,10 +47,14 @@ class BackCommand(CogBase):
 
     @app_commands.command(
         name="unskipto",
-        description="Jump back to a specific track in the history"
+        description=app_commands.locale_str("Jump back to a specific track in the history"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        track="Track number to jump back to"
+        track=app_commands.locale_str("Track number to jump back to")
+    )
+    @app_commands.rename(
+        track=app_commands.locale_str("track")
     )
     @app_commands.guild_only()
     @is_correct_channel()

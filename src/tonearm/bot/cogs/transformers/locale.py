@@ -24,11 +24,11 @@ class LocaleTransformer(app_commands.Transformer):
         return [
             #TODO: Translate language names
             app_commands.Choice(
-                name="American English",
+                name=app_commands.locale_str("American English"),
                 value=discord.Locale.american_english.value
             ),
             app_commands.Choice(
-                name="French",
+                name=app_commands.locale_str("French"),
                 value=discord.Locale.french.value
             )
         ]

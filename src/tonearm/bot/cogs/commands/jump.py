@@ -27,10 +27,14 @@ class JumpCommand(CogBase):
 
     @app_commands.command(
         name="jump",
-        description="Jump to a specific track in the queue"
+        description=app_commands.locale_str("Jump to a specific track in the queue"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        track="Track number to jump to"
+        track=app_commands.locale_str("Track number to jump to")
+    )
+    @app_commands.rename(
+        track=app_commands.locale_str("track")
     )
     @app_commands.guild_only()
     @is_correct_channel()
@@ -42,10 +46,14 @@ class JumpCommand(CogBase):
 
     @app_commands.command(
         name="skipto",
-        description="Jump to a specific track in the queue"
+        description=app_commands.locale_str("Jump to a specific track in the queue"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        track="Track number to jump to"
+        track=app_commands.locale_str("Track number to jump to")
+    )
+    @app_commands.rename(
+        track=app_commands.locale_str("track")
     )
     @app_commands.guild_only()
     @is_correct_channel()

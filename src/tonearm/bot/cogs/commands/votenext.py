@@ -26,7 +26,8 @@ class VotenextCommand(CogBase):
 
     @app_commands.command(
         name="votenext",
-        description="Vote to skip the current track"
+        description=app_commands.locale_str("Vote to skip the current track"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()
@@ -36,7 +37,8 @@ class VotenextCommand(CogBase):
 
     @app_commands.command(
         name="voteskip",
-        description="Vote to skip the current track"
+        description=app_commands.locale_str("Vote to skip the current track"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()

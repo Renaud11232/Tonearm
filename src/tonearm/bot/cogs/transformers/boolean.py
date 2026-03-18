@@ -25,11 +25,11 @@ class BooleanTransformer(app_commands.Transformer):
     def choices(self):
         return [
             app_commands.Choice(
-                name="True",
+                name=app_commands.locale_str("True"),
                 value="TRUE"
             ),
             app_commands.Choice(
-                name="False",
+                name=app_commands.locale_str("False"),
                 value="FALSE"
             )
         ]

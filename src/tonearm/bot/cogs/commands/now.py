@@ -26,7 +26,8 @@ class NowCommand(CogBase):
 
     @app_commands.command(
         name="now",
-        description="Show the current playing track"
+        description=app_commands.locale_str("Show the current playing track"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()
@@ -35,7 +36,8 @@ class NowCommand(CogBase):
 
     @app_commands.command(
         name="now-playing",
-        description="Show the current playing track"
+        description=app_commands.locale_str("Show the current playing track"),
+        auto_locale_strings=False
     )
     @app_commands.guild_only()
     @is_correct_channel()

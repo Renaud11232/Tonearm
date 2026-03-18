@@ -27,14 +27,16 @@ class MoveCommand(CogBase):
 
     @app_commands.command(
         name="move",
-        description="Change the position of a track in the queue"
+        description=app_commands.locale_str("Change the position of a track in the queue"),
+        auto_locale_strings=False
     )
     @app_commands.describe(
-        from_="Initial track position",
-        to="Target track position"
+        from_=app_commands.locale_str("Initial track position"),
+        to=app_commands.locale_str("Target track position")
     )
     @app_commands.rename(
-        from_="from"
+        from_=app_commands.locale_str("from"),
+        to=app_commands.locale_str("to")
     )
     @app_commands.guild_only()
     @is_correct_channel()
