@@ -12,10 +12,7 @@ class BooleanTransformer(app_commands.Transformer):
             return True
         if value.upper() == "FALSE":
             return False
-        raise BooleanTransformerException(
-            "`{value}` is not a valid boolean value.",
-            value=value
-        )
+        raise BooleanTransformerException(value, self.type, self)
 
     @property
     def type(self):

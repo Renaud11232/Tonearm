@@ -39,6 +39,7 @@ class EmbedService:
         return self.error_message(error.template, **error.kwargs)
 
     def error_message(self, template: str, **kwargs) -> discord.Embed:
+        #TODO: Better error message formatting, this currently doesn't allow markdown formatting in templates
         message = self.__translations_manager.get(self.__locale).gettext(template).format(**kwargs)
         return discord.Embed(
             description=f":x: {escape_markdown(message)}",

@@ -1,14 +1,14 @@
-from tonearm.bot.exceptions import TonearmConverterException
+from discord import app_commands
 
 
-class DurationTransformerException(TonearmConverterException):
+class DurationTransformerException(app_commands.TransformerError):
     pass
 
-class LoopModeTransformerException(TonearmConverterException):
+class LoopModeTransformerException(app_commands.TransformerError):
     pass
 
-class BooleanTransformerException(TonearmConverterException):
+class BooleanTransformerException(app_commands.TransformerError):
     pass
 
-class LocaleTransformerException(TonearmConverterException):
+class LocaleTransformerException(app_commands.TransformerError):
     pass

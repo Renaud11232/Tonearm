@@ -15,10 +15,7 @@ class DurationTransformer(app_commands.Transformer):
             return None
         match = DurationTransformer.__REGEX.search(value)
         if not match:
-            raise DurationTransformerException(
-                "`{value}` is not a valid duration.",
-                value=value
-            )
+            raise DurationTransformerException(value, self.type, self)
         groups = match.groups("0")
         days = int(groups[0])
         hours = int(groups[1])

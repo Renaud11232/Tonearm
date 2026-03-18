@@ -3,6 +3,7 @@ from tonearm.bot.cogs import *
 from injector import singleton, inject
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 from tonearm.configuration import Configuration
@@ -19,6 +20,7 @@ class TonearmBot(commands.Bot):
                  translator: TonearmTranslator,
                  ready_listener: ReadyListener,
                  voice_state_change_listener: VoiceStateChangeListener,
+                 app_command_error_listener: AppCommandErrorListener,
                  back_command: BackCommand,
                  clean_command: CleanCommand,
                  clear_command: ClearCommand,
@@ -64,6 +66,7 @@ class TonearmBot(commands.Bot):
             help_command=None
         )
         self.__tonearm_translator = translator
+        self.__app_command_error_listener = app_command_error_listener
         self.__tonearm_cogs = [
             ready_listener,
             voice_state_change_listener,
@@ -101,18 +104,7 @@ class TonearmBot(commands.Bot):
         await self.tree.set_translator(self.__tonearm_translator)
         for cog in self.__tonearm_cogs:
             await self.add_cog(cog)
+        @self.tree.error
+        async def on_app_command_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
+            await self.__app_command_error_listener.on_app_command_error(interaction, error)
         await self.tree.sync()
-
-        # def provide_bot__old(self,
-        #                 configuration: Configuration,
-        #                 application_command_error_listener: ApplicationCommandErrorListener,
-        #                 error_listener: ErrorListener) -> commands.Bot:
-        #     bot.add_cog(application_command_error_listener)
-        #     bot.add_cog(error_listener)
-        #     @bot.event
-        #     async def on_application_command_error(interaction: discord.Interaction, error):
-        #         await application_command_error_listener.on_application_command_error(interaction, error)
-        #     @bot.event
-        #     async def on_error(event: str, *args, **kwargs):
-        #         await error_listener.on_error(event, *args, **kwargs)
-        #     return bot

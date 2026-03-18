@@ -12,10 +12,7 @@ class LoopModeTransformer(app_commands.Transformer):
         if value is None:
             return None
         if value not in [loop_mode.name for loop_mode in LoopMode]:
-            raise LoopModeTransformerException(
-                "`{value}` is not a valid loop mode.",
-                value=value
-            )
+            raise LoopModeTransformerException(value, self.type, self)
         return LoopMode[value]
 
     @property

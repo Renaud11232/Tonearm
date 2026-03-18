@@ -9,10 +9,7 @@ class LocaleTransformer(app_commands.Transformer):
         if value is None:
             return None
         if value not in [locale.value for locale in discord.Locale]:
-            raise LocaleTransformerException(
-                "`{value}` is not a valid locale.",
-                value=value
-            )
+            raise LocaleTransformerException(value, self.type, self)
         return discord.Locale(value)
 
     @property
