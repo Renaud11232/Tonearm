@@ -1,7 +1,7 @@
 from .any_of import any_of
 from .can_use_dj_command import can_use_dj_command
 from .has_dj_role import has_dj_role
-# from .has_guild_permissions import has_guild_permissions
+from .has_guild_permissions import has_guild_permissions
 from .is_anarchy import is_anarchy
 from .is_correct_channel import is_correct_channel
 from .is_dj_member import is_dj_member
