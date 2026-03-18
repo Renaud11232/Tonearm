@@ -160,7 +160,7 @@ class ConfigurationModule(Module):
             data_path=args.data_path,
             buffer_length=args.buffer_length,
             colour=args.embed_color,
-            status=discord.Status[args.status],  # type: ignore
+            status=discord.Status[args.status],
             activity_type=discord.ActivityType[args.activity_type],
             activity_name=args.activity_name,
             activity_state=args.activity_state,

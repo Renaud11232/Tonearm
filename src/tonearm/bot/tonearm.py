@@ -5,8 +5,9 @@ from injector import singleton, inject
 import discord
 from discord.ext import commands
 
-from tonearm.bot.translator import TonearmTranslator
 from tonearm.configuration import Configuration
+
+from .translator import TonearmTranslator
 
 
 @singleton
@@ -15,6 +16,7 @@ class TonearmBot(commands.Bot):
     @inject
     def __init__(self,
                  configuration: Configuration,
+                 translator: TonearmTranslator,
                  ready_listener: ReadyListener,
                  back_command: BackCommand,
                  clean_command: CleanCommand,
@@ -60,6 +62,7 @@ class TonearmBot(commands.Bot):
             command_prefix="",
             help_command=None
         )
+        self.__tonearm_translator = translator
         self.__tonearm_cogs = [
             ready_listener,
             back_command,
@@ -93,7 +96,7 @@ class TonearmBot(commands.Bot):
         ]
 
     async def setup_hook(self) -> None:
-        await self.tree.set_translator(TonearmTranslator())
+        await self.tree.set_translator(self.__tonearm_translator)
         for cog in self.__tonearm_cogs:
             await self.add_cog(cog)
         await self.tree.sync()

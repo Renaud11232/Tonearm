@@ -4,17 +4,19 @@ from typing import Union
 
 from discord import Locale
 
+from injector import singleton, inject
+
 from tonearm.bot.managers.base import ManagerBase
-from tonearm.utils.singleton import ABCMetaSingleton
 
 
-class TranslationsManager(ManagerBase[Locale, Union[gettext.GNUTranslations, gettext.NullTranslations]], metaclass=ABCMetaSingleton):
+@singleton
+class TranslationsManager(ManagerBase[Locale, Union[gettext.GNUTranslations, gettext.NullTranslations]]):
 
     def __init__(self):
         super().__init__()
 
     def _get_id(self, key: Locale) -> str:
-        return str(key)
+        return key.value
 
     def _create(self, key: Locale) -> Union[gettext.GNUTranslations, gettext.NullTranslations]:
         return gettext.translation(
