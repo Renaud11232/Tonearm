@@ -17,7 +17,12 @@ class SettingCommand(CogBase):
 
     setting = app_commands.Group(
         name="setting",
-        description="Manage global bot settings"
+        description="Manage global bot settings",
+        allowed_contexts=app_commands.AppCommandContext(
+            guild=True,
+            dm_channel=False,
+            private_channel=False
+        )
     )
     setting_set = app_commands.Group(
         name="set",
@@ -29,7 +34,6 @@ class SettingCommand(CogBase):
         description="Reset global bot settings",
         parent=setting
     )
-
 
     @inject
     def __init__(self,
@@ -48,7 +52,6 @@ class SettingCommand(CogBase):
     @app_commands.describe(
         value="Text channel where this bot should be used"
     )
-    @app_commands.guild_only()
     @is_guild_administrator()
     async def setting_set_channel(self,
                                   interaction: discord.Interaction,
@@ -68,7 +71,6 @@ class SettingCommand(CogBase):
     @app_commands.describe(
         value="True to enable anarchy mode, False to disable it"
     )
-    @app_commands.guild_only()
     @is_guild_administrator()
     async def setting_set_anarchy(self,
                                   interaction: discord.Interaction,
@@ -88,7 +90,6 @@ class SettingCommand(CogBase):
     @app_commands.describe(
         value="True to enable automatic track announcements, False to disable them"
     )
-    @app_commands.guild_only()
     @is_guild_administrator()
     async def setting_set_announcements(self,
                                         interaction: discord.Interaction,
@@ -108,7 +109,6 @@ class SettingCommand(CogBase):
     @app_commands.describe(
         value="Language to use on this server"
     )
-    @app_commands.guild_only()
     @is_guild_administrator()
     async def setting_set_locale(self,
                                  interaction: discord.Interaction,
@@ -125,7 +125,6 @@ class SettingCommand(CogBase):
         name="channel",
         description="Reset the text channel where this bot should be used"
     )
-    @app_commands.guild_only()
     @is_guild_administrator()
     async def setting_reset_channel(self, interaction: discord.Interaction):
         self.__logger.debug(f"Handling `setting reset channel` command (interaction:{interaction.id})")
@@ -140,7 +139,6 @@ class SettingCommand(CogBase):
         name="anarchy",
         description="Reset anarchy mode, enabling back DJ enforcement"
     )
-    @app_commands.guild_only()
     @is_guild_administrator()
     async def setting_reset_anarchy(self, interaction: discord.Interaction):
         self.__logger.debug(f"Handling `setting reset anarchy` command (interaction:{interaction.id})")
@@ -155,7 +153,6 @@ class SettingCommand(CogBase):
         name="announcements",
         description="Reset automatic track announcements, disabling them"
     )
-    @app_commands.guild_only()
     @is_guild_administrator()
     async def setting_reset_announcements(self, interaction: discord.Interaction):
         self.__logger.debug(f"Handling `setting reset announcements` command (interaction:{interaction.id})")
@@ -170,7 +167,6 @@ class SettingCommand(CogBase):
         name="locale",
         description="Reset the language to use on this server"
     )
-    @app_commands.guild_only()
     @is_guild_administrator()
     async def setting_reset_locale(self, interaction: discord.Interaction):
         self.__logger.debug(f"Handling `setting reset locale` command (interaction:{interaction.id})")

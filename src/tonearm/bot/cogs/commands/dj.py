@@ -16,7 +16,12 @@ class DjCommand(CogBase):
 
     dj = app_commands.Group(
         name="dj",
-        description="Manage DJ roles and members" #TODO: add translation
+        description="Manage DJ roles and members", #TODO: add translation
+        allowed_contexts=app_commands.AppCommandContext(
+            guild=True,
+            dm_channel=False,
+            private_channel=False
+        )
     )
 
     @inject
@@ -36,7 +41,6 @@ class DjCommand(CogBase):
     @app_commands.describe(
         dj="Role or member to add to the DJs"
     )
-    @app_commands.guild_only()
     @is_guild_administrator()
     async def dj_add(self,
                      interaction: discord.Interaction,
@@ -56,7 +60,6 @@ class DjCommand(CogBase):
     @app_commands.describe(
         dj="Role or member to remove from the DJs"
     )
-    @app_commands.guild_only()
     @is_guild_administrator()
     async def dj_remove(self,
                         interaction: discord.Interaction,

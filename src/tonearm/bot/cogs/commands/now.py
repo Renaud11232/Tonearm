@@ -37,6 +37,8 @@ class NowCommand(CogBase):
         name="now-playing",
         description="Show the current playing track"
     )
+    @app_commands.guild_only()
+    @is_correct_channel()
     async def now_playing(self, interaction: discord.Interaction):
         await self.__now(interaction)
 
