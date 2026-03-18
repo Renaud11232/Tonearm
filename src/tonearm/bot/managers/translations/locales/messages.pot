@@ -24,6 +24,9 @@ msgstr ""
 msgid "Clear all tracks in the queue"
 msgstr ""
 
+msgid "Manage DJ roles and members"
+msgstr ""
+
 msgid "Add a role or member to the DJs"
 msgstr ""
 
@@ -142,6 +145,15 @@ msgid "Seek to a specific time in the track"
 msgstr ""
 
 msgid "Where to seek in the track"
+msgstr ""
+
+msgid "Manage global bot settings"
+msgstr ""
+
+msgid "Set global bot settings"
+msgstr ""
+
+msgid "Reset global bot settings"
 msgstr ""
 
 msgid "Set the text channel where this bot should be used"
@@ -337,6 +349,12 @@ msgid "`{value}` is not a valid duration."
 msgstr ""
 
 msgid "`{value}` is not a valid loop mode."
+msgstr ""
+
+msgid "American English"
+msgstr ""
+
+msgid "French"
 msgstr ""
 
 msgid "`{value}` is not a valid locale."

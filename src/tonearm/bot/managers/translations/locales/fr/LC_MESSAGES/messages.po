@@ -24,6 +24,9 @@ msgstr "Nombre maximum de messages à supprimer en une fois"
 msgid "Clear all tracks in the queue"
 msgstr "Enlever toutes les pistes de la file"
 
+msgid "Manage DJ roles and members"
+msgstr "Gérer les roles et membres qui sont DJ"
+
 msgid "Add a role or member to the DJs"
 msgstr "Ajouter un rôle ou membre aux DJs"
 
@@ -143,6 +146,15 @@ msgstr "Se déplacer à un moment précis dans la piste"
 
 msgid "Where to seek in the track"
 msgstr "Où se déplacer dans la piste"
+
+msgid "Manage global bot settings"
+msgstr "Gérer les paramètres généraux du bot"
+
+msgid "Set global bot settings"
+msgstr "Définir les paramètres généraux du bot"
+
+msgid "Reset global bot settings"
+msgstr "Réinitialiser les paramètres généraux du bot"
 
 msgid "Set the text channel where this bot should be used"
 msgstr "Définir le salon textuel où ce bot devrait être utilisé"
@@ -338,6 +350,12 @@ msgstr "`{value}` n'est pas une durée valide."
 
 msgid "`{value}` is not a valid loop mode."
 msgstr "`{value}` n'est pas un mode de boucle valide."
+
+msgid "American English"
+msgstr "Anglais d'Amérique"
+
+msgid "French"
+msgstr "Français"
 
 msgid "`{value}` is not a valid locale."
 msgstr "`{value}` n'est pas un langue valide."

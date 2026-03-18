@@ -17,19 +17,19 @@ class SettingCommand(CogBase):
 
     setting = app_commands.Group(
         name="setting",
-        description=app_commands.locale_str("Manage global bot settings"), #TODO: Translate
+        description=app_commands.locale_str("Manage global bot settings"),
         guild_only=True,
         auto_locale_strings=False
     )
     setting_set = app_commands.Group(
         name="set",
-        description=app_commands.locale_str("Set global bot settings"), #TODO: Translate
+        description=app_commands.locale_str("Set global bot settings"),
         parent=setting,
         auto_locale_strings=False
     )
     setting_reset = app_commands.Group(
         name="reset",
-        description=app_commands.locale_str("Reset global bot settings"), #TODO: Translate
+        description=app_commands.locale_str("Reset global bot settings"),
         parent=setting,
         auto_locale_strings=False
     )

@@ -24,6 +24,9 @@ msgstr "Maximum number of messages to delete in one run"
 msgid "Clear all tracks in the queue"
 msgstr "Clear all tracks in the queue"
 
+msgid "Manage DJ roles and members"
+msgstr "Manage DJ roles and members"
+
 msgid "Add a role or member to the DJs"
 msgstr "Add a role or member to the DJs"
 
@@ -143,6 +146,15 @@ msgstr "Seek to a specific time in the track"
 
 msgid "Where to seek in the track"
 msgstr "Where to seek in the track"
+
+msgid "Manage global bot settings"
+msgstr "Manage global bot settings"
+
+msgid "Set global bot settings"
+msgstr "Set global bot settings"
+
+msgid "Reset global bot settings"
+msgstr "Reset global bot settings"
 
 msgid "Set the text channel where this bot should be used"
 msgstr "Set the text channel where this bot should be used"
@@ -338,6 +350,12 @@ msgstr "`{value}` is not a valid duration."
 
 msgid "`{value}` is not a valid loop mode."
 msgstr "`{value}` is not a valid loop mode."
+
+msgid "American English"
+msgstr "American English"
+
+msgid "French"
+msgstr "French"
 
 msgid "`{value}` is not a valid locale."
 msgstr "`{value}` is not a valid locale."

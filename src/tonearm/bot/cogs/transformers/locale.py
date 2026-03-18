@@ -19,7 +19,6 @@ class LocaleTransformer(app_commands.Transformer):
     @property
     def choices(self):
         return [
-            #TODO: Translate language names
             app_commands.Choice(
                 name=app_commands.locale_str("American English"),
                 value=discord.Locale.american_english.value

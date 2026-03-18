@@ -15,8 +15,5 @@ class TonearmException(AppCommandError):
     def kwargs(self):
         return self.__kwargs
 
-class TonearmConverterException(TonearmException):
-    pass
-
 class TonearmCommandException(TonearmException):
     pass

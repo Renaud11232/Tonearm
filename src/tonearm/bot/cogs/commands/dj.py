@@ -16,7 +16,7 @@ class DjCommand(CogBase):
 
     dj = app_commands.Group(
         name="dj",
-        description=app_commands.locale_str("Manage DJ roles and members"), #TODO: add translation
+        description=app_commands.locale_str("Manage DJ roles and members"),
         guild_only=True,
         auto_locale_strings=False
     )
