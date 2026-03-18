@@ -6,7 +6,7 @@ import discord
 @dataclass
 class Configuration:
     discord_token: str
-    log_level: str
+    log_level: int
     youtube_api_key: str
     max_playlist_length: int
     ffmpeg_executable: str

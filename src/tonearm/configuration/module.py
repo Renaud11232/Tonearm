@@ -152,7 +152,7 @@ class ConfigurationModule(Module):
         args = parser.parse_args()
         return Configuration(
             discord_token=args.discord_token,
-            log_level=args.log_level,
+            log_level=logging.getLevelName(args.log_level),
             youtube_api_key=args.youtube_api_key,
             max_playlist_length=args.max_playlist_length,
             ffmpeg_executable=args.ffmpeg_executable,

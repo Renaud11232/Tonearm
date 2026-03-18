@@ -15,16 +15,11 @@ class Tonearm:
     def __init__(self, configuration: Configuration, bot: commands.Bot):
         self.__configuration = configuration
         self.__bot = bot
-        #TODO: redo logging setup
-        self.__init_logger("discord")
-        self.__init_logger("tonearm")
-
-    def __init_logger(self, name: str):
-        logger = logging.getLogger(name)
-        logger.setLevel(self.__configuration.log_level)
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-        logger.addHandler(handler)
 
     def run(self):
-        self.__bot.run(self.__configuration.discord_token)
+        self.__bot.run(
+            self.__configuration.discord_token,
+            log_handler=logging.StreamHandler(sys.stdout),
+            log_level=self.__configuration.log_level,
+            root_logger=True
+        )
