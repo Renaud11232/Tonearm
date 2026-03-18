@@ -18,6 +18,7 @@ class TonearmBot(commands.Bot):
                  configuration: Configuration,
                  translator: TonearmTranslator,
                  ready_listener: ReadyListener,
+                 voice_state_change_listener: VoiceStateChangeListener,
                  back_command: BackCommand,
                  clean_command: CleanCommand,
                  clear_command: ClearCommand,
@@ -65,6 +66,7 @@ class TonearmBot(commands.Bot):
         self.__tonearm_translator = translator
         self.__tonearm_cogs = [
             ready_listener,
+            voice_state_change_listener,
             back_command,
             clean_command,
             clear_command,
@@ -104,13 +106,9 @@ class TonearmBot(commands.Bot):
         # def provide_bot__old(self,
         #                 configuration: Configuration,
         #                 application_command_error_listener: ApplicationCommandErrorListener,
-        #                 error_listener: ErrorListener,
-        #                 ready_listener: ReadyListener,
-        #                 voice_state_change_listener: VoiceStateChangeListener) -> commands.Bot:
+        #                 error_listener: ErrorListener) -> commands.Bot:
         #     bot.add_cog(application_command_error_listener)
         #     bot.add_cog(error_listener)
-        #     bot.add_cog(ready_listener)
-        #     bot.add_cog(voice_state_change_listener)
         #     @bot.event
         #     async def on_application_command_error(interaction: discord.Interaction, error):
         #         await application_command_error_listener.on_application_command_error(interaction, error)

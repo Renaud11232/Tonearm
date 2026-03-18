@@ -23,6 +23,7 @@ from .voice_client import TonearmVoiceClient
 from .vote import VoteStatus
 
 
+#TODO: add checks where possible
 class PlayerService:
 
     @inject
