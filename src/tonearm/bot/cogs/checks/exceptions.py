@@ -1,8 +1,9 @@
-from discord.app_commands.errors import CheckFailure
+from discord.app_commands import CheckFailure
+
+from tonearm.utils import Translatable
 
 
-class IsAnarchy(CheckFailure):
-    pass
-
-class IncorrectChannel(CheckFailure):
-    pass
+class TranslatableCheckFailure(CheckFailure, Translatable):
+    def __init__(self, msgid: str, /, **kwargs):
+        CheckFailure.__init__(self)
+        Translatable.__init__(self, msgid, **kwargs)

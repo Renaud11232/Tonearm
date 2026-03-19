@@ -1,7 +1,7 @@
 import discord
 from discord import app_commands
 
-from .exceptions import BooleanTransformerException
+from .exceptions import TranslatableTransformerError
 
 
 class BooleanTransformer(app_commands.Transformer):
@@ -12,7 +12,13 @@ class BooleanTransformer(app_commands.Transformer):
             return True
         if value.upper() == "FALSE":
             return False
-        raise BooleanTransformerException(value, self.type, self)
+        raise TranslatableTransformerError(
+            value,
+            self.type,
+            self,
+            "`{value}` is not a valid boolean.",
+            value=value
+        )
 
     @property
     def type(self):

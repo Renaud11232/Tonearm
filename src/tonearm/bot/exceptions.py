@@ -1,4 +1,11 @@
-from discord.app_commands import AppCommandError
+from typing import Any
+
+from discord import AppCommandOptionType
+from discord.app_commands import CheckFailure, TransformerError, AppCommandError, Transformer
+
+from tonearm.utils import Translatable
+
+
 
 #FIXME Is this compatible with discord.py, check all exceptions in fact
 class TonearmException(AppCommandError):

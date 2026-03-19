@@ -7,7 +7,6 @@ from discord import Locale
 
 from injector import inject, noninjectable
 
-from tonearm.bot.exceptions import TonearmException
 from tonearm.bot.services.player.status import PlayerStatus
 from tonearm.bot.services.player.track import QueuedTrack
 from tonearm.bot.services.player.loop import LoopMode
@@ -16,8 +15,7 @@ from tonearm.bot.services.bot import TonearmVersion
 from tonearm.bot.services.storage import StorageService
 from tonearm.bot.managers.translations import TranslationsManager
 from tonearm.configuration import Configuration
-from tonearm.utils.markdown import *
-from tonearm.utils.strings import *
+from tonearm.utils import *
 
 from .exceptions import EmbedException
 
@@ -35,14 +33,11 @@ class EmbedService:
     def __locale(self) -> Locale:
         return self.__storage_service.get_locale()
 
-    def error(self, error: TonearmException):
-        return self.error_message(error.template, **error.kwargs)
-
-    def error_message(self, template: str, **kwargs) -> discord.Embed:
-        #TODO: Better error message formatting, this currently doesn't allow markdown formatting in templates
-        message = self.__translations_manager.get(self.__locale).gettext(template).format(**kwargs)
+    def error(self, error: Translatable):
+        args = {key: escape_markdown(value) for key, value in error.kwargs.items()}
+        message = self.__translations_manager.get(self.__locale).gettext(error.msgid).format(**args)
         return discord.Embed(
-            description=f":x: {escape_markdown(message)}",
+            description=f":x: {message}",
             colour=discord.Colour.red()
         )
 

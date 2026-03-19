@@ -3,7 +3,7 @@ from discord import app_commands
 
 from tonearm.bot.services.player import LoopMode
 
-from .exceptions import LoopModeTransformerException
+from .exceptions import TranslatableTransformerError
 
 
 class LoopModeTransformer(app_commands.Transformer):
@@ -12,7 +12,13 @@ class LoopModeTransformer(app_commands.Transformer):
         if value is None:
             return None
         if value not in [loop_mode.name for loop_mode in LoopMode]:
-            raise LoopModeTransformerException(value, self.type, self)
+            raise TranslatableTransformerError(
+                value,
+                self.type,
+                self,
+                "`{value}` is not a valid loop mode.",
+                value=value
+            )
         return LoopMode[value]
 
     @property

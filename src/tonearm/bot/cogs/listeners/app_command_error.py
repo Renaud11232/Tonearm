@@ -6,8 +6,7 @@ from discord.ext import commands
 from discord import app_commands
 
 from tonearm.bot.managers import EmbedManager, StorageManager
-from tonearm.bot.cogs.transformers.exceptions import DurationTransformerException, LoopModeTransformerException, BooleanTransformerException, LocaleTransformerException
-from tonearm.bot.cogs.checks.exceptions import IncorrectChannel, IsAnarchy
+from tonearm.utils import Translatable
 
 
 @singleton
@@ -34,44 +33,21 @@ class AppCommandErrorListener(commands.Cog):
             self.__logger.error(f"Ignoring AppCommandError in interaction {repr(interaction)}", exc_info=error)
 
     async def __on_check_failure(self, interaction: discord.Interaction, error: app_commands.CheckFailure):
-        if isinstance(error, IsAnarchy):
+        if isinstance(error, Translatable):
             await interaction.response.send_message(
-                embed=self.__embed_manager.get(interaction.guild).error_message("Anarchy rules here, votes are disabled !"),
-                ephemeral=True
-            )
-        elif isinstance(error, IncorrectChannel):
-            await interaction.response.send_message(
-                embed=self.__embed_manager.get(interaction.guild).error_message(
-                    "I'm only accepting commands in the {channel} channel.",
-                    channel=self.__storage_manager.get(interaction.guild).get_channel().mention
-                ),
+                embed=self.__embed_manager.get(interaction.guild).error(error),
                 ephemeral=True
             )
         else:
             await interaction.response.send_message(
-                embed=self.__embed_manager.get(interaction.guild).error_message("You don't have the permission to use this command."),
+                embed=self.__embed_manager.get(interaction.guild).error(Translatable("You don't have the permission to use this command.")),
                 ephemeral=True
             )
 
     async def __on_transformer_error(self, interaction: discord.Interaction, error: app_commands.TransformerError):
-        if isinstance(error, DurationTransformerException):
+        if isinstance(error, Translatable):
             await interaction.response.send_message(
-                embed=self.__embed_manager.get(interaction.guild).error_message("`{value}` is not a valid duration.", value=error.value),
-                ephemeral=True
-            )
-        elif isinstance(error, LoopModeTransformerException):
-            await interaction.response.send_message(
-                embed=self.__embed_manager.get(interaction.guild).error_message("`{value}` is not a valid loop mode.", value=error.value),
-                ephemeral=True
-            )
-        elif isinstance(error, BooleanTransformerException):
-            await interaction.response.send_message(
-                embed=self.__embed_manager.get(interaction.guild).error_message("`{value}` is not a valid boolean value.", value=error.value),
-                ephemeral=True
-            )
-        elif isinstance(error, LocaleTransformerException):
-            await interaction.response.send_message(
-                embed=self.__embed_manager.get(interaction.guild).error_message("`{value}` is not a valid locale.", value=error.value),
+                embed=self.__embed_manager.get(interaction.guild).error(error),
                 ephemeral=True
             )
         else:

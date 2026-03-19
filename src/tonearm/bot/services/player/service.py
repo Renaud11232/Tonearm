@@ -9,9 +9,10 @@ from discord.ext import commands
 
 from injector import inject, noninjectable
 
-from tonearm.bot.services.source import SourceService, SourceOpeningException
+from tonearm.bot.services.source import SourceService
 from tonearm.bot.services.storage import StorageService
 from tonearm.bot.services.embed import EmbedService
+from tonearm.utils import Translatable
 
 from .exceptions import PlayerException
 from .audiosource import ControllableFFmpegPCMAudio
@@ -208,15 +209,15 @@ class PlayerService:
                                 await self.__send_to_channel(self.__embed_service.now(self.__get_status()))
                     except asyncio.CancelledError as e:
                         raise e
-                    except SourceOpeningException as e:
+                    except Translatable as e:
                         self.__logger.warning(f"Failed to fetch media url in guild {self.__guild.id} : {repr(e)}")
                         await self.__send_to_channel(self.__embed_service.error(e))
                     except:
                         self.__logger.exception("An unexpected error was raised in the player loop :")
-                        await self.__send_to_channel(self.__embed_service.error_message(
+                        await self.__send_to_channel(self.__embed_service.error(Translatable(
                             "I faced an unexpected error, please contact {owner}. I feel weird.",
                             owner=(await self.__bot.application_info()).owner.mention
-                        ))
+                        )))
         except asyncio.CancelledError:
             self.__logger.debug(f"Cancelled player loop for guild {self.__guild.id}")
 

@@ -3,7 +3,7 @@ import re
 import discord
 from discord import app_commands
 
-from .exceptions import DurationTransformerException
+from .exceptions import TranslatableTransformerError
 
 
 class DurationTransformer(app_commands.Transformer):
@@ -15,7 +15,13 @@ class DurationTransformer(app_commands.Transformer):
             return None
         match = DurationTransformer.__REGEX.search(value)
         if not match:
-            raise DurationTransformerException(value, self.type, self)
+            raise TranslatableTransformerError(
+                value,
+                self.type,
+                self,
+                "`{value}` is not a valid duration.",
+                value=value
+            )
         groups = match.groups("0")
         days = int(groups[0])
         hours = int(groups[1])
