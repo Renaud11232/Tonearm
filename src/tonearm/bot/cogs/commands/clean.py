@@ -7,12 +7,11 @@ from injector import inject, singleton, Injector
 
 from tonearm.bot.managers import ChatManager, EmbedManager
 from tonearm.bot.cogs.checks import is_guild_administrator
-
-from .base import CogBase
+from tonearm.bot.cogs.base import InjectorCog
 
 
 @singleton
-class CleanCommand(CogBase):
+class CleanCommand(InjectorCog):
 
     @inject
     def __init__(self,

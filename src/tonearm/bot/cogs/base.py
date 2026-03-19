@@ -2,8 +2,7 @@ from discord.ext import commands
 from injector import Injector
 
 
-#TODO: Move this one dir up, rename it InjectorCog
-class CogBase(commands.Cog):
+class InjectorCog(commands.Cog):
 
     def __init__(self, injector: Injector) -> None:
         super().__init__()

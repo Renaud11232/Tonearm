@@ -7,12 +7,11 @@ from injector import inject, singleton, Injector
 
 from tonearm.bot.cogs.checks import is_correct_channel, is_not_anarchy
 from tonearm.bot.managers import EmbedManager, PlayerManager
-
-from .base import CogBase
+from tonearm.bot.cogs.base import InjectorCog
 
 
 @singleton
-class VotenextCommand(CogBase):
+class VotenextCommand(InjectorCog):
 
     @inject
     def __init__(self,

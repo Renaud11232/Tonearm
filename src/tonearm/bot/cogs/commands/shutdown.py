@@ -8,12 +8,11 @@ from injector import inject, singleton, Injector
 from tonearm.bot.cogs.checks import is_owner
 from tonearm.bot.services import BotService
 from tonearm.bot.managers import EmbedManager
-
-from .base import CogBase
+from tonearm.bot.cogs.base import InjectorCog
 
 
 @singleton
-class ShutdownCommand(CogBase):
+class ShutdownCommand(InjectorCog):
 
     @inject
     def __init__(self,

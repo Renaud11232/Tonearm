@@ -8,12 +8,11 @@ from injector import inject, singleton, Injector
 from tonearm.bot.cogs.checks import can_use_dj_command, is_correct_channel
 from tonearm.bot.cogs.transformers import DurationTransformer
 from tonearm.bot.managers import PlayerManager, EmbedManager
-
-from .base import CogBase
+from tonearm.bot.cogs.base import InjectorCog
 
 
 @singleton
-class ForwardCommand(CogBase):
+class ForwardCommand(InjectorCog):
 
     @inject
     def __init__(self,

@@ -7,12 +7,11 @@ from injector import singleton, inject, Injector
 
 from tonearm.bot.cogs.checks import is_correct_channel, can_use_dj_command
 from tonearm.bot.managers import PlayerManager, EmbedManager
-
-from .base import CogBase
+from tonearm.bot.cogs.base import InjectorCog
 
 
 @singleton
-class PauseCommand(CogBase):
+class PauseCommand(InjectorCog):
 
     @inject
     def __init__(self,

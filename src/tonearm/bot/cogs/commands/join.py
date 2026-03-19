@@ -7,12 +7,11 @@ from injector import inject, singleton, Injector
 
 from tonearm.bot.cogs.checks import is_correct_channel
 from tonearm.bot.managers import PlayerManager, EmbedManager
-
-from .base import CogBase
+from tonearm.bot.cogs.base import InjectorCog
 
 
 @singleton
-class JoinCommand(CogBase):
+class JoinCommand(InjectorCog):
 
     @inject
     def __init__(self,

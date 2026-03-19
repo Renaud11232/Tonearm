@@ -8,12 +8,11 @@ from injector import singleton, inject, Injector
 from tonearm.bot.managers import StorageManager, EmbedManager
 from tonearm.bot.cogs.checks import is_guild_administrator
 from tonearm.bot.cogs.transformers import BooleanTransformer, LocaleTransformer
-
-from .base import CogBase
+from tonearm.bot.cogs.base import InjectorCog
 
 
 @singleton
-class SettingCommand(CogBase):
+class SettingCommand(InjectorCog):
 
     setting = app_commands.Group(
         name="setting",

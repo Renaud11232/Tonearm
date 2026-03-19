@@ -7,12 +7,11 @@ from injector import singleton, inject, Injector
 
 from tonearm.bot.managers import DjManager, EmbedManager
 from tonearm.bot.cogs.checks import is_guild_administrator
-
-from .base import CogBase
+from tonearm.bot.cogs.base import InjectorCog
 
 
 @singleton
-class DjCommand(CogBase):
+class DjCommand(InjectorCog):
 
     dj = app_commands.Group(
         name="dj",
