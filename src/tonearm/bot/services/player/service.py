@@ -1,6 +1,5 @@
 import math
 from typing import List
-import time
 import asyncio
 import logging
 
@@ -20,11 +19,9 @@ from .queue import Queue
 from .track import QueuedTrack
 from .status import PlayerStatus, AudioSourceStatus
 from .loop import LoopMode
-from .voice_client import TonearmVoiceClient
 from .vote import VoteStatus
 
 
-#TODO: add checks where possible
 class PlayerService:
 
     @inject
@@ -46,13 +43,12 @@ class PlayerService:
         self.__condition = asyncio.Condition()
         self.__audio_source: ControllableFFmpegPCMAudio | None = None
         self.__player_loop_task: asyncio.Task | None = None
-        self.__last_forced_leave: float | None = None
         self.__votes = set()
 
     @property
-    def __voice_client(self) -> TonearmVoiceClient | None:
+    def __voice_client(self) -> discord.VoiceClient | None:
         protocol = discord.utils.get(self.__bot.voice_clients, guild=self.__guild)
-        if isinstance(protocol, TonearmVoiceClient):
+        if isinstance(protocol, discord.VoiceClient):
             return protocol
         return None
 
@@ -128,17 +124,6 @@ class PlayerService:
             )
         self.__logger.debug(f"History not empty in guild {self.__guild.id}")
 
-    def __check_not_kicked_recently(self):
-        self.__logger.debug(f"Checking if the bot was recently kicked from a voice channel in guild {self.__guild.id}")
-        if self.__last_forced_leave is not None and time.time() < self.__last_forced_leave + 60:
-            remaining_seconds = math.ceil(self.__last_forced_leave + 60 - time.time())
-            self.__logger.debug(f"The bot was kicked recently and must wait {remaining_seconds} seconds before joining a voice channel in guild {self.__guild.id}")
-            raise TranslatableException(
-                "I got abruptly disconnected, ask me again in {remaining_seconds} second(s).",
-                remaining_seconds=math.ceil(self.__last_forced_leave + 60 - time.time())
-            )
-        self.__logger.debug(f"The bot wasn't kicked recently")
-
     def __check_did_not_vote_yet(self, member: discord.Member):
         self.__logger.debug(f"Checking the member {member.id} did already vote to skip the current track in guild {self.__guild.id}")
         if member.id in self.__votes:
@@ -169,22 +154,9 @@ class PlayerService:
 
     async def __safe_join(self, channel: discord.VoiceChannel):
         self.__logger.debug(f"Got request to join voice channel {channel.id} of guild {self.__guild.id}")
-        self.__check_not_kicked_recently()
-        await channel.connect(cls=TonearmVoiceClient)
-        self.__voice_client.add_listener("disconnect", self.__on_disconnect)
+        await channel.connect()
         await self.__queue.loop(LoopMode.OFF)
         self.__player_loop_task = asyncio.create_task(self.__player_loop())
-
-    async def __on_disconnect(self, force: bool):
-        self.__logger.debug(f"Voice client disconnected in guild {self.__guild.id}")
-        if force:
-            self.__logger.warning(f"Forced to disconnect from voice channel in guild {self.__guild.id}, this can cause some issues")
-            self.__last_forced_leave = time.time()
-        else:
-            self.__logger.debug(f"Gracefully disconnected from voice channel in guild {self.__guild.id}")
-            self.__last_forced_leave = None
-        await self.__safe_stop(full_clear=True)
-        self.__safe_cancel_loop()
 
     async def __player_loop(self):
         self.__logger.debug(f"Starting player loop for guild {self.__guild.id}")
@@ -209,7 +181,7 @@ class PlayerService:
                                 await self.__send_to_channel(self.__embed_service.now(self.__get_status()))
                     except asyncio.CancelledError as e:
                         raise e
-                    except Translatable as e:
+                    except TranslatableException as e:
                         self.__logger.warning(f"Failed to fetch media url in guild {self.__guild.id} : {repr(e)}")
                         await self.__send_to_channel(self.__embed_service.error(e))
                     except:
@@ -310,6 +282,9 @@ class PlayerService:
                 elif after.channel is not None:
                     self.__logger.debug(f"Detected that the bot was moved to a different voice channel in guild {self.__guild.id}")
                     await self.__on_bot_moved()
+                else:
+                    self.__logger.debug(f"Detected that the bot disconnected in guild {self.__guild.id}")
+                    await self.__on_bot_disconnected()
 
     def __is_alone(self) -> bool:
         others = self.__get_humans_in_same_voice_channel()
@@ -336,6 +311,10 @@ class PlayerService:
                 else:
                     self.__votes.discard(member.id)
                     await self.__safe_handle_vote(True)
+
+    async def __on_bot_disconnected(self):
+        await self.__safe_stop(full_clear=True)
+        self.__safe_cancel_loop()
 
     def clear(self, member: discord.Member):
         self.__logger.debug(f"Member {member.id} asked the bot to clear the queue in guild {self.__guild.id}")
