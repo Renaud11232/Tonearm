@@ -297,7 +297,7 @@ msgstr[1] ""
 msgid "Page"
 msgstr ""
 
-msgid "{page} our of {max_pages}"
+msgid "{page} out of {max_pages}"
 msgstr ""
 
 msgid "Up next :"

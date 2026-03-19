@@ -14,10 +14,9 @@ from tonearm.bot.services.player.vote import VoteStatus
 from tonearm.bot.services.bot import TonearmVersion
 from tonearm.bot.services.storage import StorageService
 from tonearm.bot.managers.translations import TranslationsManager
+from tonearm.bot.exceptions import TranslatableException
 from tonearm.configuration import Configuration
 from tonearm.utils import *
-
-from .exceptions import EmbedException
 
 
 class EmbedService:
@@ -34,7 +33,7 @@ class EmbedService:
         return self.__storage_service.get_locale()
 
     def error(self, error: Translatable):
-        args = {key: escape_markdown(value) for key, value in error.kwargs.items()}
+        args = {key: escape_markdown(value) if isinstance(value, str) else value for key, value in error.kwargs.items()}
         message = self.__translations_manager.get(self.__locale).gettext(error.msgid).format(**args)
         return discord.Embed(
             description=f":x: {message}",
@@ -273,7 +272,7 @@ class EmbedService:
         else:
             max_pages = math.ceil(len_tracks / 10)
         if page >= max_pages:
-            raise EmbedException(
+            raise TranslatableException(
                 "I can't show you page {page} out of {max_pages}.",
                 page=page + 1,
                 max_pages=max_pages
@@ -306,7 +305,7 @@ class EmbedService:
         )
         embed.add_field(
             name=self.__translations_manager.get(self.__locale).gettext("Page"),
-            value=self.__translations_manager.get(self.__locale).gettext("{page} our of {max_pages}").format(
+            value=self.__translations_manager.get(self.__locale).gettext("{page} out of {max_pages}").format(
                 page=page + 1,
                 max_pages=max_pages
             ),

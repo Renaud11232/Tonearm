@@ -297,7 +297,7 @@ msgstr[1] "{len_tracks} pistes"
 msgid "Page"
 msgstr "Page"
 
-msgid "{page} our of {max_pages}"
+msgid "{page} out of {max_pages}"
 msgstr "{page} sur {max_pages}"
 
 msgid "Up next :"

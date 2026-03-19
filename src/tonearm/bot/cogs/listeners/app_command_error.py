@@ -28,7 +28,7 @@ class AppCommandErrorListener(commands.Cog):
         elif isinstance(error, app_commands.TransformerError):
             await self.__on_transformer_error(interaction, error)
         elif isinstance(error, app_commands.CommandInvokeError):
-            await self.__on_command_invoke_error(interaction, error)
+            await self.__on_command_invoke_error(interaction, error.original)
         else:
             self.__logger.error(f"Ignoring AppCommandError in interaction {repr(interaction)}", exc_info=error)
 
@@ -53,20 +53,10 @@ class AppCommandErrorListener(commands.Cog):
         else:
             self.__logger.error(f"Ignoring TransformerError in interaction {repr(interaction)}", exc_info=error)
 
-    async def __on_command_invoke_error(self, interaction: discord.Interaction, error: app_commands.CommandInvokeError):
-        self.__logger.error(f"Ignoring CommandInvokeError in interaction {repr(interaction)}", exc_info=error)
-
-
-
-
-        #FIXME: This does not match discord.py design
-        # elif isinstance(error, app_commands.AppCommandError):
-        #     exception = error.original
-        #     if isinstance(exception, TonearmCommandException):
-        #         await interaction.followup.send(
-        #             embed=self.__embed_manager.get(interaction.guild).error(exception)
-        #         )
-        #     else:
-        #         raise error
-        # else:
-        #     raise error
+    async def __on_command_invoke_error(self, interaction: discord.Interaction, error: Exception):
+        if isinstance(error, Translatable):
+            await interaction.followup.send(
+                embed=self.__embed_manager.get(interaction.guild).error(error)
+            )
+        else:
+            self.__logger.error(f"Ignoring CommandInvokeError in interaction {repr(interaction)} caused by", exc_info=error)

@@ -3,8 +3,7 @@ import discord
 from injector import inject, noninjectable
 
 from tonearm.bot.services.storage import StorageService
-
-from .exceptions import DjException
+from tonearm.bot.exceptions import TranslatableException
 
 
 class DjService:
@@ -17,7 +16,7 @@ class DjService:
     def add_role(self, role: discord.Role):
         roles = self.__storage_service.get_dj_roles()
         if role in roles:
-            raise DjException(
+            raise TranslatableException(
                 "Members of {role} are already DJs !",
                 role=role.mention
             )
@@ -30,7 +29,7 @@ class DjService:
             roles.remove(role)
             self.__storage_service.set_dj_roles(roles)
         except ValueError:
-            raise DjException(
+            raise TranslatableException(
                 "Members of {role} aren't DJs !",
                 role=role.mention
             )
@@ -38,7 +37,7 @@ class DjService:
     def add_member(self, member: discord.Member):
         djs = self.__storage_service.get_dj_members()
         if member in djs:
-            raise DjException(
+            raise TranslatableException(
                 "{member} is already a DJ !",
                 member=member.mention
             )
@@ -51,7 +50,7 @@ class DjService:
             djs.remove(member)
             self.__storage_service.set_dj_members(djs)
         except ValueError:
-            raise DjException(
+            raise TranslatableException(
                 "{member} isn't a DJ !",
                 member=member.mention
             )
