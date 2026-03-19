@@ -2,10 +2,10 @@ from injector import inject, noninjectable
 
 import discord
 
-from tonearm.bot.cogs.checks.exceptions import TranslatableCheckFailure
 from tonearm.bot.managers import StorageManager
 
 from .internal import dependency_needing_check
+from .exceptions import TranslatableCheckFailure
 
 
 def is_not_anarchy():
