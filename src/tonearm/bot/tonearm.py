@@ -62,7 +62,7 @@ class TonearmBot(commands.Bot):
             status=configuration.status,
             intents=intents,
             activity=activity,
-            command_prefix="",
+            command_prefix=[],
             help_command=None
         )
         self.__tonearm_translator = translator
