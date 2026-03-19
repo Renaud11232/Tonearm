@@ -1,5 +1,6 @@
 from injector import singleton, inject
 import yt_dlp
+import yt_dlp.utils
 import discord
 
 from tonearm.bot.services.source.base import SourceServiceBase
@@ -36,14 +37,13 @@ class YoutubeSourceService(SourceServiceBase):
             options.update({
                 "cookiefile": self.__configuration.youtube_cookies
             })
-        with yt_dlp.YoutubeDL(options) as ytdl:
-            try:
+        try:
+            with yt_dlp.YoutubeDL(options) as ytdl:
                 info = ytdl.extract_info(url, download=False)
                 return ControllableFFmpegPCMAudio(
                     info["url"],
                     buffer_length=self.__configuration.buffer_length,
                     executable=self.__configuration.ffmpeg_executable
                 )
-            #TODO: Does this work ?
-            except yt_dlp.utils.DownloadError as e:
-                raise TranslatableException(e.args[0])
+        except yt_dlp.utils.DownloadError as e:
+            raise TranslatableException(e.args[0])
