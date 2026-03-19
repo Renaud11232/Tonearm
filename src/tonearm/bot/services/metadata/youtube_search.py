@@ -6,7 +6,8 @@ from injector import singleton, inject
 import googleapiclient.errors
 
 from tonearm.configuration import Configuration
-from .exceptions import MetadataFetchingException
+from tonearm.bot.exceptions import TranslatableException
+
 from .base import YoutubeMetadataService
 from .metadata import TrackMetadata
 
@@ -37,7 +38,7 @@ class YoutubeSearchMetadataService(YoutubeMetadataService):
             ]
         except googleapiclient.errors.HttpError as e:
             self._logger.warning(f"YouTube search API returned error : {repr(e)}")
-            raise MetadataFetchingException(
+            raise TranslatableException(
                 "I could not fetch the track, YouTube search API returned error status : {error}",
                 error=f"`{e.status_code}` : `{e.reason}`"
             )

@@ -4,10 +4,10 @@ from dataclasses import dataclass
 from injector import inject, singleton
 
 from tonearm.bot.services.player.audiosource import ControllableFFmpegPCMAudio
+from tonearm.bot.exceptions import TranslatableException
 
 from .base import SourceServiceBase
 from .direct_url import DirectUrlSourceService
-from .exceptions import SourceOpeningException
 from .youtube import YoutubeSourceService
 
 
@@ -38,6 +38,6 @@ class SourceService(SourceServiceBase):
             if re.search(entry.pattern, url):
                 return entry.service.open(url)
         self._logger.debug(f"No source service matched {url}")
-        raise SourceOpeningException(
+        raise TranslatableException(
             "I could not load the track, it's hosted on a service I don't support."
         )

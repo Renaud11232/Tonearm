@@ -12,9 +12,9 @@ from injector import inject, noninjectable
 from tonearm.bot.services.source import SourceService
 from tonearm.bot.services.storage import StorageService
 from tonearm.bot.services.embed import EmbedService
+from tonearm.bot.exceptions import TranslatableException
 from tonearm.utils import Translatable
 
-from .exceptions import PlayerException
 from .audiosource import ControllableFFmpegPCMAudio
 from .queue import Queue
 from .track import QueuedTrack
@@ -60,7 +60,7 @@ class PlayerService:
         self.__logger.debug(f"Checking if member {member.id} of guild {self.__guild.id} is in a voice channel")
         if member.voice is None or member.voice.channel is None:
             self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} was not in a voice channel")
-            raise PlayerException(
+            raise TranslatableException(
                 "You must join a voice channel first."
             )
         self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} is in a voice channel")
@@ -69,7 +69,7 @@ class PlayerService:
         self.__logger.debug(f"Checking if member {member.id} of guild {self.__guild.id} is in the same voice channel as the bot")
         if self.__voice_client is None or member.voice.channel != self.__voice_client.channel:
             self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} was not in the same voice channel as the bot")
-            raise PlayerException(
+            raise TranslatableException(
                 "I'm not in the same voice channel !"
             )
         self.__logger.debug(f"Member {member.id} of guild {self.__guild.id} is in the same voice channel as the bot")
@@ -78,7 +78,7 @@ class PlayerService:
         self.__logger.debug(f"Checking if the bot is currently playing a track in the guild {self.__guild.id}")
         if not self.__is_active():
             self.__logger.debug(f"Bot is currently not playing any track in guild {self.__guild.id}")
-            raise PlayerException(
+            raise TranslatableException(
                 "I'm not currently playing any track."
             )
         self.__logger.debug(f"Bot is currently playing a track in guild {self.__guild.id}")
@@ -87,7 +87,7 @@ class PlayerService:
         self.__logger.debug(f"Checking if the bot is currently connected to a voice channel in the guild {self.__guild.id}")
         if self.__is_connected():
             self.__logger.debug(f"Bot has already joined a voice channel in guild {self.__guild.id}")
-            raise PlayerException(
+            raise TranslatableException(
                 "I've already joined a voice channel."
             )
         self.__logger.debug(f"Bot hasn't joined a voice channel in guild {self.__guild.id} yet")
@@ -96,7 +96,7 @@ class PlayerService:
         self.__logger.debug(f"Checking if the audio is currently paused in guild {self.__guild.id}")
         if self.__is_paused():
             self.__logger.debug(f"Audio playback is already paused in guild {self.__guild.id}")
-            raise PlayerException(
+            raise TranslatableException(
                 "Already paused. No need to rush."
             )
         self.__logger.debug(f"Audio playback isn't paused in guild {self.__guild.id} yet")
@@ -105,7 +105,7 @@ class PlayerService:
         self.__logger.debug(f"Checking if the audio is currently paused in guild {self.__guild.id}")
         if not self.__is_paused():
             self.__logger.debug(f"Audio playback is not paused in guild {self.__guild.id}")
-            raise PlayerException(
+            raise TranslatableException(
                 "The music never really stopped."
             )
         self.__logger.debug(f"Audio playback is paused in guild {self.__guild.id}")
@@ -114,7 +114,7 @@ class PlayerService:
         self.__logger.debug(f"Checking if the queue is empty in guild {self.__guild.id}")
         if self.__queue.get_current_track() is None:
             self.__logger.debug(f"Queue is empty in guild {self.__guild.id}")
-            raise PlayerException(
+            raise TranslatableException(
                 "The queue is empty, what can I do ?"
             )
         self.__logger.debug(f"Queue not empty in guild {self.__guild.id}")
@@ -123,7 +123,7 @@ class PlayerService:
         self.__logger.debug(f"Checking if the history is empty in guild {self.__guild.id}")
         if len(self.__queue.get_previous_tracks()) == 0:
             self.__logger.debug(f"History is empty in guild {self.__guild.id}")
-            raise PlayerException(
+            raise TranslatableException(
                 "I can't do that with no track in the history."
             )
         self.__logger.debug(f"History not empty in guild {self.__guild.id}")
@@ -133,7 +133,7 @@ class PlayerService:
         if self.__last_forced_leave is not None and time.time() < self.__last_forced_leave + 60:
             remaining_seconds = math.ceil(self.__last_forced_leave + 60 - time.time())
             self.__logger.debug(f"The bot was kicked recently and must wait {remaining_seconds} seconds before joining a voice channel in guild {self.__guild.id}")
-            raise PlayerException(
+            raise TranslatableException(
                 "I got abruptly disconnected, ask me again in {remaining_seconds} second(s).",
                 remaining_seconds=math.ceil(self.__last_forced_leave + 60 - time.time())
             )
@@ -143,7 +143,7 @@ class PlayerService:
         self.__logger.debug(f"Checking the member {member.id} did already vote to skip the current track in guild {self.__guild.id}")
         if member.id in self.__votes:
             self.__logger.debug(f"Member {member.id} already did already vote in guild {self.__guild.id}")
-            raise PlayerException(
+            raise TranslatableException(
                 "You already voted to skip this track."
             )
         self.__logger.debug(f"Member {member.id} did not already vote in guild {self.__guild.id}")
@@ -253,7 +253,7 @@ class PlayerService:
             tracks = await self.__queue.queue(member, query)
             if len(tracks) == 0:
                 self.__logger.debug(f"No tracks found for query {repr(query)} in guild {self.__guild.id}")
-                raise PlayerException(
+                raise TranslatableException(
                     "No playable track were found !"
                 )
             return tracks

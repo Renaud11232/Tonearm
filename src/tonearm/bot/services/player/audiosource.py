@@ -6,7 +6,8 @@ from typing import Union, IO, Optional
 
 import discord
 
-from .exceptions import PlayerException
+from tonearm.bot.exceptions import TranslatableException
+
 from .buffer import AudioBuffer
 
 
@@ -89,17 +90,17 @@ class SeekableFFmpegPCMAudio(discord.FFmpegPCMAudio):
         with self.__condition:
             if next_chunk - self.__offset < 0:
                 self.__logger.debug("Provided elapsed time is before the start of the buffer")
-                raise PlayerException(
+                raise TranslatableException(
                     "That’s too far back ! Even my buffer’s got limits."
                 )
             if next_chunk - self.__offset >= len(self.__chunks):
                 self.__logger.debug(f"Chunk {next_chunk} does not exist in buffer of {len(self.__chunks)} with offset {self.__offset}")
                 if self.__is_finished_buffering():
-                    raise PlayerException(
+                    raise TranslatableException(
                         "I’d love to seek there, but the track isn't that long."
                     )
                 else:
-                    raise PlayerException(
+                    raise TranslatableException(
                         "I’d love to seek there, but it’s still downloading... patience, friend."
                     )
             self.__next_chunk = next_chunk

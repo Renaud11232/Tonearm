@@ -2,9 +2,9 @@ from injector import singleton, inject
 import yt_dlp
 import discord
 
-from tonearm.bot.services.source.exceptions import SourceOpeningException
 from tonearm.bot.services.source.base import SourceServiceBase
 from tonearm.configuration import Configuration
+from tonearm.bot.exceptions import TranslatableException
 
 from tonearm.bot.services.player.audiosource import ControllableFFmpegPCMAudio
 
@@ -44,5 +44,6 @@ class YoutubeSourceService(SourceServiceBase):
                     buffer_length=self.__configuration.buffer_length,
                     executable=self.__configuration.ffmpeg_executable
                 )
+            #TODO: Does this work ?
             except yt_dlp.utils.DownloadError as e:
-                raise SourceOpeningException(e.args[0])
+                raise TranslatableException(e.args[0])

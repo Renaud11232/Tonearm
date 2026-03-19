@@ -34,29 +34,29 @@ class AppCommandErrorListener(commands.Cog):
 
     async def __on_check_failure(self, interaction: discord.Interaction, error: app_commands.CheckFailure):
         if isinstance(error, Translatable):
-            await interaction.response.send_message(
-                embed=self.__embed_manager.get(interaction.guild).error(error),
-                ephemeral=True
-            )
+            await self.__send_ephemeral_error(interaction, error)
         else:
-            await interaction.response.send_message(
-                embed=self.__embed_manager.get(interaction.guild).error(Translatable("You don't have the permission to use this command.")),
-                ephemeral=True
-            )
+            await self.__send_ephemeral_error(interaction, Translatable("You don't have the permission to use this command."))
 
     async def __on_transformer_error(self, interaction: discord.Interaction, error: app_commands.TransformerError):
         if isinstance(error, Translatable):
-            await interaction.response.send_message(
-                embed=self.__embed_manager.get(interaction.guild).error(error),
-                ephemeral=True
-            )
+            await self.__send_ephemeral_error(interaction, error)
         else:
             self.__logger.error(f"Ignoring TransformerError in interaction {repr(interaction)}", exc_info=error)
 
     async def __on_command_invoke_error(self, interaction: discord.Interaction, error: Exception):
         if isinstance(error, Translatable):
-            await interaction.followup.send(
-                embed=self.__embed_manager.get(interaction.guild).error(error)
-            )
+            await self.__send_followup_error(interaction, error)
         else:
             self.__logger.error(f"Ignoring CommandInvokeError in interaction {repr(interaction)} caused by", exc_info=error)
+
+    async def __send_ephemeral_error(self, interaction: discord.Interaction, error: Translatable):
+        await interaction.response.send_message(
+            embed=self.__embed_manager.get(interaction.guild).error(error),
+            ephemeral=True
+        )
+
+    async def __send_followup_error(self, interaction: discord.Interaction, error: Translatable):
+        await interaction.followup.send(
+            embed=self.__embed_manager.get(interaction.guild).error(error),
+        )

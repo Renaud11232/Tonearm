@@ -9,10 +9,10 @@ import discord
 from injector import inject
 
 from tonearm.bot.services.metadata import MetadataService
+from tonearm.bot.exceptions import TranslatableException
 
 from .track import QueuedTrack
 from .status import QueueStatus
-from .exceptions import PlayerException
 from .loop import LoopMode
 
 
@@ -122,7 +122,7 @@ class Queue:
         async with self.__condition:
             if track > len(self.__next_tracks):
                 self.__logger.debug(f"Not enough tracks to jump to track {track} in queue {repr(self)}")
-                raise PlayerException(
+                raise TranslatableException(
                     "Jump failed. That’s outside the queue’s bounds."
                 )
             if self.__current_track is not None:
@@ -138,7 +138,7 @@ class Queue:
         async with self.__condition:
             if track >= len(self.__previous_tracks):
                 self.__logger.debug(f"Not enough tracks in history to go to previous track {track} in queue {repr(self)}")
-                raise PlayerException(
+                raise TranslatableException(
                     "That’s further back than my memory goes. Try a smaller number."
                 )
             if self.__current_track is not None:
@@ -154,7 +154,7 @@ class Queue:
         async with self.__condition:
             if track >= len(self.__next_tracks):
                 self.__logger.debug(f"Not enough tracks to remove track {track} in queue {repr(self)}")
-                raise PlayerException(
+                raise TranslatableException(
                     "Oops ! Nothing to remove at that spot !"
                 )
             removed_track = self.__next_tracks[track]
@@ -167,7 +167,7 @@ class Queue:
         async with self.__condition:
             if from_position >= len(self.__next_tracks) or to_position >= len(self.__next_tracks):
                 self.__logger.debug(f"Not enough tracks to move track {from_position} to {to_position} in queue {repr(self)}")
-                raise PlayerException(
+                raise TranslatableException(
                     "I couldn’t move anything. The queue only has {len_next_tracks} track(s).",
                     len_next_tracks=len(self.__next_tracks)
                 )

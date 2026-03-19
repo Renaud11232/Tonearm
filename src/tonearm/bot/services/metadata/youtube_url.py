@@ -8,8 +8,8 @@ from injector import singleton, inject
 import googleapiclient.errors
 
 from tonearm.configuration import Configuration
+from tonearm.bot.exceptions import TranslatableException
 
-from .exceptions import MetadataFetchingException
 from .base import YoutubeMetadataService
 from .metadata import TrackMetadata
 
@@ -43,7 +43,7 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
         regex = re.compile(r"(?:v=|/)([0-9A-Za-z_-]{11}).*")
         results = regex.search(url)
         if not results:
-            raise MetadataFetchingException(
+            raise TranslatableException(
                 "I could not fetch the track, it looks like the URL you provided doesn't include a YouTube video ID."
             )
         return results.group(1)
@@ -67,7 +67,7 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
             ]
         except googleapiclient.errors.HttpError as e:
             self._logger.warning(f"YouTube videos API returned error : {repr(e)}")
-            raise MetadataFetchingException(
+            raise TranslatableException(
                 "I could not fetch the track, YouTube videos API returned error status : {error}",
                 error=f"{e.status_code}` : `{e.reason}`"
             )
@@ -102,7 +102,7 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
             return items
         except googleapiclient.errors.HttpError as e:
             self._logger.warning(f"YouTube playlistItems API returned error : {repr(e)}")
-            raise MetadataFetchingException(
+            raise TranslatableException(
                 "I could not fetch the playlist, YouTube playlistItems API returned error status : {error}",
                 error=f"`{e.status_code}` : `{e.reason}`"
             )
