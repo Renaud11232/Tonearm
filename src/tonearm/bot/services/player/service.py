@@ -154,7 +154,9 @@ class PlayerService:
 
     async def __safe_join(self, channel: discord.VoiceChannel):
         self.__logger.debug(f"Got request to join voice channel {channel.id} of guild {self.__guild.id}")
-        await channel.connect()
+        await channel.connect(
+            self_deaf=True
+        )
         await self.__queue.loop(LoopMode.OFF)
         self.__player_loop_task = asyncio.create_task(self.__player_loop())
 
