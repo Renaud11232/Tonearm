@@ -54,7 +54,7 @@ jobs:
         with:
           name: dist
           path: dist/
-      - uses: docker/metadata-action@v5
+      - uses: docker/metadata-action@v6
         id: metadata
         with:
           images: |
