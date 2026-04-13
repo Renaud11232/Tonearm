@@ -13,7 +13,7 @@ dependencies = [
     "google-api-python-client >= 2.193.0, < 3",
     "requests >= 2.32.5, < 3",
     "injector >= 0.24.0, < 1",
-    "werkzeug >= 3.1.6, < 4",
+    "werkzeug >= 3.1.8, < 4",
     "yt-dlp[default] >= 2026.3.17"
 ]
 requires-python = ">= 3.13"
