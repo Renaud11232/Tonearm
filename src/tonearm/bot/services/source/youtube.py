@@ -2,6 +2,8 @@ from injector import singleton, inject
 import yt_dlp
 import yt_dlp.utils
 import discord
+import requests
+import time
 
 from tonearm.bot.services.source.base import SourceServiceBase
 from tonearm.configuration import Configuration
@@ -40,10 +42,30 @@ class YoutubeSourceService(SourceServiceBase):
         try:
             with yt_dlp.YoutubeDL(options) as ytdl:
                 info = ytdl.extract_info(url, download=False)
+                url = info["url"]
+                self.__wait_for_video(url)
                 return ControllableFFmpegPCMAudio(
-                    info["url"],
+                    url,
                     buffer_length=self.__configuration.buffer_length,
                     executable=self.__configuration.ffmpeg_executable
                 )
         except yt_dlp.utils.DownloadError as e:
             raise TranslatableException(e.args[0])
+
+    def __wait_for_video(self, url: str):
+        status_code = self.__get_status_code(url)
+        retries = 0
+        while status_code >= 400 and retries < 10:
+            time.sleep(1)
+            retries += 1
+            status_code = self.__get_status_code(url)
+        if status_code >= 400:
+            raise TranslatableException(
+                "YouTube video playback URL was not available (Error {status_code})",
+                status_code=status_code
+            )
+
+    def __get_status_code(self, url: str):
+        with requests.head(url) as response:
+            self._logger.debug(f"Video URL {url} returned status code : {response.status_code}")
+            return response.status_code

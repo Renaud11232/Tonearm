@@ -475,3 +475,6 @@ msgstr "Morceau passé à la demande générale !"
 
 msgid "You already voted to skip this track."
 msgstr "Tu as déjà voté pour passer à la piste suivante."
+
+msgid "YouTube video playback URL was not available (Error {status_code})"
+msgstr "L'URL de lecture de la vidéo YouTube n'était pas disponible (Erreur {status_code})"

@@ -475,3 +475,6 @@ msgstr "Track skipped by popular demand !"
 
 msgid "You already voted to skip this track."
 msgstr "You already voted to skip this track."
+
+msgid "YouTube video playback URL was not available (Error {status_code})"
+msgstr "YouTube video playback URL was not available (Error {status_code})"

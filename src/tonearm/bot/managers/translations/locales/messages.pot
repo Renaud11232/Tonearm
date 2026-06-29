@@ -475,3 +475,6 @@ msgstr ""
 
 msgid "You already voted to skip this track."
 msgstr ""
+
+msgid "YouTube video playback URL was not available (Error {status_code})"
+msgstr ""
