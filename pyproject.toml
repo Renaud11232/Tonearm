@@ -14,7 +14,7 @@ dependencies = [
     "requests >= 2.34.2, < 3",
     "injector >= 0.24.0, < 1",
     "werkzeug >= 3.1.8, < 4",
-    "yt-dlp[default] >= 2026.6.9"
+    "yt-dlp[default] >= 2026.7.4"
 ]
 requires-python = ">= 3.13"
 authors = [
