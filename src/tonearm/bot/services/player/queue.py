@@ -88,7 +88,7 @@ class Queue:
                 source=track.source,
                 thumbnail=track.thumbnail,
                 member=member
-            ) for track in self.__metadata_service.fetch(query)
+            ) for track in await self.__metadata_service.fetch(query)
         ]
         async with self.__condition:
             self.__next_tracks.extend(tracks)

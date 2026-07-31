@@ -14,7 +14,7 @@ class MetadataServiceBase(ABC):
         self._logger = logging.getLogger("tonearm.metadata")
 
     @abstractmethod
-    def fetch(self, query: str) -> List[TrackMetadata]:
+    async def fetch(self, query: str) -> List[TrackMetadata]:
         pass
 
 class YoutubeMetadataService(MetadataServiceBase, ABC):

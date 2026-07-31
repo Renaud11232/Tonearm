@@ -3,7 +3,7 @@ import yt_dlp
 import yt_dlp.utils
 import discord
 import requests
-import time
+import asyncio
 
 from tonearm.bot.services.source.base import SourceServiceBase
 from tonearm.configuration import Configuration
@@ -20,7 +20,7 @@ class YoutubeSourceService(SourceServiceBase):
         super().__init__()
         self.__configuration = configuration
 
-    def open(self, url: str) -> discord.AudioSource:
+    async def open(self, url: str) -> discord.AudioSource:
         self._logger.debug(f"Fetching media from YouTube URL : {url}")
         options = {
             "format": "bestaudio",
@@ -41,9 +41,9 @@ class YoutubeSourceService(SourceServiceBase):
             })
         try:
             with yt_dlp.YoutubeDL(options) as ytdl:
-                info = ytdl.extract_info(url, download=False)
+                info = await asyncio.to_thread(ytdl.extract_info, url, download=False)
                 url = info["url"]
-                self.__wait_for_video(url)
+                await self.__wait_for_video(url)
                 return ControllableFFmpegPCMAudio(
                     url,
                     buffer_length=self.__configuration.buffer_length,
@@ -52,13 +52,13 @@ class YoutubeSourceService(SourceServiceBase):
         except yt_dlp.utils.DownloadError as e:
             raise TranslatableException(e.args[0])
 
-    def __wait_for_video(self, url: str):
+    async def __wait_for_video(self, url: str):
         status_code = self.__get_status_code(url)
         retries = 0
         while status_code >= 400 and retries < 10:
-            time.sleep(1)
+            await asyncio.sleep(1)
             retries += 1
-            status_code = self.__get_status_code(url)
+            status_code = await asyncio.to_thread(self.__get_status_code, url)
         if status_code >= 400:
             raise TranslatableException(
                 "YouTube video playback URL was not available (Error {status_code})",

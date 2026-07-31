@@ -1,3 +1,4 @@
+import asyncio
 import re
 from urllib.parse import urlparse, parse_qs
 from typing import List
@@ -22,7 +23,10 @@ class YoutubeUrlMetadataService(YoutubeMetadataService):
         super().__init__(configuration)
         self.__configuration = configuration
 
-    def fetch(self, query: str) -> List[TrackMetadata]:
+    async def fetch(self, query: str) -> List[TrackMetadata]:
+        return await asyncio.to_thread(self.__sync_fetch, query)
+
+    def __sync_fetch(self, query: str) -> List[TrackMetadata]:
         self._logger.debug(f"Fetching metadata via YouTube API : {query}")
         if self.__is_playlist(query):
             return self.__fetch_playlist(query)

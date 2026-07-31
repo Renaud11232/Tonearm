@@ -1,3 +1,4 @@
+import asyncio
 from urllib.parse import urlparse, unquote_plus
 from pathlib import PurePosixPath
 
@@ -21,7 +22,10 @@ class DirectUrlMetadataService(MetadataServiceBase):
     def __init__(self):
         super().__init__()
 
-    def fetch(self, query: str) -> List[TrackMetadata]:
+    async def fetch(self, query: str) -> List[TrackMetadata]:
+        return await asyncio.to_thread(self.__sync_fetch, query)
+
+    def __sync_fetch(self, query: str) -> List[TrackMetadata]:
         self._logger.debug(f"Fetching metadata for direct url : {query}")
         headers = {
             "Range": "bytes=0-0"

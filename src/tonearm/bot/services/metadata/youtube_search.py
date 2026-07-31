@@ -1,3 +1,4 @@
+import asyncio
 from typing import List
 import html
 
@@ -19,7 +20,10 @@ class YoutubeSearchMetadataService(YoutubeMetadataService):
     def __init__(self, configuration: Configuration):
         super().__init__(configuration)
 
-    def fetch(self, query: str) -> List[TrackMetadata]:
+    async def fetch(self, query: str) -> List[TrackMetadata]:
+        return await asyncio.to_thread(self.__sync_fetch, query)
+
+    def __sync_fetch(self, query: str) -> List[TrackMetadata]:
         self._logger.debug(f"Fetching metadata via YouTube Search API : {query}")
         try:
             response = self._youtube.search().list(

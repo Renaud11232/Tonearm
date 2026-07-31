@@ -33,10 +33,10 @@ class SourceService(SourceServiceBase):
             SourceServiceEntry(r"^https?://.*$", direct_url_source_service)
         ]
 
-    def open(self, url: str) -> ControllableFFmpegPCMAudio:
+    async def open(self, url: str) -> ControllableFFmpegPCMAudio:
         for entry in self.__source_services:
             if re.search(entry.pattern, url):
-                return entry.service.open(url)
+                return await entry.service.open(url)
         self._logger.debug(f"No source service matched {url}")
         raise TranslatableException(
             "I could not load the track, it's hosted on a service I don't support."

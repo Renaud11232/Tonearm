@@ -10,5 +10,5 @@ class SourceServiceBase(ABC):
         self._logger = logging.getLogger("tonearm.source")
 
     @abstractmethod
-    def open(self, url: str) -> ControllableFFmpegPCMAudio:
+    async def open(self, url: str) -> ControllableFFmpegPCMAudio:
         pass

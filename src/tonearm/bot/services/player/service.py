@@ -173,7 +173,7 @@ class PlayerService:
                     self.__logger.debug(f"Starting playback of url {next_track.url} in guild {self.__guild.id}")
                     try:
                         async with self.__condition:
-                            self.__audio_source = self.__source_service.open(next_track.url)
+                            self.__audio_source = await self.__source_service.open(next_track.url)
                             self.__audio_source.volume = self.__storage_service.get_volume() / 100
                             self.__voice_client.play(
                                 self.__audio_source,

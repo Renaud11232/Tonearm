@@ -39,10 +39,10 @@ class MetadataService(MetadataServiceBase):
             MetadataServiceEntry(r"^.*$", youtube_search_metadata_service)
         ]
 
-    def fetch(self, query: str) -> List[TrackMetadata]:
+    async def fetch(self, query: str) -> List[TrackMetadata]:
         for entry in self.__metadata_services:
             if re.search(entry.pattern, query):
-                return entry.service.fetch(query)
+                return await entry.service.fetch(query)
         self._logger.debug(f"No metadata service matched {query}")
         raise TranslatableException(
             "I could not fetch the track, it's hosted on a service I don't support."
