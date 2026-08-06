@@ -53,7 +53,7 @@ class YoutubeSourceService(SourceServiceBase):
             raise TranslatableException(e.args[0])
 
     async def __wait_for_video(self, url: str):
-        status_code = self.__get_status_code(url)
+        status_code = await asyncio.to_thread(self.__get_status_code, url)
         retries = 0
         while status_code >= 400 and retries < 10:
             await asyncio.sleep(1)
@@ -66,6 +66,6 @@ class YoutubeSourceService(SourceServiceBase):
             )
 
     def __get_status_code(self, url: str):
-        with requests.head(url) as response:
+        with requests.head(url, allow_redirects=True) as response:
             self._logger.debug(f"Video URL {url} returned status code : {response.status_code}")
             return response.status_code
