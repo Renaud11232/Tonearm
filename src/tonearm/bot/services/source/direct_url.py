@@ -15,7 +15,7 @@ class DirectUrlSourceService(SourceServiceBase):
         super().__init__()
         self.__configuration = configuration
 
-    def open(self, url: str) -> discord.AudioSource:
+    async def open(self, url: str) -> discord.AudioSource:
         return ControllableFFmpegPCMAudio(
             url,
             buffer_length=self.__configuration.buffer_length,
