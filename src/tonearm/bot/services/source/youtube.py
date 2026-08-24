@@ -23,7 +23,7 @@ class YoutubeSourceService(SourceServiceBase):
     async def open(self, url: str) -> discord.AudioSource:
         self._logger.debug(f"Fetching media from YouTube URL : {url}")
         options = {
-            "format": "bestaudio",
+            "format": "bestaudio/bestaudio*",
             "logger": self._logger,
             "js_runtimes": {
                 "deno": {}
