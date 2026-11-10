@@ -1,7 +1,6 @@
 from injector import singleton, inject
 import yt_dlp
 import yt_dlp.utils
-import discord
 import requests
 import asyncio
 
@@ -20,7 +19,7 @@ class YoutubeSourceService(SourceServiceBase):
         super().__init__()
         self.__configuration = configuration
 
-    async def open(self, url: str) -> discord.AudioSource:
+    async def open(self, url: str) -> ControllableFFmpegPCMAudio:
         self._logger.debug(f"Fetching media from YouTube URL : {url}")
         options = {
             "format": "bestaudio[acodec=wav]/bestaudio/bestaudio*/best",

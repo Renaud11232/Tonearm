@@ -1,7 +1,5 @@
 from injector import singleton, inject
 
-import discord
-
 from tonearm.configuration import Configuration
 from .base import SourceServiceBase
 from tonearm.bot.services.player.audiosource import ControllableFFmpegPCMAudio
@@ -15,7 +13,7 @@ class DirectUrlSourceService(SourceServiceBase):
         super().__init__()
         self.__configuration = configuration
 
-    async def open(self, url: str) -> discord.AudioSource:
+    async def open(self, url: str) -> ControllableFFmpegPCMAudio:
         return ControllableFFmpegPCMAudio(
             url,
             buffer_length=self.__configuration.buffer_length,
