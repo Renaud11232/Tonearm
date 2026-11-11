@@ -9,5 +9,5 @@ class EnvDefault(argparse.Action):
             required = False
         super().__init__(default=default, required=required, **kwargs)
 
-    def __call__(self, parse, namespace, values, option_string=None):
+    def __call__(self, parser, namespace, values, option_string=None):
         setattr(namespace, self.dest, values)
