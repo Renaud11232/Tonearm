@@ -1,6 +1,4 @@
-FROM denoland/deno:bin-2.9.8 AS deno
-
-FROM mwader/static-ffmpeg:9.0.2-1 AS ffmpeg
+FROM denoland/deno:bin AS deno
 
 FROM python:3.14 AS builder
 
@@ -15,12 +13,10 @@ RUN apt-get update \
 FROM python:3.14-slim
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libffi-dev libnacl-dev \
+    && apt-get install -y --no-install-recommends ffmpeg libffi-dev libnacl-dev \
     && rm -rf /var/cache/apt/archives /var/lib/apt/lists/*
 
 COPY --from=deno /deno /usr/local/bin/deno
-
-COPY --from=ffmpeg /ffmpeg /ffprobe /usr/local/bin/
 
 COPY --from=builder /app /app
 
