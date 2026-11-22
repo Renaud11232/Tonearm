@@ -416,7 +416,7 @@ class EmbedService:
         )
         return discord.Embed(
             description=(
-                f":robot: {link('Tonearm', version.homepage)}\n"
+                f":cd: {link('Tonearm', version.homepage)}\n"
                 f"\n"
                 f"{version_message}\n"
                 f"{created_by_message}"
