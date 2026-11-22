@@ -1,4 +1,6 @@
-# Tonearm
+<p align="center"><img alt="Tonearm logo" src=".github/assets/logo.png" /></p>
+
+<h1 align="center">Tonearm</h1>
 
 Tonearm is a no nonsense Discord music bot that you can self-host.
 
